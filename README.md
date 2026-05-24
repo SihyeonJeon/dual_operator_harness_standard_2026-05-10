@@ -37,11 +37,26 @@ Codex와 Claude를 동등한 고정 operator로 두고 planning, design, product
 </table>
 
 <details>
-  <summary>Mobile captures</summary>
+  <summary>전체 페이지와 모바일 캡처</summary>
+  <p>첫 표는 같은 1440x1100 viewport의 첫 화면 비교입니다. 아래는 전체 페이지와 모바일 전체 페이지입니다.</p>
   <table>
     <tr>
-      <td width="50%"><img src="assets/readme/sunglasses-codex-mobile.png" alt="Direct Codex mobile sunglasses site screenshot"></td>
-      <td width="50%"><img src="assets/readme/sunglasses-harness-mobile.png" alt="Harness generated mobile sunglasses site screenshot"></td>
+      <td width="50%"><strong>Codex full page</strong></td>
+      <td width="50%"><strong>Harness full page</strong></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="assets/readme/sunglasses-codex-desktop-full.png" alt="Direct Codex full page sunglasses site screenshot"></td>
+      <td width="50%"><img src="assets/readme/sunglasses-harness-desktop-full.png" alt="Harness generated full page sunglasses site screenshot"></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td width="50%"><strong>Codex mobile full page</strong></td>
+      <td width="50%"><strong>Harness mobile full page</strong></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="assets/readme/sunglasses-codex-mobile-full.png" alt="Direct Codex mobile full page sunglasses site screenshot"></td>
+      <td width="50%"><img src="assets/readme/sunglasses-harness-mobile-full.png" alt="Harness generated mobile full page sunglasses site screenshot"></td>
     </tr>
   </table>
 </details>
@@ -62,31 +77,47 @@ Codex와 Claude를 동등한 고정 operator로 두고 planning, design, product
 - 하네스 루프는 더 무겁지만 실제 제품 이미지 자산, 역할별 산출물, 검증 기록, 재시작 상태까지 남겼음
 - 포트폴리오나 팀 작업처럼 결과물뿐 아니라 과정과 품질 판단 근거가 필요한 경우 하네스 쪽이 더 강함
 
-## 정량 eval 비교
+## 어려운 정량 task 비교
 
 실험 입력
 
 ```text
-한국어 고객지원 티켓을 billing technical shipping refund account general 로 분류하는 작은 eval framework를 만들고 golden set regression report error analysis를 생성한다
+기준 날짜 2026-05-25 월요일을 기준으로 한국어 업무 문장의 마감일 표현을 ISO 날짜로 정규화하는 offline CLI와 eval framework를 만든다
 ```
 
-| 항목 | Codex `/goal` | Harness loop |
-| --- | ---: | ---: |
-| golden set rows | 36 | 36 |
-| labels | 6 | 6 |
-| accuracy | 1.000 | 1.000 |
-| macro F1 | 1.000 | 1.000 |
-| majority baseline comparison | no | yes |
-| role separated task artifacts | 0 | 16 |
-| event records | 0 | 26 |
-| harness validation | no | yes |
-| restart handoff | no | yes |
+입력 계약
+
+- JSONL input `{id,text}`
+- JSONL output `{id,date}`
+- 오늘, 내일, 이번주 요일, 다음주 요일, 다음달 영업일, 월말, 분기말, N일 후, N주 후, 명시적 날짜, 취소와 변경 표현 처리
+- 알 수 없거나 취소 후 재설정 없는 행은 `UNKNOWN`
+
+평가 방식
+
+- 각 방식이 만든 visible golden set은 자기 검증으로 통과
+- 별도 held out challenge set 36개로 재평가
+- challenge set은 `내주`, `다다음 주`, `다음 달 말`, `분기 마지막 영업일`, `내일이 아니라 금요일`, `취소 후 재설정`, `요일 변경`, `6월 둘째 화요일` 같은 visible set 바깥 표현 포함
+
+| 항목 | Codex `/goal` | Harness first pass | Harness feedback loop |
+| --- | ---: | ---: | ---: |
+| visible golden rows | 41 | 47 | 57 |
+| visible golden accuracy | 100.0% | 100.0% | 100.0% |
+| held out challenge accuracy | 83.3% | 72.2% | 100.0% |
+| held out errors | 6 | 10 | 0 |
+| feedback slice reopened | no | needed | yes |
+| accepted failures promoted to regression fixtures | no | no | yes |
+| rule change produced | no | no | yes |
+| restart handoff | no | yes | yes |
 
 해석
 
-- 모델 품질 벤치마크가 아니라 같은 작은 작업에서 운영 구조가 무엇을 더 남기는지 보는 실험
-- 정확도는 동률
-- 하네스 루프는 planning, design, coding, evaluation, operator review가 분리되어 이후 데이터 확장과 회귀 테스트로 이어가기 쉬움
+- 초회 harness 결과는 direct Codex보다 낮았음
+- 이 실패가 핵심 신호였음
+- operator가 외부 challenge 결과를 canonical memory로 바로 섞지 않고 F2 feedback slice로 요약, 라우팅, 수정, 재평가
+- accepted hidden failures를 local regression fixture로 승격
+- 키트 자체에도 held out challenge eval gate를 추가
+- direct `/goal`은 빠른 산출물에는 강하지만 실패 이후의 운영 규율, 재개 가능한 task state, rule evolution은 자동으로 남기지 않음
+- 이 데모의 차이는 첫 산출물 우열이 아니라 실패를 발견한 뒤 구조적으로 정확도를 끌어올리는 능력
 
 ## 생성되는 구조
 
@@ -121,6 +152,8 @@ project/
 - worker마다 owned paths와 no touch paths를 명시
 - planning runway 이후 sharp and deep 실행
 - 내부 콘텍스트와 외부 채널 기록 분리
+- visible golden set만으로 deterministic quality claim을 passing 처리하지 않음
+- held out challenge eval, independent reviewer, accepted WARN 중 하나 필요
 - 실패와 성공은 failure ledger, rule change log, regulation evolution으로 누적
 - MD 지시는 단독 권위가 아니라 hook, validator, event, task packet으로 확인
 
@@ -236,16 +269,26 @@ Website demo
 | event records | 0 | 44 |
 | planning to closure records | no | yes |
 
-Eval demo
+Quantitative challenge demo
 
-| Metric | Codex `/goal` | Harness loop |
-| --- | ---: | ---: |
-| golden set rows | 36 | 36 |
-| accuracy | 1.000 | 1.000 |
-| macro F1 | 1.000 | 1.000 |
-| majority baseline comparison | no | yes |
-| role separated artifacts | 0 | 16 |
-| event records | 0 | 26 |
+Korean business deadline normalization CLI and eval framework
+
+| Metric | Codex `/goal` | Harness first pass | Harness feedback loop |
+| --- | ---: | ---: | ---: |
+| visible golden rows | 41 | 47 | 57 |
+| visible golden accuracy | 100.0% | 100.0% | 100.0% |
+| held out challenge accuracy | 83.3% | 72.2% | 100.0% |
+| held out errors | 6 | 10 | 0 |
+| feedback slice reopened | no | needed | yes |
+| accepted failures promoted to regression fixtures | no | no | yes |
+| rule change produced | no | no | yes |
+| restart handoff | no | yes | yes |
+
+The first harness result was not better
+
+The useful behavior was the loop after failure
+
+External challenge feedback was summarized into a new F2 slice, routed back to parser and eval artifacts, converted into regression fixtures, rerun, and then promoted into kit governance as a held out challenge eval gate
 
 ## Quick Start
 

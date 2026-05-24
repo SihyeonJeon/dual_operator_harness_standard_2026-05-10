@@ -763,6 +763,7 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "visualization_spec_gate",
         "broadcast_publish_denied",
         "regulation_change_process",
+        "held_out_challenge_eval_gate",
     }
     for required_id in required_ids:
         if required_id not in ids:
@@ -893,6 +894,17 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
     task_text = (harness / "templates" / "TASK_BLUEPRINT.md").read_text(encoding="utf-8")
     if "Visualization Pre-Spec Gate" not in task_text:
         errors.append("TASK_BLUEPRINT.md lacks Visualization Pre-Spec Gate")
+    if "Held-Out / Challenge Eval Gate" not in task_text:
+        errors.append("TASK_BLUEPRINT.md lacks Held-Out / Challenge Eval Gate")
+    quality_text = (harness / "shared" / "QUALITY_GATES.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Held-Out And Challenge Eval Gate",
+        "A local golden set proves regression coverage, not generalization",
+        "feedback slice",
+        "future regression fixtures",
+    ]:
+        if phrase not in quality_text:
+            errors.append(f"QUALITY_GATES.md lacks required held-out eval phrase: {phrase}")
     hooks_text = (harness / "IMPLEMENTER_HOOKS.md").read_text(encoding="utf-8")
     for phrase in [
         "PreScaffoldGoalIntake",

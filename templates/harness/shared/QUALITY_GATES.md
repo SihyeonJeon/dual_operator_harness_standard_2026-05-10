@@ -37,6 +37,27 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
 - Product-context review: whether the result is materially weaker, more awkward,
   or less complete than comparable services at the time of review.
 
+## Held-Out And Challenge Eval Gate
+
+Use this gate for deterministic parsers, classifiers, extractors, ranking or
+scoring systems, data transforms, eval frameworks, benchmark claims, and any
+task where a metric can be tuned to the visible fixture set.
+
+- A local golden set proves regression coverage, not generalization.
+- A clean `PASS` or `passing` quality claim needs one of:
+  - held-out or challenge eval evidence not used while tuning the artifact;
+  - independent evaluator or reviewer packet evidence;
+  - explicit `WARN` accepted by the operator or human explaining why only
+    visible golden/self-eval evidence exists.
+- Hidden, held-out, external reviewer, or challenge eval failures reopen the
+  task as a feedback slice before the previous closure can be reasserted.
+- Accepted failures route back to the correct planning, production, or
+  evaluation artifact and become future regression fixtures when they can be
+  checked deterministically.
+- Root `feature_list.json` verification commands stay portable. Local hidden
+  evaluator paths, private reviewer records, and temp-only challenge commands
+  belong in task evidence.
+
 ## Visualization Gates
 
 Use before producing dashboards, timelines, graphs, external evidence HTML views,

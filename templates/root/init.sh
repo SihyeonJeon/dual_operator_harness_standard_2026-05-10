@@ -75,7 +75,7 @@ handoff = Path("session-handoff.md")
 if handoff.exists():
     text = handoff.read_text(encoding="utf-8")
     text = text.replace("- H1 bootstrap restart smoke is `active` and must be verified or blocked with evidence.", "- H1 bootstrap restart smoke is `passing`.")
-    if "F0 planning runway and slice gate is `active`." not in text:
+    if "F0 planning runway and slice gate" not in text:
         text = text.replace(
             "- Planning runway is pending; first production slice remains a candidate until planning/design/evaluation gates approve it.",
             "- F0 planning runway and slice gate is `active`.\n- First production slice remains a candidate until planning/design/evaluation gates approve it.",
@@ -87,7 +87,7 @@ if active.exists():
     text = active.read_text(encoding="utf-8")
     text = text.replace("Current task id: H1-BOOTSTRAP-SMOKE", "Current task id: F0-PLANNING-RUNWAY")
     text = text.replace("- H1 bootstrap restart smoke: `active`", "- H1 bootstrap restart smoke: `passing`")
-    if "- F0 planning runway and slice gate: `active`" not in text:
+    if "- F0 planning runway and slice gate:" not in text:
         text = text.replace(
             "- H1 bootstrap restart smoke: `passing`",
             "- H1 bootstrap restart smoke: `passing`\n- F0 planning runway and slice gate: `active`",

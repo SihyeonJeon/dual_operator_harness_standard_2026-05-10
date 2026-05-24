@@ -83,6 +83,14 @@
       "terms": ["Rule Change", "Evidence Required", "Mandatory Post-Task Review"]
     },
     {
+      "id": "held_out_challenge_eval_gate",
+      "name": "Deterministic quality claims require held-out or challenge evidence",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/QUALITY_GATES.md",
+      "terms": ["Held-Out And Challenge Eval Gate", "not generalization", "feedback slice"]
+    },
+    {
       "id": "team_topology_has_planning",
       "name": "Team topology preserves planning lane",
       "type": "text_contains",

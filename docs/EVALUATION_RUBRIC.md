@@ -26,6 +26,7 @@ operations, media, business, data, education, and other project domains.
 | Dual-operator parity | Codex and Claude remain equal fixed operators; dissent is preserved. | `2` |
 | Planning before sharp/deep production | PRD/anti-PRD/candidate slices precede production. | `2` |
 | Cross-verification loop | Evaluation and review packets exist; reviewer output is evidence, not authority. | `2` |
+| Held-out or challenge eval discipline | Deterministic metric claims require held-out/challenge eval, independent evaluator evidence, or accepted WARN beyond visible golden fixtures. | `2` |
 | Context and memory continuity | Shared context, team context, session registries, part ownership, and context pressure rules exist. | `2` |
 | Restartability | Fresh agent can load root state, shared context, active task, and resume from files. | `2` |
 | Observability | Events, status HTML/JSON, local viz export payloads, and source hashes exist. | `2` |
@@ -57,9 +58,10 @@ A claim may be used publicly only if it has at least one of:
 - The website demo generated a richer static storefront with 5 generated bitmap
   assets, 27 task evidence files, 44 events, desktop/mobile screenshots, and
   operator closure records.
-- The eval demo matched direct Codex accuracy and macro F1 on a 36-row Korean
-  support-ticket smoke set while adding planning, design, coding, evaluation,
-  operator review, event records, and restart handoff.
+- The Korean date-normalization challenge demo found that a first-pass harness
+  closure could still overfit visible fixtures. The follow-up feedback slice
+  raised held-out accuracy from 72.2% to 100.0% and produced a new kit rule:
+  visible golden eval alone is not enough for deterministic quality claims.
 
 ## Claims Not Yet Allowed
 

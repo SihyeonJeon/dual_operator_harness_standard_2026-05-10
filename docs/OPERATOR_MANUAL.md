@@ -146,6 +146,16 @@ evidence for scaffold and governance invariants. It does not replace
 project-specific tests, expert review, browser evidence, source review, or
 specialized LLM/RAG/agent eval frameworks.
 
+For deterministic parsers, classifiers, extractors, ranking or scoring systems,
+data transforms, eval frameworks, and benchmark-style quality claims, a visible
+golden set alone is not enough for a clean `PASS`. The task needs held-out or
+challenge eval evidence, independent reviewer/evaluator evidence, or an
+explicit `WARN` accepted by the operator or human. If hidden, held-out,
+challenge, or external reviewer feedback arrives after closure, reopen the work
+as a feedback slice, summarize the external record into internal artifacts,
+route accepted failures to the responsible artifact, and promote reusable
+failures into local regression fixtures before reasserting closure.
+
 Operators may use `python3 scripts/harnessctl.py viz-export --backend
 local_file` to create sanitized local payloads under `harness/reports/viz/`.
 Non-local visualization backends require human backend selection, bounded

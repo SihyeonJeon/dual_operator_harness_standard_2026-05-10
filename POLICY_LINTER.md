@@ -60,6 +60,12 @@ treated as operational.
   includes `caveman` as preferred context-compression slot.
 - `QUALITY_GATES.md` exists and covers artifact, context-chain, runtime,
   UI/UX/layout/design, and feedback routing checks.
+- `QUALITY_GATES.md` includes a held-out/challenge eval gate. Deterministic
+  parsers, classifiers, extractors, ranking or scoring systems, data
+  transforms, eval frameworks, and benchmark-style quality claims cannot claim a
+  clean `PASS` from visible golden/self eval alone unless held-out/challenge
+  evidence, independent evaluator evidence, or explicit accepted `WARN` is
+  recorded.
 - `VISUALIZATION_SPEC_POLICY.md` and `templates/VISUALIZATION_SPEC.md` exist.
   Visualization production is blocked until a task-local spec is approved or
   explicitly marked not required.
@@ -119,6 +125,8 @@ treated as operational.
 - `FAILURE_LEDGER.md` and `RULE_CHANGE_LOG.md` exist.
 - Evaluation report template includes `PASS`, `WARN`, `FAIL`, and `NOT-RUN`.
 - Human review packet template exists for standard/full mode.
+- Reusable held-out, challenge, or reviewer failures are promoted into local
+  regression fixtures when they can be checked deterministically.
 
 ## Failure Semantics
 

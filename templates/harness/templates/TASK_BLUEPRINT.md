@@ -73,7 +73,28 @@ Merge or double-edit protocol:
 - UI/UX/layout/design evidence where applicable;
 - debugging closure evidence;
 - cross-evaluation evidence or `NOT-RUN` rationale;
+- held-out, challenge, independent reviewer, or explicit `WARN` evidence when
+  deterministic metrics, parser/classifier/extractor behavior, eval framework
+  claims, or benchmark-style quality claims are in scope;
 - regulation review result.
+
+## Held-Out / Challenge Eval Gate
+
+Use when the task can overfit to visible examples, including deterministic
+parsers, classifiers, extractors, ranking or scoring systems, data transforms,
+eval frameworks, and benchmark claims.
+
+Status: NOT_REQUIRED | REQUIRED_PENDING | PASS | WARN_ACCEPTED | BLOCKED | NOT-RUN
+
+Required:
+
+- local golden/self eval result;
+- held-out or challenge eval result, independent reviewer packet, or accepted
+  `WARN` explaining why no independent/challenge evidence exists;
+- routing decision for every held-out or reviewer failure;
+- accepted reusable failures promoted into local regression fixtures;
+- portable root verification command separated from local hidden/private
+  evaluator paths.
 
 ## Visualization Pre-Spec Gate
 

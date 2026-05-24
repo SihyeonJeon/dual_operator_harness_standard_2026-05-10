@@ -1,7 +1,7 @@
 {
   "suite_id": "public_release_harness_scorecard",
   "version": "1.0",
-  "description": "Public-safe 22-check scorecard derived from the generated-harness evaluation checklist. It validates core governance, local evidence, and disabled optional extension contracts without requiring private connectors or credentials.",
+  "description": "Public-safe generated-harness scorecard derived from the evaluation checklist. It validates core governance, local evidence, challenge-eval discipline, and disabled optional extension contracts without requiring private connectors or credentials.",
   "cases": [
     {
       "id": "topology_dual_operator_dissent",
@@ -57,6 +57,14 @@
       "type": "file_exists",
       "severity": "required",
       "path": "harness/evals/golden_suite.json"
+    },
+    {
+      "id": "held_out_challenge_eval_gate",
+      "name": "Visible golden eval alone cannot prove deterministic quality claims",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/QUALITY_GATES.md",
+      "terms": ["Held-Out And Challenge Eval Gate", "not generalization", "feedback slice"]
     },
     {
       "id": "cross_feedback_loop",

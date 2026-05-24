@@ -388,6 +388,16 @@ Side-effecting tools MUST NOT run without an approval policy.
   `harness/evals/` and `scripts/harnessctl.py eval-run` so scaffold invariants
   can be regression-tested without the original kit, network access, or
   arbitrary command execution.
+- A local golden set proves regression coverage, not generalization. For
+  deterministic parsers, classifiers, extractors, ranking/scoring systems, data
+  transforms, eval frameworks, and benchmark-style quality claims, clean
+  `PASS` or `passing` requires held-out/challenge eval evidence, independent
+  evaluator evidence, or an explicit accepted `WARN`.
+- Hidden, held-out, external reviewer, or challenge eval failures arriving after
+  closure MUST reopen the work as a feedback slice. The external record must be
+  summarized into internal artifacts, accepted failures must route to the
+  responsible artifact, and reusable failures SHOULD become local regression
+  fixtures before closure is reasserted.
 - Project-specific eval suites MAY be added after planning/evaluation defines
   deterministic checks. Specialized LLM/RAG/agent eval tools may be integrated
   as evidence producers, but their outputs are not canonical memory until
