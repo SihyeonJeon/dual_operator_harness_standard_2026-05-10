@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Operator Session Registry",
+  "type": "object",
+  "required": ["version", "policy", "operators"],
+  "properties": {
+    "version": {"type": "string"},
+    "policy": {
+      "type": "object",
+      "required": [
+        "fixed_operator_sessions_required",
+        "operator_model_class",
+        "operator_reasoning_effort",
+        "private_session_memory_is_advisory",
+        "canonical_context_path",
+        "dual_operator_disagreement_preserved"
+      ],
+      "properties": {
+        "fixed_operator_sessions_required": {"type": "boolean"},
+        "operator_model_class": {"type": "string"},
+        "operator_reasoning_effort": {"type": "string"},
+        "private_session_memory_is_advisory": {"type": "boolean"},
+        "canonical_context_path": {"type": "string"},
+        "dual_operator_disagreement_preserved": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "operators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "operator_id",
+          "surface",
+          "session_handle",
+          "resume_command",
+          "model_class",
+          "reasoning_effort",
+          "status",
+          "evidence_path",
+          "verified_at",
+          "reviewer"
+        ],
+        "properties": {
+          "operator_id": {"type": "string"},
+          "surface": {"type": "string"},
+          "session_handle": {"type": "string"},
+          "resume_command": {"type": "string"},
+          "model_class": {"type": "string"},
+          "reasoning_effort": {"type": "string"},
+          "status": {"type": "string"},
+          "evidence_path": {"type": "string"},
+          "verified_at": {"type": "string"},
+          "reviewer": {"type": "string"},
+          "last_active": {"type": "string"},
+          "canonical_context_version": {"type": "string"},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

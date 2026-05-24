@@ -1,0 +1,16 @@
+{
+  "id": "local_file",
+  "status": "VERIFIED_LOCAL",
+  "side_effect_class": "write_fs",
+  "source": "harness/events/events.jsonl",
+  "outputs": [
+    "harness/reports/viz/events.ndjson",
+    "harness/reports/viz/events.json",
+    "harness/reports/viz/summary.json"
+  ],
+  "network_write_default": "DENIED",
+  "credential_access": "DENIED",
+  "command": "python3 scripts/harnessctl.py viz-export --backend local_file",
+  "redaction": "sanitize observability events with allowlisted fields before export",
+  "canonical_memory": false
+}

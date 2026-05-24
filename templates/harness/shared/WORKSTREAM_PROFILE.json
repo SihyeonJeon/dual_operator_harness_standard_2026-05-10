@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "project_goal": "UNKNOWN",
+  "primary_workstream": "unknown",
+  "detected_workstreams": ["UNKNOWN"],
+  "risk_tier": "UNKNOWN",
+  "team_topology": {
+    "selection_policy": "project_goal_and_task_shape",
+    "fixed_operators": ["claude-code", "codex"],
+    "always_present_teams": ["planning", "production", "evaluation"],
+    "conditional_teams": ["design", "cross_evaluation", "council"],
+    "team_activation_notes": {
+      "planning": "Always active for slice selection, acceptance criteria, worker briefs, and upstream questions.",
+      "design": "Activate for visual, interaction, media, content-structure, product, brand, learning, or subjective-quality work. Visualization production requires a task-local VISUALIZATION_SPEC.md first.",
+      "production": "Use coding team files for any production work, including code, research artifacts, writing, operations, data, media, or business deliverables.",
+      "evaluation": "Always active for independent evidence-based completion judgment."
+    },
+    "recommended_initial_topology": {
+      "planning": "active",
+      "design": "on_demand",
+      "production": "after_planning",
+      "evaluation": "active",
+      "cross_evaluation": "on_demand",
+      "council": "optional_after_smoke"
+    }
+  },
+  "operator_boundary": {
+    "operators_do": [
+      "orchestrate",
+      "critique",
+      "convene council",
+      "review completed work packets",
+      "communicate with human",
+      "evolve governance from evidence"
+    ],
+    "operators_do_not": [
+      "directly perform production work",
+      "debug inside the team loop",
+      "self-approve completion",
+      "bypass team evaluation"
+    ]
+  },
+  "required_loop": [
+    "planning_runway",
+    "workstream_and_risk_confirmation",
+    "candidate_slice_generation",
+    "design_when_needed",
+    "pre_visualization_spec_gate_when_needed",
+    "slice_approval_gate",
+    "production",
+    "debugging",
+    "evaluation",
+    "cross_evaluation_when_required",
+    "completed_work_packet",
+    "operator_review",
+    "human_review_when_material",
+    "context_update",
+    "regulation_review"
+  ],
+  "initial_feature_seeds": ["H0", "H1", "F0-PLANNING-RUNWAY"],
+  "open_questions": ["UNKNOWN"]
+}

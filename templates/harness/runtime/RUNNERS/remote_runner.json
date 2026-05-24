@@ -1,0 +1,12 @@
+{
+  "id": "remote_runner",
+  "status": "UNVERIFIED",
+  "surface": "remote_or_cloud",
+  "allowed_tools": [],
+  "network_default": "DENIED",
+  "budget": "UNKNOWN",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "kill_procedure": "UNKNOWN",
+  "notes": "Bounded cloud lane placeholder. Remote terminal, mobile approval, chat connector, and always-on execution remain denied until policy and smoke evidence exist."
+}

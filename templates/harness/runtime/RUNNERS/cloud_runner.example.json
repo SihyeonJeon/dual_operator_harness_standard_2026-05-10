@@ -1,0 +1,13 @@
+{
+  "id": "cloud_runner_example",
+  "status": "UNVERIFIED",
+  "surface": "project_selected_cloud_runner",
+  "allowed_tools": [],
+  "network_default": "DENIED",
+  "budget": "UNKNOWN",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "kill_procedure": "UNKNOWN",
+  "implementation_location": "project_private_overlay",
+  "notes": "Example descriptor only. Real cloud adapters require bounded policy, scoped credentials, dry-run evidence, and explicit approval."
+}

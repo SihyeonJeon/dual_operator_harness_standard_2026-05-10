@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/worker-brief.schema.json",
+  "title": "Worker Brief",
+  "type": "object",
+  "required": [
+    "task_id",
+    "feature_id",
+    "slice_id",
+    "part_id",
+    "part_scope",
+    "goal",
+    "quality_mode",
+    "iteration_budget",
+    "owned_paths",
+    "no_touch_paths",
+    "ownership_contract",
+    "read_only_context",
+    "relevant_governance",
+    "success_criteria",
+    "commands_or_evidence_required",
+    "feature_state_policy",
+    "observability",
+    "visualization_spec_gate",
+    "stop_conditions",
+    "output_schema",
+    "checkpoint_eta",
+    "worker_session",
+    "model_routing",
+    "plugin_routing",
+    "internal_subagents_allowed",
+    "independent_verification"
+  ],
+  "properties": {
+    "quality_mode": {"enum": ["stability", "creative-reframe", "mixed"]},
+    "visualization_spec_gate": {
+      "type": "object",
+      "required": [
+        "required_when_work_includes_visualization",
+        "policy",
+        "spec_template",
+        "task_spec_path",
+        "production_blocked_until_approved",
+        "missing_or_ambiguous_spec_status"
+      ]
+    },
+    "independent_verification": {"enum": ["mandatory", "optional", "not_applicable"]}
+  }
+}

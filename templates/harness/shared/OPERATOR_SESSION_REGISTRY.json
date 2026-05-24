@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "policy": {
+    "fixed_operator_sessions_required": true,
+    "operator_model_class": "highest_verified_available",
+    "operator_reasoning_effort": "highest_verified_available",
+    "private_session_memory_is_advisory": true,
+    "canonical_context_path": "harness/shared/",
+    "dual_operator_disagreement_preserved": true
+  },
+  "operators": [
+    {
+      "operator_id": "claude_code",
+      "surface": "claude-code",
+      "session_handle": "UNKNOWN",
+      "resume_command": "UNKNOWN",
+      "model_class": "highest_verified_available",
+      "reasoning_effort": "highest_verified_available",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "last_active": "UNKNOWN",
+      "canonical_context_version": "UNKNOWN",
+      "notes": "Fixed Claude Code operator session. The .claude adapter is a generated view, not authority over Codex or shared memory."
+    },
+    {
+      "operator_id": "codex",
+      "surface": "codex-cli",
+      "session_handle": "UNKNOWN",
+      "resume_command": "UNKNOWN",
+      "model_class": "highest_verified_available",
+      "reasoning_effort": "highest_verified_available",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "last_active": "UNKNOWN",
+      "canonical_context_version": "UNKNOWN",
+      "notes": "Fixed Codex operator session. Root AGENTS.md is the Codex-compatible entry surface."
+    }
+  ]
+}

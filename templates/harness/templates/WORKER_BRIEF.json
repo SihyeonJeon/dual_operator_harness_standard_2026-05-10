@@ -1,0 +1,103 @@
+{
+  "task_id": "UNKNOWN",
+  "feature_id": "UNKNOWN",
+  "slice_id": "UNKNOWN",
+  "part_id": "UNKNOWN",
+  "part_scope": "UNKNOWN",
+  "goal": "UNKNOWN",
+  "quality_mode": "stability",
+  "iteration_budget": 1,
+  "owned_paths": ["UNKNOWN"],
+  "no_touch_paths": ["UNKNOWN"],
+  "ownership_contract": {
+    "exclusive_owner_for_part": true,
+    "do_not_edit_outside_owned_scope": true,
+    "double_editing_requires_merge_protocol": true,
+    "reuse_this_session_only_for_same_part": true,
+    "read_other_parts_only_through_bounded_artifact_summary": true
+  },
+  "read_only_context": ["UNKNOWN"],
+  "role_files_to_read": [
+    "harness/shared/ROLE_FILE_INDEX.md",
+    "team AGENT.md",
+    "team SKILLS.md",
+    "team TEAM_CONTEXT.md"
+  ],
+  "context_pack_path": "UNKNOWN",
+  "context_pressure": {
+    "policy": "harness/shared/CONTEXT_PRESSURE.md",
+    "bounded_context_pack_required": true,
+    "compaction_required_before_resume_or_lower_tier_dispatch": true,
+    "external_channel_records_are_not_canonical_context": true
+  },
+  "relevant_governance": ["UNKNOWN"],
+  "success_criteria": ["UNKNOWN"],
+  "commands_or_evidence_required": ["UNKNOWN"],
+  "feature_state_policy": {
+    "source": "feature_list.json",
+    "passing_requires_verification_evidence": true,
+    "worker_may_request_transition": true,
+    "worker_may_self_mark_passing": false
+  },
+  "observability": {
+    "event_log": "harness/events/events.jsonl",
+    "trace_id": "UNKNOWN"
+  },
+  "visualization_spec_gate": {
+    "required_when_work_includes_visualization": true,
+    "policy": "harness/shared/VISUALIZATION_SPEC_POLICY.md",
+    "spec_template": "harness/templates/VISUALIZATION_SPEC.md",
+    "task_spec_path": "harness/tasks/{task_id}/VISUALIZATION_SPEC.md",
+    "production_blocked_until_approved": true,
+    "missing_or_ambiguous_spec_status": "SPEC_BLOCKED"
+  },
+  "external_channel_gate": {
+    "policy": "harness/shared/CHANNEL_RECORDS.md",
+    "broadcast_policy": "harness/broadcast/BROADCAST_POLICY.md",
+    "reviewer_policy": "harness/reviewers/REVIEWER_POLICY.md",
+    "worker_may_publish": false,
+    "worker_may_treat_external_feedback_as_authority": false
+  },
+  "upstream_question_protocol": {
+    "when_spec_missing": "ask_planning_or_design_through_task_artifact",
+    "do_not_route_to": "fixed_operator_development_debugging"
+  },
+  "stop_conditions": ["SPEC_BLOCKED", "PERMISSION_BLOCKED", "EVIDENCE_BLOCKED"],
+  "output_schema": {
+    "files_changed": "array",
+    "summary": "string",
+    "gates_run": "array",
+    "blockers": "array",
+    "context_updates_needed": "array"
+  },
+  "checkpoint_eta": "UNKNOWN",
+  "worker_session": {
+    "preferred_resume_worker_id": "UNKNOWN",
+    "resume_required_if_available": true,
+    "resume_only_for_same_part_id": true,
+    "do_not_reuse_for_unrelated_part": true,
+    "record_session_handle": true,
+    "load_prior_checkpoint_on_resume": true
+  },
+  "runner_config": {
+    "runner_id": "UNKNOWN",
+    "config_path": "harness/runtime/RUNNERS/local_runner.json",
+    "status": "UNVERIFIED",
+    "audit_path": "harness/events/events.jsonl"
+  },
+  "model_routing": {
+    "model_class": "lowest_verified_that_satisfies_gate",
+    "reasoning_effort": "lowest_verified_that_satisfies_gate",
+    "task_difficulty": "UNKNOWN",
+    "allow_routine_tier_for_simple_work": true,
+    "preferred_simple_task_session": "configured_routine_worker_session"
+  },
+  "plugin_routing": {
+    "max_active_context_plugins": 4,
+    "preferred_slots": ["context_compression", "repo_or_artifact_index", "evidence_or_test_summary", "domain_or_reference_retrieval"],
+    "caveman_preferred_for_context_compression": true,
+    "plugin_outputs_are_advisory_until_written_to_harness_files": true
+  },
+  "internal_subagents_allowed": false,
+  "independent_verification": "mandatory"
+}

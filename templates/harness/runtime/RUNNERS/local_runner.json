@@ -1,0 +1,12 @@
+{
+  "id": "local_runner",
+  "status": "UNVERIFIED",
+  "surface": "local_subprocess",
+  "allowed_tools": ["read_project_files", "write_owned_files", "run_harness_bootstrap_check"],
+  "network_default": "DENIED",
+  "budget": "local_only",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "kill_procedure": "stop local process",
+  "notes": "Use for bounded local worker tasks after scope and owned paths are recorded."
+}

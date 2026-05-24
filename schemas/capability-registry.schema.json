@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/capability-registry.schema.json",
+  "title": "Capability Registry",
+  "type": "object",
+  "required": ["capabilities"],
+  "properties": {
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "class", "status", "evidence_path", "verified_at", "reviewer", "notes"],
+        "properties": {
+          "status": {"enum": ["UNVERIFIED", "VERIFIED", "DEPRECATED", "BLOCKED"]}
+        }
+      }
+    }
+  }
+}

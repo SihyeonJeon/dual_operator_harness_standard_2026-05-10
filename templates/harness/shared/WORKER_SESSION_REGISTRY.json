@@ -1,0 +1,12 @@
+{
+  "policy": {
+    "fixed_operator_sessions": true,
+    "worker_sessions_may_vary": true,
+    "resume_prior_worker_when_safe": true,
+    "replacement_requires_reason": true,
+    "part_owner_session_isolation": true,
+    "do_not_reuse_part_owner_for_unrelated_parts": true,
+    "part_reopen_prefers_prior_owner": true
+  },
+  "workers": []
+}

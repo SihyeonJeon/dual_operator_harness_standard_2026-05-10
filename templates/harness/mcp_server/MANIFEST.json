@@ -1,0 +1,34 @@
+{
+  "name": "generated-harness-readonly-context",
+  "version": "0.1.0",
+  "status": "UNVERIFIED",
+  "default_mode": "read_only",
+  "authority": "evidence_only",
+  "tools": [
+    {
+      "name": "search_past_decisions",
+      "description": "Search canonical local harness decision and context files for a query.",
+      "side_effect_class": "none",
+      "output_trust_level": "tool_output"
+    },
+    {
+      "name": "get_capability_status",
+      "description": "Return generated harness capability registry contents.",
+      "side_effect_class": "none",
+      "output_trust_level": "tool_output"
+    },
+    {
+      "name": "get_current_task",
+      "description": "Return current task information from ACTIVE_SNAPSHOT.md and feature_list.json.",
+      "side_effect_class": "none",
+      "output_trust_level": "tool_output"
+    },
+    {
+      "name": "list_open_questions",
+      "description": "Return open questions from ACTIVE_SNAPSHOT.md and related handoff files.",
+      "side_effect_class": "none",
+      "output_trust_level": "tool_output"
+    }
+  ],
+  "canonical_memory_rule": "MCP output is advisory until summarized into internal harness records."
+}

@@ -1,0 +1,164 @@
+{
+  "capabilities": [
+    {
+      "id": "local_file_read",
+      "name": "Local file read",
+      "class": "filesystem",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Starts unverified until target-project smoke confirms scope."
+    },
+    {
+      "id": "local_file_write",
+      "name": "Local file write",
+      "class": "filesystem",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Workers may write only owned paths after permission policy is active."
+    },
+    {
+      "id": "council_mcp",
+      "name": "Council MCP",
+      "class": "mcp",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Advisory only; no code-writing, merge, deploy, or launch authority."
+    },
+    {
+      "id": "claude_code_hooks",
+      "name": "Claude Code project hooks",
+      "class": "claude_code",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Generated under .claude/hooks; must be smoked in the target Claude Code runtime before relied on as enforcement."
+    },
+    {
+      "id": "claude_code_subagents",
+      "name": "Claude Code project subagents",
+      "class": "claude_code",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Generated under .claude/agents; canonical memory remains harness/shared and team context files."
+    },
+    {
+      "id": "claude_code_agent_teams",
+      "name": "Claude Code agent teams",
+      "class": "claude_code",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Enabled in generated project settings but still requires runtime smoke and operator approval before production reliance."
+    },
+    {
+      "id": "claude_code_skills",
+      "name": "Claude Code project skills",
+      "class": "claude_code",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Generated under .claude/skills; skills route to file-backed harness memory and do not create separate authority."
+    },
+    {
+      "id": "codex_operator_session",
+      "name": "Codex fixed operator session",
+      "class": "operator_session",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Codex is an equal fixed operator. AGENTS.md is the Codex-compatible entry; council/MCP bridge is advisory until smoked."
+    },
+    {
+      "id": "codex_image_generation",
+      "name": "Codex image generation for project bitmap assets",
+      "class": "image_generation",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Use for project-bound bitmap assets such as hero images, product photos, mock photographs, raster illustrations, and image variants. Workspace outputs must be copied into the project and recorded. If unavailable, record NOT-RUN and use an approved fallback."
+    },
+    {
+      "id": "context_saving_plugins",
+      "name": "Context-saving plugin stack",
+      "class": "plugin",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "PLUGIN_ROUTING.json caps active context plugins at 4 and includes caveman as preferred compression slot. Plugin output is advisory until written to harness files."
+    },
+    {
+      "id": "routine_worker_session",
+      "name": "Configured routine worker session",
+      "class": "worker_model_session",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Preferred for simple, well-specified delegated chores when available, safe, and sufficient for the gate. Operators remain highest verified model/effort."
+    },
+    {
+      "id": "harnessctl_local_report",
+      "name": "Local harnessctl event and report helper",
+      "class": "local_cli",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Generated at scripts/harnessctl.py. It appends events, validates, checks visualization specs, creates broadcast/review drafts, and compiles static HTML reports as views over canonical files."
+    },
+    {
+      "id": "broadcast_draft_queue",
+      "name": "Broadcast and external evidence draft queue",
+      "class": "external_interface",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Draft-only external signal layer under harness/broadcast. Publication is denied until human approval, connector smoke, and redaction evidence exist."
+    },
+    {
+      "id": "external_reviewer_adapters",
+      "name": "External AI and human reviewer adapters",
+      "class": "evaluation",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Reviewer output is evidence, not authority. Adapters require redaction and target-runtime smoke before use."
+    },
+    {
+      "id": "harness_mcp_server",
+      "name": "Read-only harness MCP server export",
+      "class": "mcp",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Generated under harness/mcp_server. Read-only context export for search_past_decisions and related tools; output is advisory until summarized into canonical files."
+    },
+    {
+      "id": "cloud_lane",
+      "name": "Cloud or server-side task lane",
+      "class": "cloud",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Must pass bounded cloud smoke before production use."
+    }
+  ]
+}

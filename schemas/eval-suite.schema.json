@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/eval-suite.schema.json",
+  "title": "Harness Eval Suite",
+  "type": "object",
+  "required": ["suite_id", "version", "cases"],
+  "properties": {
+    "suite_id": {"type": "string"},
+    "version": {"type": "string"},
+    "description": {"type": "string"},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type", "severity"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "type": {
+            "enum": [
+              "file_exists",
+              "text_contains",
+              "json_has_key",
+              "json_equals",
+              "json_array_min_length",
+              "event_count_min",
+              "events_schema_valid",
+              "verified_evidence_integrity"
+            ]
+          },
+          "severity": {"enum": ["required", "optional"]},
+          "path": {"type": "string"},
+          "key": {"type": "string"},
+          "expected": {},
+          "terms": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "case_sensitive": {"type": "boolean"},
+          "min_length": {"type": "integer", "minimum": 0},
+          "min_count": {"type": "integer", "minimum": 0},
+          "required_fields": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "suite_id": "harness_scaffold_golden",
+  "version": "1.0",
+  "description": "Dependency-free regression suite for generated harness scaffold invariants.",
+  "cases": [
+    {
+      "id": "root_agents_entry_exists",
+      "name": "Root operator entry exists",
+      "type": "file_exists",
+      "severity": "required",
+      "path": "AGENTS.md"
+    },
+    {
+      "id": "feature_list_has_features",
+      "name": "Feature list exposes feature state",
+      "type": "json_array_min_length",
+      "severity": "required",
+      "path": "feature_list.json",
+      "key": "features",
+      "min_length": 3
+    },
+    {
+      "id": "workstream_profile_detected",
+      "name": "Workstream profile records detected streams",
+      "type": "json_array_min_length",
+      "severity": "required",
+      "path": "harness/shared/WORKSTREAM_PROFILE.json",
+      "key": "detected_workstreams",
+      "min_length": 1
+    },
+    {
+      "id": "dual_operator_parity",
+      "name": "Dual operator parity is preserved",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/DUAL_OPERATOR_PROTOCOL.md",
+      "terms": ["equal fixed operators", "do not force consensus"]
+    },
+    {
+      "id": "visualization_spec_gate",
+      "name": "Visualization spec gate is documented",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/VISUALIZATION_SPEC_POLICY.md",
+      "terms": ["VISUALIZATION_SPEC.md", "SPEC_BLOCKED", "Claude owns visualization"]
+    },
+    {
+      "id": "credential_default_denied",
+      "name": "Credential access starts denied",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/CREDENTIAL_LIFECYCLE.md",
+      "terms": ["Default: no secret access"]
+    },
+    {
+      "id": "event_log_exists",
+      "name": "Event log exists",
+      "type": "file_exists",
+      "severity": "required",
+      "path": "harness/events/events.jsonl"
+    },
+    {
+      "id": "event_log_has_scaffold_event",
+      "name": "Event log has at least one scaffold event",
+      "type": "event_count_min",
+      "severity": "required",
+      "min_count": 1
+    },
+    {
+      "id": "broadcast_publish_denied",
+      "name": "Broadcast remains approval-gated until approved",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/broadcast/BROADCAST_POLICY.md",
+      "terms": ["Automatic external publish is denied", "human approval", "not canonical"]
+    },
+    {
+      "id": "regulation_change_process",
+      "name": "Regulation evolution has a change process",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/REGULATION_EVOLUTION.md",
+      "terms": ["Rule Change", "Evidence Required", "Mandatory Post-Task Review"]
+    },
+    {
+      "id": "team_topology_has_planning",
+      "name": "Team topology preserves planning lane",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/TEAM_TOPOLOGY.md",
+      "terms": ["planning", "production", "evaluation"]
+    },
+    {
+      "id": "operator_model_highest",
+      "name": "Operators use highest verified model policy",
+      "type": "json_equals",
+      "severity": "required",
+      "path": "harness/shared/MODEL_ROUTING.json",
+      "key": "policy.operators.model_class",
+      "expected": "highest_verified_available"
+    }
+  ]
+}

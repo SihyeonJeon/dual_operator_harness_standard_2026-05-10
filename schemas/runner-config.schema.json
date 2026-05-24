@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Runner Config",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "surface",
+    "allowed_tools",
+    "network_default",
+    "budget",
+    "audit_path",
+    "smoke_evidence_path",
+    "kill_procedure"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "status": {"type": "string"},
+    "surface": {"type": "string"},
+    "allowed_tools": {"type": "array", "items": {"type": "string"}},
+    "network_default": {"type": "string"},
+    "budget": {"type": "string"},
+    "audit_path": {"type": "string"},
+    "smoke_evidence_path": {"type": "string"},
+    "kill_procedure": {"type": "string"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": true
+}

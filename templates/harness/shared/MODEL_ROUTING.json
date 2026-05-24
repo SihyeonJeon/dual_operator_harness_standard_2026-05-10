@@ -1,0 +1,72 @@
+{
+  "policy": {
+    "operators": {
+      "model_class": "highest_verified_available",
+      "reasoning_effort": "highest_verified_available",
+      "persistent_session": true
+    },
+    "workers": {
+      "default_model_class": "lowest_verified_that_satisfies_gate",
+      "default_reasoning_effort": "lowest_verified_that_satisfies_gate",
+      "session_policy": "part_owner_resume_when_safe",
+      "do_not_use_part_owner_for_unrelated_parts": true
+    }
+  },
+  "worker_tiers": {
+    "routine": {
+      "use_when": "mechanical, low-risk, well-specified work",
+      "preferred_session_for_simple_tasks": "configured_routine_worker_session",
+      "example_model_classes": ["sonnet_or_equivalent", "codex_spark_or_equivalent", "lowest_cost_verified_worker_model"],
+      "reasoning_effort": "low_or_medium"
+    },
+    "standard": {
+      "use_when": "normal production work with clear ownership and tests",
+      "example_model_classes": ["strong_mid_tier_verified"],
+      "reasoning_effort": "medium"
+    },
+    "complex": {
+      "use_when": "stateful, ambiguous, architecture-affecting, design-sensitive, or high-risk work",
+      "example_model_classes": ["strong_verified"],
+      "reasoning_effort": "medium_or_high"
+    },
+    "independent_evaluation": {
+      "use_when": "cross-check, closure challenge, high-risk evaluation, or subjective quality review",
+      "example_model_classes": ["independent_vendor_or_session_when_available"],
+      "reasoning_effort": "high"
+    }
+  },
+  "phase_defaults": {
+    "planning": {
+      "model_class": "upper_verified",
+      "reasoning_effort": "high"
+    },
+    "design": {
+      "model_class": "upper_verified_when_subjective_or_complex",
+      "reasoning_effort": "medium_or_high"
+    },
+    "worker_brief_generation": {
+      "model_class": "upper_verified",
+      "reasoning_effort": "high"
+    },
+    "simple_code_implementation": {
+      "model_class": "routine_verified_worker_tier",
+      "reasoning_effort": "low_or_medium"
+    },
+    "complex_code_implementation": {
+      "model_class": "strong_verified",
+      "reasoning_effort": "medium_or_high"
+    },
+    "debugging": {
+      "model_class": "strong_verified",
+      "reasoning_effort": "high"
+    },
+    "evaluation": {
+      "model_class": "strong_or_independent_verified",
+      "reasoning_effort": "high"
+    },
+    "cross_evaluation": {
+      "model_class": "independent_vendor_or_session_when_available",
+      "reasoning_effort": "high"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "generic_publication_example",
+  "status": "UNVERIFIED",
+  "type": "publication_connector_example",
+  "network_write_default": "DENIED",
+  "requires_human_approval": true,
+  "requires_smoke_evidence": true,
+  "input_artifacts": [
+    "harness/broadcast/drafts/",
+    "harness/broadcast/DRAFT_QUEUE.md"
+  ],
+  "output_record": "harness/broadcast/PUBLISHED_LEDGER.jsonl",
+  "redaction_required": true,
+  "implementation_location": "project_private_overlay",
+  "notes": "Example descriptor only. Real channel adapters live outside the public kit until a project records target, scope, dry-run, rollback path, and approval."
+}

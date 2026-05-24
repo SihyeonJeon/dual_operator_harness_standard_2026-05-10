@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Backend",
+  "type": "object",
+  "required": ["version", "status", "authority", "default_backend", "candidate_backends", "rules"],
+  "properties": {
+    "version": {"type": "string"},
+    "status": {"type": "string"},
+    "authority": {"type": "string"},
+    "default_backend": {"type": "string"},
+    "candidate_backends": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "status", "index_path"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "status": {"type": "string"},
+          "index_path": {"type": "string"},
+          "embedding_model": {"type": "string"},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "mcp_export_endpoint": {"type": "string"},
+    "rules": {
+      "type": "object",
+      "required": [
+        "index_external_channel_records_by_default",
+        "external_records_require_operator_summary",
+        "private_plugin_memory_is_not_authority",
+        "retrieval_must_return_source_paths"
+      ],
+      "properties": {
+        "index_external_channel_records_by_default": {"type": "boolean"},
+        "external_records_require_operator_summary": {"type": "boolean"},
+        "private_plugin_memory_is_not_authority": {"type": "boolean"},
+        "retrieval_must_return_source_paths": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

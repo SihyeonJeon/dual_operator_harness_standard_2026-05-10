@@ -1,0 +1,25 @@
+{
+  "project_name": "UNKNOWN",
+  "project_type": "unknown",
+  "primary_goal": "UNKNOWN",
+  "target_user_or_audience": "UNKNOWN",
+  "primary_deliverables": ["UNKNOWN"],
+  "non_goals": ["UNKNOWN"],
+  "quality_bar": "UNKNOWN",
+  "default_quality_mode": "stability",
+  "first_sharp_deep_slice": "UNKNOWN",
+  "domain_risks": ["UNKNOWN"],
+  "required_surfaces": ["UNKNOWN"],
+  "forbidden_shortcuts": ["UNKNOWN"],
+  "known_constraints": ["UNKNOWN"],
+  "budget_or_plan_availability": "UNKNOWN",
+  "human_taste_decisions": ["UNKNOWN"],
+  "compliance_profile": "not_selected",
+  "workstream_profile_path": "harness/shared/WORKSTREAM_PROFILE.json",
+  "initial_team_topology_path": "harness/shared/TEAM_TOPOLOGY.md",
+  "initial_feature_state_path": "feature_list.json",
+  "created_from_inputs": {
+    "prior_information_and_constraints": "UNKNOWN",
+    "project_goal": "UNKNOWN"
+  }
+}

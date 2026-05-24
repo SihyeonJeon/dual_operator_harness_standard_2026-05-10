@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/observability-event.schema.json",
+  "title": "Observability Event",
+  "type": "object",
+  "required": ["event_id", "trace_id", "task_id", "actor", "actor_type", "event_type", "timestamp", "verdict", "evidence_path"],
+  "properties": {
+    "event_id": {"type": "string"},
+    "trace_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "slice_id": {"type": "string"},
+    "parent_event_id": {"type": "string"},
+    "actor": {"type": "string"},
+    "actor_type": {
+      "enum": ["human", "operator", "worker", "evaluator", "hook", "mcp_server", "cloud_lane", "scaffolder"]
+    },
+    "actor_session_id": {"type": "string"},
+    "worker_id": {"type": "string"},
+    "part_id": {"type": "string"},
+    "event_type": {"type": "string"},
+    "timestamp": {"type": "string"},
+    "status": {"type": "string"},
+    "verdict": {"enum": ["PASS", "WARN", "FAIL", "NOT-RUN", "NONE"]},
+    "model": {"type": "string"},
+    "effort": {"type": "string"},
+    "tool": {"type": "string"},
+    "evidence_path": {"type": "string"},
+    "evidence_paths": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "decision_id": {"type": "string"},
+    "redaction": {"type": "string"},
+    "summary": {"type": "string"}
+  }
+}

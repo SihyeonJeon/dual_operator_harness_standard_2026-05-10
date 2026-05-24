@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/tool-registry.schema.json",
+  "title": "Tool Registry",
+  "type": "object",
+  "required": ["tools"],
+  "properties": {
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "owner",
+          "description",
+          "input_schema",
+          "output_schema",
+          "side_effect_class",
+          "approval",
+          "timeout_seconds",
+          "retry_policy",
+          "idempotency",
+          "auth_scopes",
+          "output_trust_level",
+          "audit_event"
+        ],
+        "properties": {
+          "side_effect_class": {
+            "enum": ["none", "read_only", "write_fs", "shell_mutating", "network_write", "secret_access", "merge_deploy", "external_action"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "claude_code_runner",
+  "status": "UNVERIFIED",
+  "surface": "claude-code",
+  "allowed_tools": ["read_project_files", "write_owned_files", "append_observability_event"],
+  "network_default": "DENIED",
+  "budget": "project_defined",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "kill_procedure": "stop Claude Code task session",
+  "notes": "Generated Claude Code runner view. It does not outrank Codex or canonical files."
+}

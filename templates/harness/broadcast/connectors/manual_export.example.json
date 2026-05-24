@@ -1,0 +1,16 @@
+{
+  "id": "manual_export_example",
+  "status": "AVAILABLE_LOCAL",
+  "type": "manual_copy_export",
+  "network_write_default": "DENIED",
+  "requires_human_approval": true,
+  "requires_smoke_evidence": false,
+  "input_artifacts": [
+    "harness/broadcast/drafts/",
+    "harness/broadcast/DRAFT_QUEUE.md"
+  ],
+  "output_record": "harness/broadcast/PUBLISHED_LEDGER.jsonl",
+  "redaction_required": true,
+  "implementation_location": "none",
+  "notes": "Local draft export only. The human decides whether and where to publish outside the harness."
+}

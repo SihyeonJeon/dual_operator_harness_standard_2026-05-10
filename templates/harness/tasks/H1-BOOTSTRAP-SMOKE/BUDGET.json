@@ -1,0 +1,14 @@
+{
+  "task_id": "H1-BOOTSTRAP-SMOKE",
+  "token_cap": "local_only",
+  "time_cap_minutes": 20,
+  "cost_cap_usd": 0,
+  "warning_threshold_percent": 80,
+  "kill_threshold_percent": 100,
+  "kill_procedure": "Stop bootstrap validation and record a blocker in harness/events/events.jsonl.",
+  "escalation": {
+    "operator_required": true,
+    "human_required_for_budget_increase": false,
+    "event_type": "budget.escalation_required"
+  }
+}

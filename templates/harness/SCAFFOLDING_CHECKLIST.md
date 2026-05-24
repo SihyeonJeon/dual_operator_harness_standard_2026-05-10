@@ -1,0 +1,55 @@
+# Scaffolding Checklist
+
+Use this before fixed operators begin H0 local smoke.
+
+- [ ] `PROJECT_PROFILE.json` exists.
+- [ ] Root `README.md` exists and contains Korean and English sections.
+- [ ] `IMPLEMENTER_HOOKS.md` and `IMPLEMENTER_HOOKS_RUN.json` exist.
+- [ ] `WORKSTREAM_PROFILE.json` exists and preserves planning, production, and evaluation lanes.
+- [ ] `DUAL_OPERATOR_PROTOCOL.md` exists and forbids forced consensus.
+- [ ] `PART_OWNERSHIP.md` exists and preserves part-owner worker sessions for the same part.
+- [ ] `PLUGIN_ROUTING.json` exists, caps active context plugins at four, and includes caveman.
+- [ ] `QUALITY_GATES.md` exists.
+- [ ] `VISUALIZATION_SPEC_POLICY.md` and `templates/VISUALIZATION_SPEC.md` exist.
+- [ ] Visualization production is blocked until a task-local spec is approved or marked not required.
+- [ ] `CHANNEL_RECORDS.md` exists and separates internal canonical records from external channel records.
+- [ ] `CONTEXT_PRESSURE.md` exists and defines context budget, compaction triggers, and context packs.
+- [ ] `broadcast/BROADCAST_POLICY.md`, `broadcast/DRAFT_QUEUE.md`, broadcast connectors, and `PUBLISHED_LEDGER.jsonl` exist.
+- [ ] Broadcast is draft-only until human approval, redaction, connector smoke evidence, and ledger records exist.
+- [ ] `reviewers/REVIEWER_POLICY.md`, reviewer adapters, and `REVIEW_LEDGER.jsonl` exist.
+- [ ] External reviewer output is evidence, not authority.
+- [ ] `mcp_server/` exists as a read-only `UNVERIFIED` context export.
+- [ ] `spec/SPEC_AUTOMATION_POLICY.md`, `spec/PRD_DRAFT.md`, and `spec/ANTI_PRD.md` exist.
+- [ ] Missing facts are represented as `UNKNOWN`.
+- [ ] Root `AGENTS.md` exists and routes "you are operator".
+- [ ] Root `.claude/settings.json`, `.claude/agents/`, `.claude/hooks/`, and `.claude/skills/` exist.
+- [ ] Claude Code adapters point to `harness/shared/` and team `TEAM_CONTEXT.md` rather than private memory.
+- [ ] Root `init.sh` exists and runs local harness checks.
+- [ ] Root `scripts/implementer_hooks.py` exists.
+- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `broadcast-draft`, `review-packet`, and `archive`.
+- [ ] Root `feature_list.json` exists and has behavior, verification, state, and evidence fields.
+- [ ] Root `progress.md` and `session-handoff.md` exist.
+- [ ] `ACTIVE_SNAPSHOT.md` includes open questions.
+- [ ] Both fixed operator `AGENT.md` files exist.
+- [ ] Both fixed operator `SKILLS.md` files exist.
+- [ ] Both fixed operators are configured as fixed persistent sessions.
+- [ ] Codex and Claude Code are equal fixed operators; `.claude/` does not override Codex.
+- [ ] Worker model/effort routing is task-difficulty-shaped.
+- [ ] Simple, well-specified delegated work can route to a configured routine worker session.
+- [ ] `ROLE_FILE_INDEX.md` exists.
+- [ ] `SESSION_CONTINUITY.md` exists.
+- [ ] `SHARP_DEEP_EXECUTION.md` exists.
+- [ ] `REGULATION_EVOLUTION.md` exists.
+- [ ] `WORKER_SESSION_REGISTRY.json` exists.
+- [ ] Each team has `AGENT.md`, `SKILLS.md`, and `TEAM_CONTEXT.md`.
+- [ ] `COUNCIL_MCP.md` exists and marks council as advisory.
+- [ ] `runtime/REMOTE_OPERATION_POLICY.md` exists and denies unrestricted remote terminal/mobile/cloud operation.
+- [ ] `MCP_TRUST.json` exists.
+- [ ] `TOOL_REGISTRY.json` exists.
+- [ ] `PERMISSION_POLICY.json` fails closed.
+- [ ] H0 local smoke blueprint exists.
+- [ ] H1 bootstrap restart smoke blueprint exists.
+- [ ] F0 planning runway and slice gate blueprint exists.
+- [ ] Doctor/linter has been run or is explicitly `NOT-RUN` with reason.
+- [ ] Local `schemas/` are copied into the target project.
+- [ ] No production work has started.

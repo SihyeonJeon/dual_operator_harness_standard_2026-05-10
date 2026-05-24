@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "pre_scaffold": {
+    "status": "UNKNOWN",
+    "hook": "PreScaffoldGoalIntake",
+    "timestamp": "UNKNOWN"
+  },
+  "intake_validate": {
+    "status": "UNKNOWN",
+    "hook": "IntakeValidate",
+    "timestamp": "UNKNOWN"
+  },
+  "profile_derive_audit": {
+    "status": "UNKNOWN",
+    "hook": "ProfileDeriveAudit",
+    "timestamp": "UNKNOWN"
+  },
+  "adoption_mode_select": {
+    "status": "UNKNOWN",
+    "hook": "AdoptionModeSelect",
+    "timestamp": "UNKNOWN"
+  },
+  "domain_pack_select": {
+    "status": "UNKNOWN",
+    "hook": "DomainPackSelect",
+    "timestamp": "UNKNOWN"
+  },
+  "post_scaffold": {
+    "status": "UNKNOWN",
+    "hook": "PostScaffoldValidation",
+    "timestamp": "UNKNOWN"
+  },
+  "handoff_complete": {
+    "status": "UNKNOWN",
+    "hook": "HandoffComplete",
+    "timestamp": "UNKNOWN"
+  }
+}

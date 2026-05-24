@@ -1,0 +1,12 @@
+{
+  "id": "codex_runner",
+  "status": "UNVERIFIED",
+  "surface": "codex-cli",
+  "allowed_tools": ["read_project_files", "write_owned_files", "append_observability_event"],
+  "network_default": "DENIED",
+  "budget": "project_defined",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "kill_procedure": "stop Codex task session",
+  "notes": "Codex-compatible runner view for bounded worker tasks and operator peer review."
+}

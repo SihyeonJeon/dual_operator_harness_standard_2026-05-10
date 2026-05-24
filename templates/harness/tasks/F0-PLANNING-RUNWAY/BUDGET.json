@@ -1,0 +1,14 @@
+{
+  "task_id": "F0-PLANNING-RUNWAY",
+  "token_cap": "project_defined_before_dispatch",
+  "time_cap_minutes": 180,
+  "cost_cap_usd": "project_defined_before_dispatch",
+  "warning_threshold_percent": 80,
+  "kill_threshold_percent": 100,
+  "kill_procedure": "Stop worker dispatch, summarize current planning state, and escalate to fixed operators.",
+  "escalation": {
+    "operator_required": true,
+    "human_required_for_budget_increase": true,
+    "event_type": "budget.escalation_required"
+  }
+}

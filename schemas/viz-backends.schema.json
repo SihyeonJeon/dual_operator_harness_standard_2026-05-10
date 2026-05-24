@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/viz-backends.schema.json",
+  "title": "Visualization Backends",
+  "type": "object",
+  "required": ["version", "default_backend", "selection_policy", "backends"],
+  "properties": {
+    "version": {"type": "string"},
+    "default_backend": {"type": "string"},
+    "selection_policy": {
+      "type": "object",
+      "required": [
+        "task_local_visualization_spec_required",
+        "claude_owns_visual_information_architecture",
+        "codex_owns_bitmap_image_generation",
+        "codex_may_implement_deterministic_event_plumbing",
+        "external_backend_requires_human_selection",
+        "external_backend_requires_smoke_evidence",
+        "canonical_memory_remains_files"
+      ],
+      "properties": {
+        "task_local_visualization_spec_required": {"type": "boolean"},
+        "claude_owns_visual_information_architecture": {"type": "boolean"},
+        "codex_owns_bitmap_image_generation": {"type": "boolean"},
+        "codex_may_implement_deterministic_event_plumbing": {"type": "boolean"},
+        "external_backend_requires_human_selection": {"type": "boolean"},
+        "external_backend_requires_smoke_evidence": {"type": "boolean"},
+        "canonical_memory_remains_files": {"type": "boolean"}
+      }
+    },
+    "backends": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "mode",
+          "description",
+          "network_write_default",
+          "requires_human_approval",
+          "requires_credentials",
+          "adapter_descriptor",
+          "smoke_evidence_path"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"type": "string"},
+          "mode": {"type": "string"},
+          "description": {"type": "string"},
+          "output_dir": {"type": "string"},
+          "network_write_default": {"type": "string"},
+          "requires_human_approval": {"type": "boolean"},
+          "requires_credentials": {"type": "boolean"},
+          "adapter_descriptor": {"type": "string"},
+          "smoke_evidence_path": {"type": "string"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "mcp_servers": [
+    {
+      "id": "council",
+      "command": "UNKNOWN_COUNCIL_MCP_COMMAND",
+      "args": [
+        "UNKNOWN_COUNCIL_MCP_SERVER",
+        "--project-root",
+        "{{PROJECT_ROOT}}"
+      ],
+      "transport": "stdio",
+      "owner": "human",
+      "trust_level": "advisory_operator_council",
+      "allowed_tools": [
+        "project_info",
+        "list_operators",
+        "convene_external",
+        "continue_external",
+        "conclude_external",
+        "reset_operator",
+        "internal_meeting_guide"
+      ],
+      "data_exposure": "project_root, council agenda, operator positions, transcript summaries",
+      "approval_status": "UNVERIFIED",
+      "notes": "Use only after project_info confirms project_root and H1 council smoke passes. Council MCP is advisory only."
+    }
+  ],
+  "policy": {
+    "default_status": "UNVERIFIED",
+    "first_time_stdio_spawn": "explicit_human_approval_required",
+    "local_server_sandbox": "required_when_available",
+    "remote_authorization": "audience_bound_scoped_tokens",
+    "schema_integrity": "hash_or_signature_required_for_standard_full_mode",
+    "context_sharing": "minimum_necessary",
+    "read_only_context": true,
+    "threat_model": [
+      "prompt_injection",
+      "tool_poisoning",
+      "context_exfiltration",
+      "stale_or_unsigned_schema"
+    ],
+    "write_authority": "denied_by_default",
+    "canonical_memory_rule": "MCP output is advisory until summarized into harness/shared or task artifacts"
+  }
+}

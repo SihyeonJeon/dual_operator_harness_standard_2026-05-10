@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/harness-config.schema.json",
+  "title": "Harness Config",
+  "type": "object",
+  "required": ["harness", "operators", "workers", "quotas"],
+  "properties": {
+    "harness": {
+      "type": "object",
+      "required": ["version", "mode", "canonical_root"],
+      "properties": {
+        "mode": {"enum": ["lite", "standard", "full"]}
+      }
+    },
+    "operators": {
+      "type": "object",
+      "required": ["claude_code", "codex"]
+    },
+    "workers": {
+      "type": "object",
+      "required": ["session_policy", "model_policy", "team_count_policy"]
+    },
+    "quotas": {"type": "object"}
+  }
+}

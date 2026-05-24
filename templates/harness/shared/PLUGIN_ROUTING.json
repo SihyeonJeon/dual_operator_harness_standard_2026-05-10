@@ -1,0 +1,47 @@
+{
+  "policy": {
+    "purpose": "token_saving_and_context_selection",
+    "max_active_context_plugins": 4,
+    "authority": "advisory_context_only",
+    "all_plugins_start_unverified": true,
+    "activation": "operator_selects_smallest_verified_plugin_set_per_task",
+    "no_private_memory_authority": true,
+    "record_outputs_to": [
+      "harness/tasks/{task_id}/",
+      "harness/shared/CONTEXT.md",
+      "harness/shared/MEMORY.md",
+      "harness/teams/{team}/TEAM_CONTEXT.md"
+    ]
+  },
+  "preferred_plugin_slots": [
+    {
+      "slot": "context_compression",
+      "preferred_plugin": "caveman",
+      "status": "UNVERIFIED",
+      "purpose": "compress or summarize large context before loading it into operator or worker sessions",
+      "must_not_do": "replace canonical file-backed memory"
+    },
+    {
+      "slot": "repo_or_artifact_index",
+      "preferred_plugin": "UNKNOWN",
+      "status": "UNVERIFIED",
+      "purpose": "find relevant files and artifacts without loading the whole repository",
+      "must_not_do": "make unverified architectural claims"
+    },
+    {
+      "slot": "evidence_or_test_summary",
+      "preferred_plugin": "UNKNOWN",
+      "status": "UNVERIFIED",
+      "purpose": "summarize logs, test output, screenshots, traces, or evaluation packets",
+      "must_not_do": "turn NOT-RUN gates into PASS"
+    },
+    {
+      "slot": "domain_or_reference_retrieval",
+      "preferred_plugin": "UNKNOWN",
+      "status": "UNVERIFIED",
+      "purpose": "retrieve bounded external or domain context when approved",
+      "must_not_do": "bypass source provenance, compliance, privacy, or human approval gates"
+    }
+  ]
+}
+

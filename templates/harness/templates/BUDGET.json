@@ -1,0 +1,14 @@
+{
+  "task_id": "UNKNOWN",
+  "token_cap": "UNKNOWN",
+  "time_cap_minutes": "UNKNOWN",
+  "cost_cap_usd": "UNKNOWN",
+  "warning_threshold_percent": 80,
+  "kill_threshold_percent": 100,
+  "kill_procedure": "Use the runner kill procedure and record operator escalation in harness/events/events.jsonl.",
+  "escalation": {
+    "operator_required": true,
+    "human_required_for_budget_increase": true,
+    "event_type": "budget.escalation_required"
+  }
+}

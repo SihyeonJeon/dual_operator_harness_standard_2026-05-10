@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/permission-policy.schema.json",
+  "title": "Permission Policy",
+  "type": "object",
+  "required": ["default", "classes", "always_deny_without_incident_approval"],
+  "properties": {
+    "default": {"enum": ["fail_closed"]},
+    "classes": {"type": "object"},
+    "always_deny_without_incident_approval": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

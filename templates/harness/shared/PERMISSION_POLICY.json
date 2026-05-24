@@ -1,0 +1,49 @@
+{
+  "default": "fail_closed",
+  "classes": {
+    "read_fs": {
+      "default": "allow_scoped",
+      "approval": "not_required"
+    },
+    "write_fs": {
+      "default": "deny_unless_owned",
+      "approval": "task_scope_required"
+    },
+    "shell_read": {
+      "default": "allow_scoped",
+      "approval": "not_required"
+    },
+    "shell_mutating": {
+      "default": "prompt",
+      "approval": "human_or_policy"
+    },
+    "network_read": {
+      "default": "prompt_or_allowlisted",
+      "approval": "policy"
+    },
+    "network_write": {
+      "default": "deny",
+      "approval": "explicit_human"
+    },
+    "secret_access": {
+      "default": "deny",
+      "approval": "explicit_human"
+    },
+    "mcp_stdio_spawn": {
+      "default": "prompt_allowlist",
+      "approval": "explicit_human"
+    },
+    "merge_deploy": {
+      "default": "deny",
+      "approval": "risk_tier_human"
+    }
+  },
+  "always_deny_without_incident_approval": [
+    "destructive_repository_reset",
+    "force_push",
+    "recursive_delete_outside_owned_generated_artifacts",
+    "unreviewed_install_pipe",
+    "secret_file_read",
+    "worker_merge_deploy"
+  ]
+}

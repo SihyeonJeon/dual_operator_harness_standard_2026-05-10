@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Implementer Hooks Run",
+  "type": "object",
+  "required": [
+    "version",
+    "pre_scaffold",
+    "intake_validate",
+    "profile_derive_audit",
+    "adoption_mode_select",
+    "domain_pack_select",
+    "post_scaffold",
+    "handoff_complete"
+  ],
+  "properties": {
+    "version": {"type": "string"},
+    "pre_scaffold": {"$ref": "#/$defs/hook_entry"},
+    "intake_validate": {"$ref": "#/$defs/hook_entry"},
+    "profile_derive_audit": {"$ref": "#/$defs/hook_entry"},
+    "adoption_mode_select": {"$ref": "#/$defs/hook_entry"},
+    "domain_pack_select": {"$ref": "#/$defs/hook_entry"},
+    "post_scaffold": {"$ref": "#/$defs/hook_entry"},
+    "handoff_complete": {"$ref": "#/$defs/hook_entry"}
+  },
+  "$defs": {
+    "hook_entry": {
+      "type": "object",
+      "required": ["status", "hook"],
+      "properties": {
+        "status": {"type": "string"},
+        "hook": {"type": "string"},
+        "timestamp": {"type": "string"},
+        "output": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

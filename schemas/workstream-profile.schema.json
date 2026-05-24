@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/workstream-profile.schema.json",
+  "title": "Workstream Profile",
+  "type": "object",
+  "required": [
+    "version",
+    "project_goal",
+    "primary_workstream",
+    "detected_workstreams",
+    "risk_tier",
+    "team_topology",
+    "operator_boundary",
+    "required_loop",
+    "initial_feature_seeds",
+    "open_questions"
+  ],
+  "properties": {
+    "version": {"type": "string"},
+    "project_goal": {"type": "string"},
+    "primary_workstream": {"type": "string"},
+    "detected_workstreams": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "risk_tier": {},
+    "risk_flags": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "team_topology": {
+      "type": "object",
+      "required": [
+        "selection_policy",
+        "fixed_operators",
+        "always_present_teams",
+        "conditional_teams",
+        "team_activation_notes",
+        "recommended_initial_topology"
+      ]
+    },
+    "operator_boundary": {
+      "type": "object",
+      "required": ["operators_do", "operators_do_not"]
+    },
+    "required_loop": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "initial_feature_seeds": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

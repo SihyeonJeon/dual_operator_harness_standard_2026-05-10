@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "default_backend": "local_file",
+  "selection_policy": {
+    "task_local_visualization_spec_required": true,
+    "claude_owns_visual_information_architecture": true,
+    "codex_owns_bitmap_image_generation": true,
+    "codex_may_implement_deterministic_event_plumbing": true,
+    "external_backend_requires_human_selection": true,
+    "external_backend_requires_smoke_evidence": true,
+    "canonical_memory_remains_files": true
+  },
+  "backends": [
+    {
+      "id": "local_file",
+      "status": "VERIFIED_LOCAL",
+      "mode": "local_file",
+      "description": "Sanitized file export from harness/events/events.jsonl to harness/reports/viz/ without network writes.",
+      "output_dir": "harness/reports/viz",
+      "network_write_default": "DENIED",
+      "requires_human_approval": false,
+      "requires_credentials": false,
+      "adapter_descriptor": "harness/viz/adapters/local_file.json",
+      "smoke_evidence_path": "harness/reports/viz/summary.json"
+    },
+    {
+      "id": "external_viz_backend",
+      "status": "UNVERIFIED",
+      "mode": "worker_adapter_required",
+      "description": "Provider-neutral placeholder for a project-selected external visualization backend.",
+      "output_dir": "UNKNOWN",
+      "network_write_default": "DENIED",
+      "requires_human_approval": true,
+      "requires_credentials": true,
+      "adapter_descriptor": "harness/viz/adapters/WORKER_ADAPTER_BRIEF.md",
+      "smoke_evidence_path": "UNKNOWN"
+    }
+  ]
+}

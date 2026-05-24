@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "status": "UNVERIFIED",
+  "authority": "advisory_until_summarized",
+  "default_backend": "file_backed_search",
+  "candidate_backends": [
+    {
+      "id": "file_backed_search",
+      "type": "local_files",
+      "status": "AVAILABLE",
+      "index_path": "harness/shared/",
+      "notes": "Default portable fallback. Search canonical files directly."
+    },
+    {
+      "id": "vector_index_example",
+      "type": "vector_index",
+      "status": "UNVERIFIED",
+      "index_path": "harness/memory/vector_index",
+      "embedding_model": "UNKNOWN",
+      "notes": "Provider-neutral optional RAG backend after project-specific smoke."
+    },
+    {
+      "id": "graph_index_example",
+      "type": "graph_index",
+      "status": "UNVERIFIED",
+      "index_path": "harness/memory/graph_index",
+      "embedding_model": "UNKNOWN",
+      "notes": "Provider-neutral optional graph backend for decision and dependency relations."
+    }
+  ],
+  "mcp_export_endpoint": "harness/mcp_server/server.py",
+  "rules": {
+    "index_external_channel_records_by_default": false,
+    "external_records_require_operator_summary": true,
+    "private_plugin_memory_is_not_authority": true,
+    "retrieval_must_return_source_paths": true
+  }
+}

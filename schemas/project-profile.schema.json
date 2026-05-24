@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/project-profile.schema.json",
+  "title": "Project Profile",
+  "type": "object",
+  "required": [
+    "project_name",
+    "project_type",
+    "primary_goal",
+    "target_user_or_audience",
+    "primary_deliverables",
+    "non_goals",
+    "quality_bar",
+    "default_quality_mode",
+    "first_sharp_deep_slice",
+    "domain_risks",
+    "required_surfaces",
+    "forbidden_shortcuts",
+    "known_constraints",
+    "budget_or_plan_availability",
+    "human_taste_decisions",
+    "compliance_profile",
+    "workstream_profile_path",
+    "initial_team_topology_path",
+    "initial_feature_state_path",
+    "created_from_inputs"
+  ],
+  "properties": {
+    "project_type": {
+      "enum": ["software", "game", "video", "research", "writing", "design", "mixed", "other", "unknown"]
+    },
+    "default_quality_mode": {
+      "enum": ["stability", "creative-reframe", "mixed"]
+    }
+  }
+}

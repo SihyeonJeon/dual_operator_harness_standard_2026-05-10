@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "project_goal": "{{PROJECT_GOAL}}",
+  "state_machine": {
+    "states": ["not_started", "active", "blocked", "passing"],
+    "passing_requires": "verification_success_with_evidence",
+    "single_active_feature": true
+  },
+  "features": [
+    {
+      "id": "H0",
+      "name": "Harness scaffold doctor",
+      "behavior": "The generated harness has required shared context, operator roles, team roles, permission policy, and local validator.",
+      "dependencies": [],
+      "state": "active",
+      "verification": {
+        "command": "python3 scripts/validate_harness.py .",
+        "required": true
+      },
+      "evidence": "",
+      "owner": "fixed-operator",
+      "notes": "The scaffold script records the first doctor result in harness/SCAFFOLDING_REPORT.md."
+    },
+    {
+      "id": "H1",
+      "name": "Bootstrap restart path",
+      "behavior": "A fresh agent can start from repository files, run local harness checks, see current progress, and identify the next unresolved decision without chat history.",
+      "dependencies": ["H0"],
+      "state": "not_started",
+      "verification": {
+        "command": "./init.sh",
+        "required": true
+      },
+      "evidence": "",
+      "owner": "fixed-operator",
+      "notes": "Project-specific start/test/build commands remain UNKNOWN until planning records them."
+    },
+    {
+      "id": "F0-PLANNING-RUNWAY",
+      "name": "Planning runway and slice gate",
+      "behavior": "Fixed operators confirm the inferred workstream profile, run the planning/design runway, produce candidate slices, and approve one sharp/deep production slice only after upstream gates say it is executable.",
+      "dependencies": ["H1"],
+      "state": "not_started",
+      "verification": {
+        "command": "python3 scripts/validate_harness.py . && test -f harness/tasks/F0-PLANNING-RUNWAY/BLUEPRINT.md",
+        "required": true
+      },
+      "evidence": "",
+      "owner": "fixed-operator",
+      "notes": "This feature prevents goal-only scaffolds from locking the wrong first slice before planning, design, or evaluation can invalidate it."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "suite_id": "public_release_harness_scorecard",
+  "version": "1.0",
+  "description": "Public-safe 22-check scorecard derived from the generated-harness evaluation checklist. It validates core governance, local evidence, and disabled optional extension contracts without requiring private connectors or credentials.",
+  "cases": [
+    {
+      "id": "topology_dual_operator_dissent",
+      "name": "Dual operators are equal and dissent is preserved",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/DUAL_OPERATOR_PROTOCOL.md",
+      "terms": ["equal fixed operators", "Do not force consensus", "disagreement_human_required"]
+    },
+    {
+      "id": "operator_worker_boundary",
+      "name": "Operators stay separate from worker production",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/DUAL_OPERATOR_PROTOCOL.md",
+      "terms": ["Complementary Responsibilities", "These are defaults, not hierarchy", "Canonical operator memory"]
+    },
+    {
+      "id": "worker_session_isolation",
+      "name": "Part-owner worker sessions are isolated",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/PART_OWNERSHIP.md",
+      "terms": ["part-owner worker session", "not assigned unrelated parts", "bounded artifact summary"]
+    },
+    {
+      "id": "worker_scope_guard",
+      "name": "PreToolUse guard blocks unsafe and secret paths",
+      "type": "text_contains",
+      "severity": "required",
+      "path": ".claude/hooks/pre_tool_use_guard.py",
+      "terms": ["SECRET_MARKERS", "DANGEROUS_BASH_PATTERNS", "permissionDecision"]
+    },
+    {
+      "id": "planning_before_production",
+      "name": "PRD, anti-PRD, evaluator, and slice gates precede production",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/spec/SPEC_AUTOMATION_POLICY.md",
+      "terms": ["PRD draft", "anti-PRD", "evaluator critique", "approved active slice"]
+    },
+    {
+      "id": "anti_prd_failure_modes",
+      "name": "Anti-PRD records failure modes and unsafe shortcuts",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/spec/ANTI_PRD.md",
+      "terms": ["Likely Failure Modes", "Missing Assumptions", "Unsafe Shortcuts", "Verification Gaps"]
+    },
+    {
+      "id": "deterministic_eval_suite",
+      "name": "Deterministic local eval suite exists",
+      "type": "file_exists",
+      "severity": "required",
+      "path": "harness/evals/golden_suite.json"
+    },
+    {
+      "id": "cross_feedback_loop",
+      "name": "Feedback failures route to a single next action",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/QUALITY_GATES.md",
+      "terms": ["Feedback Loop", "Every `FAIL`", "planning", "evaluation"]
+    },
+    {
+      "id": "shared_memory_backend_contract",
+      "name": "Shared memory backend is file-backed with optional private extensions",
+      "type": "json_equals",
+      "severity": "required",
+      "path": "harness/shared/MEMORY_BACKEND.json",
+      "key": "default_backend",
+      "expected": "file_backed_search"
+    },
+    {
+      "id": "active_archive_context_pressure",
+      "name": "Active and archive workspaces are separated",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/WORKSPACE_LAYOUT.md",
+      "terms": ["Active Workspace", "Archive Workspace", "Seven-Day Rule", "bounded context pack"]
+    },
+    {
+      "id": "hook_lifecycle_registered",
+      "name": "SessionStart, PreToolUse, PostToolUse, TaskCompleted, and Stop hooks are registered",
+      "type": "text_contains",
+      "severity": "required",
+      "path": ".claude/settings.json",
+      "terms": ["SessionStart", "PreToolUse", "PostToolUse", "TaskCompleted", "Stop"]
+    },
+    {
+      "id": "post_tool_metadata_indexing",
+      "name": "PostToolUse hook indexes safe tool metadata",
+      "type": "text_contains",
+      "severity": "required",
+      "path": ".claude/hooks/post_tool_use_index.py",
+      "terms": ["hook.post_tool_use", "events.jsonl", "redacted"]
+    },
+    {
+      "id": "regulation_evolution_loop",
+      "name": "Success and failure patterns can update governance",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/REGULATION_EVOLUTION.md",
+      "terms": ["Evidence Required", "Rule Change Record", "Mandatory Post-Task Review"]
+    },
+    {
+      "id": "domain_free_file_backed_mcp_safe",
+      "name": "Domain-free file-backed governance and MCP trust boundary are present",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/MCP_TRUST.json",
+      "terms": ["read_only_context", "prompt_injection", "tool_poisoning"]
+    },
+    {
+      "id": "events_schema_valid",
+      "name": "Events.jsonl rows satisfy the public observability schema",
+      "type": "events_schema_valid",
+      "severity": "required",
+      "required_fields": ["event_id", "trace_id", "task_id", "actor", "actor_type", "event_type", "timestamp", "verdict", "evidence_path"]
+    },
+    {
+      "id": "viz_optional_renderer",
+      "name": "Visualization is an optional local renderer over events",
+      "type": "json_equals",
+      "severity": "required",
+      "path": "harness/viz/VIZ_BACKENDS.json",
+      "key": "default_backend",
+      "expected": "local_file"
+    },
+    {
+      "id": "broadcast_draft_gate",
+      "name": "Broadcast is draft-only and approval gated",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/broadcast/BROADCAST_POLICY.md",
+      "terms": ["Automatic external publish is denied", "human approval", "project-private overlay"]
+    },
+    {
+      "id": "external_reviewer_evidence_only",
+      "name": "External reviewer output is evidence only",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/reviewers/REVIEWER_POLICY.md",
+      "terms": ["evidence, not authority", "No forced consensus", "redact sensitive data"]
+    },
+    {
+      "id": "mcp_readonly_export",
+      "name": "MCP export is read-only and exposes four smoke-testable tools",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/mcp_server/MANIFEST.json",
+      "terms": ["search_past_decisions", "get_capability_status", "get_current_task", "list_open_questions"]
+    },
+    {
+      "id": "verified_evidence_integrity",
+      "name": "VERIFIED surfaces require real evidence and optional extensions stay honest",
+      "type": "verified_evidence_integrity",
+      "severity": "required"
+    },
+    {
+      "id": "budget_caps_defined",
+      "name": "Tasks carry budget caps and kill procedure",
+      "type": "json_has_key",
+      "severity": "required",
+      "path": "harness/tasks/F0-PLANNING-RUNWAY/BUDGET.json",
+      "key": "kill_procedure"
+    },
+    {
+      "id": "recovery_restart_path",
+      "name": "Failure recovery uses checkpoints and restart files",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/SESSION_CONTINUITY.md",
+      "terms": ["restart path", "last checkpoint", "resume status"]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/feature-list.schema.json",
+  "title": "Feature List",
+  "type": "object",
+  "required": ["version", "project_goal", "state_machine", "features"],
+  "properties": {
+    "version": {"type": "string"},
+    "project_goal": {"type": "string"},
+    "state_machine": {
+      "type": "object",
+      "required": ["states", "passing_requires", "single_active_feature"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": {"enum": ["not_started", "active", "blocked", "passing"]}
+        },
+        "passing_requires": {"type": "string"},
+        "single_active_feature": {"type": "boolean"}
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "behavior",
+          "dependencies",
+          "state",
+          "verification",
+          "evidence",
+          "owner",
+          "notes"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "behavior": {"type": "string"},
+          "dependencies": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "state": {"enum": ["not_started", "active", "blocked", "passing"]},
+          "verification": {
+            "type": "object",
+            "required": ["command", "required"],
+            "properties": {
+              "command": {"type": "string"},
+              "required": {"type": "boolean"}
+            }
+          },
+          "evidence": {"type": "string"},
+          "owner": {"type": "string"},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}

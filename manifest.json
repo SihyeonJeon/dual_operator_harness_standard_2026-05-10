@@ -1,0 +1,43 @@
+{
+  "name": "easy-orchestration-harness",
+  "schema_version": "2026-05-24",
+  "kind": "public_dual_operator_harness_generation_kit",
+  "entrypoints": [
+    "README.md",
+    "IMPLEMENTER.md",
+    "BOOTSTRAP.md",
+    "SPEC.md",
+    "docs/HARNESS_IMPLEMENTER_MANUAL.md",
+    "docs/OPERATOR_MANUAL.md",
+    "POLICY_LINTER.md"
+  ],
+  "executable_layers": [
+    "scripts",
+    "schemas",
+    "templates"
+  ],
+  "generated_project_entrypoints": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "feature_list.json",
+    "progress.md",
+    "session-handoff.md",
+    "harness/shared",
+    "harness/operators",
+    "harness/teams",
+    "harness/tasks"
+  ],
+  "integrity_commands": [
+    "python3 scripts/validate_kit.py",
+    "python3 scripts/validate_harness.py ."
+  ],
+  "normal_load_order": [
+    "IMPLEMENTER.md",
+    "BOOTSTRAP.md",
+    "SPEC.md",
+    "docs/HARNESS_IMPLEMENTER_MANUAL.md",
+    "docs/OPERATOR_MANUAL.md",
+    "POLICY_LINTER.md",
+    "manifest.json"
+  ]
+}

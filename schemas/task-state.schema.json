@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/task-state.schema.json",
+  "title": "Task State",
+  "type": "object",
+  "required": ["task_id", "slice_id", "status", "risk_tier", "owner", "evidence"],
+  "properties": {
+    "status": {"enum": ["IN_PROGRESS", "PENDING_CROSS_CHECK", "BLOCKED", "DONE"]},
+    "risk_tier": {"enum": [0, 1, 2, 3, 4]},
+    "evidence": {"type": "array"},
+    "pre_visualization_spec_gate": {
+      "type": "object",
+      "required": ["required", "status", "spec_path"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "status": {"enum": ["NOT_REQUIRED", "DRAFT", "APPROVED", "BLOCKED", "NOT-RUN"]},
+        "spec_path": {"type": "string"}
+      }
+    }
+  }
+}

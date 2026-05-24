@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/worker-session-registry.schema.json",
+  "title": "Worker Session Registry",
+  "type": "object",
+  "required": ["policy", "workers"],
+  "properties": {
+    "policy": {
+      "type": "object",
+      "required": [
+        "fixed_operator_sessions",
+        "worker_sessions_may_vary",
+        "resume_prior_worker_when_safe",
+        "replacement_requires_reason",
+        "part_owner_session_isolation",
+        "do_not_reuse_part_owner_for_unrelated_parts",
+        "part_reopen_prefers_prior_owner"
+      ]
+    },
+    "workers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "worker_id",
+          "part_id",
+          "part_scope",
+          "role",
+          "task_id",
+          "surface",
+          "session_handle",
+          "context_pack",
+          "owned_paths",
+          "no_touch_paths",
+          "last_checkpoint",
+          "resume_status",
+          "replacement_reason"
+        ]
+      }
+    }
+  }
+}

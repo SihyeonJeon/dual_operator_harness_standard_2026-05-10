@@ -1,0 +1,60 @@
+{
+  "harness": {
+    "version": "0.1.0",
+    "mode": "standard",
+    "canonical_root": "harness",
+    "source_standard": "easy-orchestration-harness"
+  },
+  "operators": {
+    "claude_code": {
+      "enabled": true,
+      "persistent": true,
+      "session_policy": "fixed_persistent",
+      "model_class": "highest_verified_available",
+      "reasoning_effort": "highest_verified_available",
+      "adapter": "claude-code",
+      "status": "UNVERIFIED"
+    },
+    "codex": {
+      "enabled": true,
+      "persistent": true,
+      "session_policy": "fixed_persistent",
+      "model_class": "highest_verified_available",
+      "reasoning_effort": "highest_verified_available",
+      "adapter": "codex-cli",
+      "status": "UNVERIFIED"
+    }
+  },
+  "workers": {
+    "session_policy": "task_shaped_resume_when_safe",
+    "model_policy": "lowest_verified_that_satisfies_gate",
+    "team_count_policy": "project_goal_and_task_shape"
+  },
+  "external_interfaces": {
+    "broadcast": {
+      "status": "UNVERIFIED",
+      "default_mode": "draft_only",
+      "publication_requires_human_approval": true
+    },
+    "reviewers": {
+      "status": "UNVERIFIED",
+      "authority": "evidence_only"
+    },
+    "mcp_server_export": {
+      "status": "UNVERIFIED",
+      "default_mode": "read_only"
+    }
+  },
+  "quotas": {
+    "per_task": {
+      "max_worker_spawns": 8,
+      "max_crosscheck_rounds": 3,
+      "max_wall_clock_minutes": 180
+    },
+    "per_vendor": {
+      "claude": "project-defined",
+      "openai": "project-defined",
+      "other": "project-defined"
+    }
+  }
+}

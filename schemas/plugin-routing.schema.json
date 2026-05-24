@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/plugin-routing.schema.json",
+  "title": "Plugin Routing",
+  "type": "object",
+  "required": ["policy", "preferred_plugin_slots"],
+  "properties": {
+    "policy": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "max_active_context_plugins",
+        "authority",
+        "all_plugins_start_unverified",
+        "activation",
+        "no_private_memory_authority",
+        "record_outputs_to"
+      ],
+      "properties": {
+        "max_active_context_plugins": {"type": "integer", "maximum": 4},
+        "all_plugins_start_unverified": {"type": "boolean"},
+        "no_private_memory_authority": {"type": "boolean"}
+      }
+    },
+    "preferred_plugin_slots": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["slot", "preferred_plugin", "status", "purpose", "must_not_do"]
+      }
+    }
+  }
+}

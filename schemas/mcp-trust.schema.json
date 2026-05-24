@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/mcp-trust.schema.json",
+  "title": "MCP Trust",
+  "type": "object",
+  "required": ["mcp_servers", "policy"],
+  "properties": {
+    "mcp_servers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "command", "args", "transport", "owner", "trust_level", "allowed_tools", "data_exposure", "approval_status"]
+      }
+    },
+    "policy": {"type": "object"}
+  }
+}
