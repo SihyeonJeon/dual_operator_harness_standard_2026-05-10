@@ -41,8 +41,8 @@ cd ../my-project
 python3 scripts/harnessctl.py report
 ```
 
-Then open your agent session in the generated project and use the operator entry
-phrase:
+Then open Claude Code, Codex, Cursor, or another agent session inside the
+generated project, let it read `AGENTS.md`, and send:
 
 ```text
 you are operator
@@ -86,30 +86,38 @@ project/
 | evals | local invariant and regression checks |
 | reports | static HTML views over canonical files |
 
-Workers can use lower-cost models when the task is routine. Operators stay on
-the strongest verified settings available for review, routing, and closure.
-Large work is split into parts, and the same part can return to the same worker
-session when that is safe.
+Workers can use lower-cost models when the task is routine. Operators should use
+the strongest model and effort settings you choose for review, routing, and
+closure. Large work is split into parts, and the same part can return to the
+same worker session when that is safe.
 
 ## Evidence
 
-### Recovery Fixture
+### Replay Recovery Benchmark
 
-This fixture measures restart readiness after an interrupted agent project. It
-does not measure model intelligence or final output quality.
+Deterministic repo-state assay: 5 task shapes x 3 runs. The generated harness
+is scaffolded from this public kit and initialized with `./init.sh` on every
+run.
+
+Measured scope: restart readiness after interruption. Not measured here: model
+intelligence, hosted runtime latency, or final artifact quality.
+
+The non-harness modes are reproducible baseline fixtures, not captured vendor
+sessions. Score formula: `0.6 * artifact coverage + 0.4 * fact coverage`.
 
 ```sh
 python3 benchmarks/replay_recovery/score.py --check-summary
 ```
 
-| run | recovery artifacts | recoverable facts | event count | score |
-| --- | ---: | ---: | ---: | ---: |
-| direct session | 1/10 | 1/8 | 0 | 0.11 |
-| generated harness | 10/10 | 7/8 | 7 | 0.95 |
+| mode | runs | artifact coverage | fact coverage | status report | event count | score |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| direct transcript | 15 | 0.100 | 0.125 | 0.000 | 0 | 0.110 |
+| ad-hoc loop | 15 | 0.500 | 0.500 | 0.000 | 0 | 0.500 |
+| generated harness | 15 | 1.000 | 0.875 | 1.000 | 7 | 0.950 |
 
-The generated harness leaves restart files, machine-readable state, evaluator
-output, event history, and a local status report. A direct transcript keeps much
-less recoverable state unless the human creates that structure manually.
+The generated harness is slower and heavier. The gain is durable project state:
+root state, team ownership, evaluator output, append-only events, status HTML,
+and a restart path that survives the original session.
 
 ### Website Example
 
@@ -130,7 +138,7 @@ I want to build a sunglasses boutique website
   </tr>
 </table>
 
-| metric | direct session | generated harness |
+| generated artifacts | direct session | generated harness |
 | --- | ---: | ---: |
 | site files | 3 | 8 |
 | generated bitmap assets | 0 | 5 |
@@ -138,9 +146,10 @@ I want to build a sunglasses boutique website
 | event records | 0 | 44 |
 | restart handoff | no | yes |
 
-These counts are process evidence, not a claim that every harness-produced site
-will be visually better. The screenshots show the artifact; the table shows the
-state left behind for review and restart.
+These counts are process evidence. More files are not automatically better, and
+this is not a claim that every harness-produced site will be visually better.
+The screenshots show the artifact; the table shows the state left behind for
+review and restart.
 
 <details>
   <summary>Full page and mobile captures</summary>
@@ -166,9 +175,12 @@ state left behind for review and restart.
   </table>
 </details>
 
-### Date Normalization Fixture
+### Date Normalization Regression
 
-This is a public regression fixture, not a hidden generalization benchmark.
+Challenge set: 36 public rows in
+`benchmarks/date_normalization/cases.jsonl`. Each row contains an input phrase,
+a reference date, locale assumptions, and the expected normalized date. This is
+a regression fixture, not a hidden generalization benchmark.
 
 ```sh
 python3 benchmarks/date_normalization/score.py --all --check-summary
@@ -181,8 +193,9 @@ python3 benchmarks/date_normalization/score.py --all --check-summary
 | harness after feedback | 36 | 100.0% | 0 |
 
 The first harness pass was worse. The useful behavior was the loop after
-failure: failed cases were routed back into the task, converted into regression
-coverage, and reflected in the kit rules.
+failure: failed cases were routed back into the same 36-row fixture, converted
+into regression coverage, and reflected in the kit rules. This proves regression
+capture, not generalization.
 
 ## Use When
 
@@ -216,7 +229,7 @@ coverage, and reflected in the kit rules.
 - [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
 - [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
 
-## Korean Summary
+## 한국어
 
 이 키트는 프로젝트 목표 하나를 받아 repo 안에 재개 가능한 agent 운영 구조를
 생성한다

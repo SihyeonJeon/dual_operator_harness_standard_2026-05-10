@@ -1,0 +1,32 @@
+[
+  {
+    "id": "web_boutique",
+    "goal": "Build a sunglasses boutique website with product cards, image assets, responsive layout, and a reviewable handoff",
+    "feature": "sunglasses_storefront",
+    "next_action": "resume storefront implementation from the product and layout checklist"
+  },
+  {
+    "id": "date_normalizer",
+    "goal": "Build a Korean date normalization CLI with ambiguous-date policy, regression cases, and evaluator output",
+    "feature": "date_normalization_cli",
+    "next_action": "continue from failed cases and update the regression fixture"
+  },
+  {
+    "id": "rag_gate",
+    "goal": "Design a RAG evidence gate for support answers with source requirements, refusal rules, and audit output",
+    "feature": "rag_answer_gate",
+    "next_action": "verify source coverage and refusal behavior before implementation"
+  },
+  {
+    "id": "incident_sop",
+    "goal": "Create an incident response SOP for a failed deployment with owner handoff, rollback checks, and postmortem rules",
+    "feature": "incident_response_sop",
+    "next_action": "resume at rollback evidence and owner assignment review"
+  },
+  {
+    "id": "research_packet",
+    "goal": "Produce a market research packet comparing agent project restartability claims with evidence table and caveats",
+    "feature": "restartability_research_packet",
+    "next_action": "resume source validation and claim hygiene review"
+  }
+]

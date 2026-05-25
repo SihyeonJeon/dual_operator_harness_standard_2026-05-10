@@ -33,6 +33,7 @@ ROOT_REQUIRED = [
     "benchmarks/date_normalization/predictions/harness_feedback_loop.jsonl",
     "benchmarks/replay_recovery/README.md",
     "benchmarks/replay_recovery/score.py",
+    "benchmarks/replay_recovery/tasks.json",
     "benchmarks/replay_recovery/expected_summary.json",
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
@@ -258,7 +259,7 @@ def main(argv: list[str]) -> int:
         ],
         root,
     )
-    summary["replay_recovery_fixture"] = json.loads(recovery.stdout)
+    summary["replay_recovery_benchmark"] = json.loads(recovery.stdout)["summary"]
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 

@@ -1,22 +1,34 @@
-# Replay Recovery Fixture
+# Replay Recovery Benchmark
 
-Small public fixture for measuring restart readiness after an interrupted agent
+Deterministic local benchmark for restart readiness after an interrupted agent
 project.
 
-This is not a model intelligence benchmark and not a full framework benchmark.
-It measures whether a run leaves enough file-backed state for another session to
-resume without reading the original chat.
+It measures whether another session can resume from files in the repo without
+reading the original chat. It does not measure model intelligence, hosted
+runtime latency, or final artifact quality.
 
-## What It Measures
+The non-harness modes are reproducible baseline fixtures, not captured vendor
+sessions. Score formula: `0.6 * artifact coverage + 0.4 * fact coverage`.
 
-- recovery artifacts present
-- recoverable project facts
-- event count
-- weighted recovery readiness score
+## Compared Modes
 
-The direct session fixture intentionally represents a normal chat transcript and
-partial artifact. The generated harness fixture is created from this public kit,
-then initialized with `./init.sh`.
+| mode | fixture |
+| --- | --- |
+| direct_transcript | transcript plus one partial artifact |
+| ad_hoc_loop | task json, state json, log, resume script |
+| generated_harness | public kit scaffold plus `./init.sh` |
+
+## Task Set
+
+`tasks.json` contains five project shapes:
+
+- website storefront
+- date normalization CLI
+- RAG evidence gate
+- incident response SOP
+- market research packet
+
+Default run size: 5 tasks x 3 runs = 15 runs per mode.
 
 ## Run
 
@@ -24,15 +36,24 @@ then initialized with `./init.sh`.
 python3 benchmarks/replay_recovery/score.py --check-summary
 ```
 
+Useful variants:
+
+```sh
+python3 benchmarks/replay_recovery/score.py --runs 10
+python3 benchmarks/replay_recovery/score.py --details --keep
+```
+
 ## Expected Summary
 
-| run | recovery artifacts | recoverable facts | event count | score |
-| --- | ---: | ---: | ---: | ---: |
-| direct_session | 1/10 | 1/8 | 0 | 0.11 |
-| generated_harness | 10/10 | 7/8 | 7 | 0.95 |
+| mode | runs | artifact coverage | fact coverage | status report | event count | score |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| direct_transcript | 15 | 0.100 | 0.125 | 0.000 | 0 | 0.110 |
+| ad_hoc_loop | 15 | 0.500 | 0.500 | 0.000 | 0 | 0.500 |
+| generated_harness | 15 | 1.000 | 0.875 | 1.000 | 7 | 0.950 |
 
 ## Limit
 
-The fixture compares restart state, not final output quality. Runtime frameworks
-with durable execution should be compared separately on latency, cost, and
-checkpoint semantics.
+The generated harness is intentionally heavier than the first two modes. The
+score rewards recoverable state, audit files, and resume evidence, not speed.
+Runtime frameworks with durable execution should be compared separately on
+checkpoint semantics, cost, latency, and hosted deployment behavior.
