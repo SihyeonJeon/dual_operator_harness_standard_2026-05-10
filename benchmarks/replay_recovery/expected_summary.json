@@ -1,0 +1,14 @@
+{
+  "direct_session": {
+    "event_count": 0,
+    "recoverable_facts": "1/8",
+    "recovery_artifacts": "1/10",
+    "recovery_readiness_score": 0.11
+  },
+  "generated_harness": {
+    "event_count": 7,
+    "recoverable_facts": "7/8",
+    "recovery_artifacts": "10/10",
+    "recovery_readiness_score": 0.95
+  }
+}

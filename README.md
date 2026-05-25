@@ -1,283 +1,29 @@
-# Dual Operator Multi Agent Orchestration Harness Kit
+# Easy Orchestration Harness
 
 [![CI](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml)
 
-프로젝트 목표 하나로 파일 기반 멀티 에이전트 하네스를 만드는 키트
+A file-backed harness generator for restartable agent projects
 
-Codex와 Claude를 동등한 고정 `operator`로 두고, 프로젝트마다 필요한 `planning`, `design`, `production`, `evaluation`, `review` 흐름을 생성한다
-
-웹사이트, 데이터 처리, 리서치, 운영 문서, 글쓰기처럼 결과물의 형태가 달라도 같은 방식으로 나누고, 검증하고, 다음 세션에서 이어갈 수 있게 만드는 것이 목적이다
-
-| 구분 | 직접 Codex Claude 세션 | LangGraph CrewAI 같은 런타임 | 이 키트 |
-| --- | --- | --- | --- |
-| 주 역할 | 산출물 생성 | agent graph와 runtime 실행 | 프로젝트별 운영 구조 생성 |
-| 계획 기록 | 대화 안에 남기 쉬움 | 직접 구현 필요 | PRD anti PRD 후보 slice 승인 기록 |
-| 작업 분리 | 사람이 계속 지시 | framework 코드로 구성 | operator team worker evaluator 파일 생성 |
-| 기억 | 세션 문맥 중심 | runtime memory 중심 | shared context team context task packet |
-| 검증 | 사람이 별도 추가 | framework별 tracing eval 연동 | validator eval event log status report |
-| 재시작 | 사람이 다시 설명 | checkpoint 구현 방식에 의존 | repo 파일만 읽고 operator 재개 |
-| 적합한 위치 | 빠른 단발 작업 | 제품 런타임과 durable execution | agent를 어떻게 나눠 굴릴지 정하는 governance layer |
-
-## 웹사이트 예시
-
-프롬프트
-
-```text
-선글라스 편집숍을 만들고 싶다
-```
-
-<table>
-  <tr>
-    <td width="50%"><strong>직접 Codex 세션</strong></td>
-    <td width="50%"><strong>Harness loop</strong></td>
-  </tr>
-  <tr>
-    <td><img src="assets/readme/sunglasses-codex-desktop.png" alt="Direct Codex sunglasses site screenshot"></td>
-    <td><img src="assets/readme/sunglasses-harness-desktop.png" alt="Harness generated sunglasses site screenshot"></td>
-  </tr>
-</table>
-
-<details>
-  <summary>전체 페이지와 모바일 캡처</summary>
-  <p>위 이미지는 같은 1440x1100 viewport의 첫 화면이다. 아래에는 전체 페이지와 모바일 캡처를 접어 두었다.</p>
-  <table>
-    <tr>
-      <td width="50%"><strong>Codex full page</strong></td>
-      <td width="50%"><strong>Harness full page</strong></td>
-    </tr>
-    <tr>
-      <td width="50%"><img src="assets/readme/sunglasses-codex-desktop-full.png" alt="Direct Codex full page sunglasses site screenshot"></td>
-      <td width="50%"><img src="assets/readme/sunglasses-harness-desktop-full.png" alt="Harness generated full page sunglasses site screenshot"></td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td width="50%"><strong>Codex mobile full page</strong></td>
-      <td width="50%"><strong>Harness mobile full page</strong></td>
-    </tr>
-    <tr>
-      <td width="50%"><img src="assets/readme/sunglasses-codex-mobile-full.png" alt="Direct Codex mobile full page sunglasses site screenshot"></td>
-      <td width="50%"><img src="assets/readme/sunglasses-harness-mobile-full.png" alt="Harness generated mobile full page sunglasses site screenshot"></td>
-    </tr>
-  </table>
-</details>
-
-| 항목 | 직접 Codex 세션 | Harness loop |
-| --- | ---: | ---: |
-| site files | 3 | 8 |
-| generated bitmap assets | 0 | 5 |
-| task evidence files | 1 README 중심 | 27 |
-| event records | 0 | 44 |
-| desktop and mobile screenshots | yes | yes |
-| operator closure record | no | yes |
-| restart handoff | no | yes |
-
-Codex도 빠르게 쓸 만한 정적 사이트를 만들었다. 하네스 쪽은 더 무겁지만 이미지 자산, 역할별 기록, 검증 근거, 재시작 파일까지 같이 남겼다. 포트폴리오나 팀 작업처럼 결과물만큼 과정의 재현성이 중요한 경우에 차이가 난다
-
-## 날짜 정규화 벤치마크
-
-프롬프트
-
-```text
-2026-05-25 월요일을 기준으로 한국어 업무 문장의 마감일 표현을 ISO 날짜로 정규화하는 offline CLI와 eval framework를 만든다
-```
-
-입출력
-
-- input JSONL `{id,text}`
-- output JSONL `{id,date}`
-- 오늘, 내일, 이번주 요일, 다음주 요일, 주 지칭 표현, 다음달 첫 영업일과 마지막 영업일, 월말, 분기말, N일 후, N주 후, 월 서수 요일, 명시적 날짜, 취소와 변경 표현 처리
-- 날짜를 확정할 수 없으면 `UNKNOWN`
-
-평가 기준
-
-- 같은 공개 평가 파일 `benchmarks/date_normalization/cases.jsonl`
-- 36개 한국어 업무 문장과 기대 ISO 날짜
-- 포함 표현 `내주`, `다다음 주`, `다음 달 말`, `분기 마지막 영업일`, `내일이 아니라 금요일`, `취소 후 재설정`, `요일 변경`, `6월 둘째 화요일`
-- 각 방식의 예측 파일은 `benchmarks/date_normalization/predictions/`
-- 이 36행은 공개 회귀 fixture이며 일반화 성능을 주장하는 hidden benchmark가 아님
-
-| 항목 | 직접 Codex 세션 | Harness 1차 | Harness 피드백 후 |
-| --- | ---: | ---: | ---: |
-| 공개 평가 파일 | 36 rows | 36 rows | 36 rows |
-| 정확도 | 83.3% | 72.2% | 100.0% |
-| 오류 수 | 6 | 10 | 0 |
-| 실패 케이스 회귀 테스트화 | no | no | yes |
-| 키트 규칙 수정 | no | no | yes |
-| 재현 명령 | yes | yes | yes |
-
-재현
-
-```sh
-python3 benchmarks/date_normalization/score.py --all --check-summary
-```
-
-1차 결과는 직접 Codex 세션보다 낮았다. 이 결과를 숨기지 않고 피드백 작업으로 열어 실패 케이스를 담당 규칙과 평가 파일에 반영했다. 그 뒤 공개 회귀 fixture 36개 기준 100%를 확인했고, deterministic 작업은 보이는 예시만으로 통과 처리하지 않는 규칙을 키트에 추가했다
-
-## 만들어지는 파일
-
-```text
-project/
-  AGENTS.md
-  CLAUDE.md
-  feature_list.json
-  progress.md
-  session-handoff.md
-  .claude/
-  harness/
-    operators/
-    teams/
-    shared/
-    tasks/
-    events/events.jsonl
-    evals/
-    reports/
-    viz/
-    runtime/
-    mcp_server/
-```
-
-## 작동 방식
-
-- `operator`는 검증된 모델 중 가장 강한 설정과 높은 reasoning effort 사용
-- `worker`는 작업 난이도에 맞춰 더 낮은 모델과 effort 사용
-- 작업을 큰 토막으로 나누고 같은 토막은 같은 worker 세션이 다시 맡도록 기록
-- worker마다 수정 가능한 파일과 수정 금지 파일을 분리
-- 기획 단계에서 후보 작업을 고른 뒤 좁고 깊게 진행
-- 내부 작업 기록과 로컬 리포트 뷰를 분리
-- deterministic 품질 주장은 별도 평가 파일, 독립 평가, 명시적 WARN 중 하나 필요
-- 실패와 반복 패턴은 failure ledger와 rule change log에 남김
-- Markdown 지시는 단독 권위가 아니라 hook, validator, event, task packet으로 확인
-
-## 시각화와 로컬 기록
-
-기본으로 제공되는 것
-
-- `harness/events/events.jsonl`
-- `python3 scripts/harnessctl.py report`
-- `python3 scripts/harnessctl.py viz-export --backend local_file`
-- `harness/reports/status.html`
-- `harness/reports/viz/summary.json`
-
-비로컬 backend 연동 전 정할 것
-
-- task-local `VISUALIZATION_SPEC.md`
-- 표시할 의사결정과 source artifacts
-- redaction 기준
-- update cadence
-- credential lifecycle
-- smoke evidence
-- operator review
-
-역할 기준
-
-- bitmap image, product photo, hero image, mock photograph는 Codex image generation 담당
-- diagram, timeline, dashboard information architecture는 Claude Code 담당
-- public kit에는 게시 draft queue, social connector, private review ledger를 넣지 않음
-- cloud runner, hosted viz, private RAG backend는 project overlay에서 연결
-
-## 설치
-
-```sh
-git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
-cd easy-orchestration-harness
-python3 scripts/validate_kit.py
-```
-
-benchmark 재현
-
-```sh
-python3 benchmarks/date_normalization/score.py --all --check-summary
-```
-
-프로젝트 하네스 생성
-
-```sh
-python3 scripts/scaffold_harness.py \
-  --target ../my-project \
-  --goal "사용자가 원하는 프로젝트 목표"
-```
-
-생성한 프로젝트에서 시작
-
-```sh
-cd ../my-project
-./init.sh
-python3 scripts/harnessctl.py report
-```
-
-operator 세션에서 입력
-
-```text
-you are operator
-```
-
-## 권장 사용처
-
-- 한 번의 답변보다 프로젝트 완수가 중요한 일
-- 여러 agent가 계획, 제작, 평가, 수정 루프를 나눠야 하는 일
-- 결과물뿐 아니라 판단 근거와 검증 기록이 필요한 일
-- 웹, 앱, 데이터, 연구, 보고서, 운영, 교육, 콘텐츠처럼 domain이 고정되지 않은 일
-
-## 비권장 사용처
-
-- 한 파일의 짧은 수정
-- 기록과 검증보다 속도가 중요한 일회성 작업
-- 이미 LangGraph, CrewAI, custom runtime 안에서 durable execution만 필요한 경우
-
-## 문서
-
-- [Comparative survey](docs/COMPARATIVE_SURVEY_2026-05-24.md)
-- [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
-- [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
-- [Harness implementer manual](docs/HARNESS_IMPLEMENTER_MANUAL.md)
-- [Operator manual](docs/OPERATOR_MANUAL.md)
-
-## In English
-
-Easy Orchestration Harness turns one project goal into a file-backed multi-agent harness
-
-It keeps Codex and Claude as equal fixed operators, then lays out the project files for planning, worker ownership, shared memory, evaluation, visualization policy, local record policy, and restartable operation
-
-It is not a replacement for LangGraph, CrewAI, OpenAI Agents SDK, Claude Code, or other runtimes. It is the governance and evidence layer around whichever agent runtime the project chooses
+It turns one project goal into a local harness with role files, shared state,
+event logs, eval fixtures, status reports, and restart instructions. The goal is
+not to replace LangGraph, CrewAI, OpenAI Agents SDK, Claude Code, or other agent
+runtimes. It gives those tools a project-level operating layer that survives
+after the chat window is gone.
 
 ## Why
 
-Direct agent sessions can produce strong outputs, but the operating history often stays inside chat
+Direct agent sessions can produce strong output, but project state often stays
+inside conversation memory.
 
-This kit makes the work inspectable
+This kit writes the operating state into the repo:
 
-- what was planned
-- what was rejected
-- which worker owned which path
-- what changed
+- what the project is trying to do
+- which files are canonical state
+- which worker owns which part
 - what was tested
-- what remains risky
-- how the next session resumes
-
-## Results
-
-Website demo
-
-| Metric | Direct Codex session | Harness loop |
-| --- | ---: | ---: |
-| site files | 3 | 8 |
-| generated bitmap assets | 0 | 5 |
-| task evidence files | 1 README focused | 27 |
-| event records | 0 | 44 |
-| operator closure records | no | yes |
-
-Date-normalization benchmark
-
-| Metric | Direct Codex session | Harness first pass | Harness after feedback |
-| --- | ---: | ---: | ---: |
-| public evaluation rows | 36 | 36 | 36 |
-| accuracy | 83.3% | 72.2% | 100.0% |
-| errors | 6 | 10 | 0 |
-| failures added as regression cases | no | no | yes |
-| rule changed | no | no | yes |
-
-The first harness result was not better. The useful behavior was the loop after failure. The 36 rows are a public regression fixture, not a hidden generalization benchmark. The failed cases were routed back into the task, converted into regression coverage, and then reflected in the kit rule
+- what failed
+- what changed because of the failure
+- how the next session should resume
 
 ## Quick Start
 
@@ -295,33 +41,192 @@ cd ../my-project
 python3 scripts/harnessctl.py report
 ```
 
-Then open an operator session and say
+Then open your agent session in the generated project and use the operator entry
+phrase:
 
 ```text
 you are operator
 ```
 
-Reproduce the benchmark table
+## What It Generates
+
+```text
+project/
+  AGENTS.md
+  CLAUDE.md
+  feature_list.json
+  progress.md
+  session-handoff.md
+  guide_for_human.md
+  scripts/
+    harnessctl.py
+    validate_harness.py
+  harness/
+    operators/
+    teams/
+    shared/
+    tasks/
+    events/events.jsonl
+    evals/
+    reports/status.html
+    viz/
+    runtime/
+    mcp_server/
+```
+
+## Operating Model
+
+| Layer | Purpose |
+| --- | --- |
+| root state | fresh sessions can start from files, not hidden chat memory |
+| operators | fixed review and orchestration roles |
+| teams | planning, design, production, evaluation lanes |
+| task packets | owned paths, no-touch paths, evidence requirements |
+| events | append-only task and gate history |
+| evals | local invariant and regression checks |
+| reports | static HTML views over canonical files |
+
+Workers can use lower-cost models when the task is routine. Operators stay on
+the strongest verified settings available for review, routing, and closure.
+Large work is split into parts, and the same part can return to the same worker
+session when that is safe.
+
+## Evidence
+
+### Recovery Fixture
+
+This fixture measures restart readiness after an interrupted agent project. It
+does not measure model intelligence or final output quality.
+
+```sh
+python3 benchmarks/replay_recovery/score.py --check-summary
+```
+
+| run | recovery artifacts | recoverable facts | event count | score |
+| --- | ---: | ---: | ---: | ---: |
+| direct session | 1/10 | 1/8 | 0 | 0.11 |
+| generated harness | 10/10 | 7/8 | 7 | 0.95 |
+
+The generated harness leaves restart files, machine-readable state, evaluator
+output, event history, and a local status report. A direct transcript keeps much
+less recoverable state unless the human creates that structure manually.
+
+### Website Example
+
+Prompt:
+
+```text
+I want to build a sunglasses boutique website
+```
+
+<table>
+  <tr>
+    <td width="50%"><strong>Direct agent session</strong></td>
+    <td width="50%"><strong>Generated harness loop</strong></td>
+  </tr>
+  <tr>
+    <td><img src="assets/readme/sunglasses-codex-desktop.png" alt="Direct agent sunglasses site screenshot"></td>
+    <td><img src="assets/readme/sunglasses-harness-desktop.png" alt="Harness generated sunglasses site screenshot"></td>
+  </tr>
+</table>
+
+| metric | direct session | generated harness |
+| --- | ---: | ---: |
+| site files | 3 | 8 |
+| generated bitmap assets | 0 | 5 |
+| task evidence files | 1 | 27 |
+| event records | 0 | 44 |
+| restart handoff | no | yes |
+
+These counts are process evidence, not a claim that every harness-produced site
+will be visually better. The screenshots show the artifact; the table shows the
+state left behind for review and restart.
+
+<details>
+  <summary>Full page and mobile captures</summary>
+  <table>
+    <tr>
+      <td width="50%"><strong>Direct full page</strong></td>
+      <td width="50%"><strong>Harness full page</strong></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="assets/readme/sunglasses-codex-desktop-full.png" alt="Direct full page sunglasses site screenshot"></td>
+      <td width="50%"><img src="assets/readme/sunglasses-harness-desktop-full.png" alt="Harness generated full page sunglasses site screenshot"></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td width="50%"><strong>Direct mobile</strong></td>
+      <td width="50%"><strong>Harness mobile</strong></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="assets/readme/sunglasses-codex-mobile-full.png" alt="Direct mobile sunglasses site screenshot"></td>
+      <td width="50%"><img src="assets/readme/sunglasses-harness-mobile-full.png" alt="Harness generated mobile sunglasses site screenshot"></td>
+    </tr>
+  </table>
+</details>
+
+### Date Normalization Fixture
+
+This is a public regression fixture, not a hidden generalization benchmark.
 
 ```sh
 python3 benchmarks/date_normalization/score.py --all --check-summary
 ```
 
-## Extension Model
+| run | public fixture rows | accuracy | errors |
+| --- | ---: | ---: | ---: |
+| direct session | 36 | 83.3% | 6 |
+| harness first pass | 36 | 72.2% | 10 |
+| harness after feedback | 36 | 100.0% | 0 |
 
-Included by default
+The first harness pass was worse. The useful behavior was the loop after
+failure: failed cases were routed back into the task, converted into regression
+coverage, and reflected in the kit rules.
 
-- local events and status report
-- local visualization export
-- read-only MCP export
-- disabled cloud runner descriptors
-- file-backed memory and optional backend contracts
+## Use When
 
-Private or project overlay
+- the project is larger than one answer
+- multiple agents or sessions need shared state
+- work needs planning, production, evaluation, and handoff
+- failures should become reusable rules or eval cases
+- another session should be able to resume from the repo alone
 
-- cloud execution lanes
-- hosted visualization backends
-- vector or graph memory backends
-- credentials and account-specific policy
+## Do Not Use When
 
-The public kit does not scaffold account-specific posting, social channel logs, publication ledgers, or connector response logs
+- a one-file edit is enough
+- speed matters more than traceability
+- you already have durable execution and only need a runtime graph
+- you cannot afford the extra governance files
+
+## Limits
+
+- This is a harness generator, not a hosted orchestration service
+- It does not provide durable graph execution like a runtime framework
+- The public benchmarks are small reproducible fixtures, not broad industry
+  claims
+- Account-specific posting, hosted dashboards, cloud runners, credentials, and
+  private memory backends belong in project overlays
+
+## Docs
+
+- [Harness implementer manual](docs/HARNESS_IMPLEMENTER_MANUAL.md)
+- [Operator manual](docs/OPERATOR_MANUAL.md)
+- [Comparative survey](docs/COMPARATIVE_SURVEY_2026-05-24.md)
+- [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
+- [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
+
+## Korean Summary
+
+이 키트는 프로젝트 목표 하나를 받아 repo 안에 재개 가능한 agent 운영 구조를
+생성한다
+
+- 루트 상태 파일로 새 세션 재개
+- operator worker evaluator 역할 분리
+- shared context와 team context 기록
+- events jsonl과 status html 생성
+- 실패를 rule과 eval fixture로 되돌리는 루프
+- public kit에는 개인 계정 연결이나 게시 기록 기능을 포함하지 않음
+
+한 번의 답변보다 프로젝트 운영과 재개 가능성이 중요한 작업에 맞다. 단순한
+파일 수정이나 이미 충분한 runtime graph가 있는 프로젝트에는 과하다.

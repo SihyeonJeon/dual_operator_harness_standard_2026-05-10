@@ -31,6 +31,9 @@ ROOT_REQUIRED = [
     "benchmarks/date_normalization/predictions/codex_goal.jsonl",
     "benchmarks/date_normalization/predictions/harness_first_pass.jsonl",
     "benchmarks/date_normalization/predictions/harness_feedback_loop.jsonl",
+    "benchmarks/replay_recovery/README.md",
+    "benchmarks/replay_recovery/score.py",
+    "benchmarks/replay_recovery/expected_summary.json",
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
     "schemas/observability-event.schema.json",
@@ -233,6 +236,7 @@ def main(argv: list[str]) -> int:
             "scripts/validate_harness.py",
             "scripts/implementer_hooks.py",
             "benchmarks/date_normalization/score.py",
+            "benchmarks/replay_recovery/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
         ],
@@ -246,6 +250,15 @@ def main(argv: list[str]) -> int:
         "public_marker_scan": "PASS",
     }
     summary["date_normalization_benchmark"] = validate_benchmark(root)
+    recovery = run(
+        [
+            sys.executable,
+            "benchmarks/replay_recovery/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["replay_recovery_fixture"] = json.loads(recovery.stdout)
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 
