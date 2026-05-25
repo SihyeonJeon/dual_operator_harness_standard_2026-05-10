@@ -1,5 +1,7 @@
 # Easy Orchestration Harness
 
+[![CI](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml)
+
 Dual operator multi-agent orchestration harness architecture 생성 키트
 
 목표 하나를 프로젝트별 운영 하네스로 바꾸는 키트
@@ -109,6 +111,12 @@ Codex와 Claude를 동등한 고정 operator로 두고 planning, design, product
 | rule change produced | no | no | yes |
 | restart handoff | no | yes | yes |
 
+재현
+
+```sh
+python3 benchmarks/date_normalization/score.py --all --check-summary
+```
+
 해석
 
 - 초회 harness 결과는 direct Codex보다 낮았음
@@ -188,6 +196,12 @@ project/
 git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
 cd easy-orchestration-harness
 python3 scripts/validate_kit.py
+```
+
+benchmark 표 재현
+
+```sh
+python3 benchmarks/date_normalization/score.py --all --check-summary
 ```
 
 프로젝트 하네스 생성
@@ -310,6 +324,12 @@ Then open an operator session and say
 
 ```text
 you are operator
+```
+
+Reproduce the quantitative benchmark table
+
+```sh
+python3 benchmarks/date_normalization/score.py --all --check-summary
 ```
 
 ## Public Extension Model

@@ -23,6 +23,14 @@ ROOT_REQUIRED = [
     "scripts/scaffold_harness.py",
     "scripts/validate_harness.py",
     "scripts/implementer_hooks.py",
+    ".github/workflows/ci.yml",
+    "benchmarks/date_normalization/README.md",
+    "benchmarks/date_normalization/cases.jsonl",
+    "benchmarks/date_normalization/score.py",
+    "benchmarks/date_normalization/expected_summary.json",
+    "benchmarks/date_normalization/predictions/codex_goal.jsonl",
+    "benchmarks/date_normalization/predictions/harness_first_pass.jsonl",
+    "benchmarks/date_normalization/predictions/harness_feedback_loop.jsonl",
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
     "schemas/observability-event.schema.json",
@@ -173,6 +181,19 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     return summary
 
 
+def validate_benchmark(root: Path) -> dict[str, object]:
+    result = run(
+        [
+            sys.executable,
+            "benchmarks/date_normalization/score.py",
+            "--all",
+            "--check-summary",
+        ],
+        root,
+    )
+    return json.loads(result.stdout)
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=".", help="public kit root")
@@ -204,6 +225,7 @@ def main(argv: list[str]) -> int:
             "scripts/scaffold_harness.py",
             "scripts/validate_harness.py",
             "scripts/implementer_hooks.py",
+            "benchmarks/date_normalization/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
         ],
@@ -216,6 +238,7 @@ def main(argv: list[str]) -> int:
         "json_artifacts_checked": json_count,
         "public_marker_scan": "PASS",
     }
+    summary["date_normalization_benchmark"] = validate_benchmark(root)
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 

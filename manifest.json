@@ -14,7 +14,8 @@
   "executable_layers": [
     "scripts",
     "schemas",
-    "templates"
+    "templates",
+    "benchmarks"
   ],
   "generated_project_entrypoints": [
     "AGENTS.md",
