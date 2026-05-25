@@ -106,7 +106,7 @@ A generated harness MUST include:
 - `harness/shared/PLUGIN_ROUTING.json`
 - `harness/shared/QUALITY_GATES.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/OBSERVABILITY.md`
 - `harness/shared/CLEAN_STATE.md`
@@ -130,21 +130,10 @@ A generated harness MUST include:
 - `harness/templates/WORKER_BRIEF.json`
 - `harness/templates/EVALUATION_REPORT.md`
 - `harness/templates/VISUALIZATION_SPEC.md`
-- `harness/templates/BROADCAST_DRAFT.md`
-- `harness/templates/EXTERNAL_REVIEW_PACKET.md`
 - `harness/spec/INPUT_PACKET.md`
 - `harness/spec/SPEC_AUTOMATION_POLICY.md`
 - `harness/spec/PRD_DRAFT.md`
 - `harness/spec/ANTI_PRD.md`
-- `harness/broadcast/BROADCAST_POLICY.md`
-- `harness/broadcast/DRAFT_QUEUE.md`
-- `harness/broadcast/PUBLISHED_LEDGER.jsonl`
-- `harness/broadcast/connectors/generic_publication.example.json`
-- `harness/broadcast/connectors/manual_export.example.json`
-- `harness/reviewers/REVIEWER_POLICY.md`
-- `harness/reviewers/REVIEW_LEDGER.jsonl`
-- `harness/reviewers/adapters/ai_reviewer.example.json`
-- `harness/reviewers/adapters/human_reviewer.json`
 - `harness/mcp_server/README.md`
 - `harness/mcp_server/MANIFEST.json`
 - `harness/mcp_server/server.py`
@@ -195,18 +184,16 @@ A generated harness MUST include:
 - Raw command transcripts and full patch diffs are internal evidence, not public
   records. Public or human-facing summaries SHOULD use evidence paths,
   screenshots, counts, verdicts, and redacted summaries.
-- Broadcast drafts, publication ledgers, social responses, reviewer packets,
-  reviewer outputs, chat/mobile approvals, and external connector responses are
-  external-channel records. They are not canonical memory until an operator
-  summarizes and disposes the relevant evidence in internal records.
+- Private overlay connector responses, chat/mobile approvals, raw transcripts,
+  and long logs are not canonical memory until an operator summarizes the
+  decision or risk into internal records.
 - Operators receive completed work packets after planning, execution,
   debugging, evaluation, and cross-check. They do not micromanage coding or
   production work in the middle of the loop.
 - Operators SHOULD use `scripts/harnessctl.py` for local validation, event
   logging, dependency-free eval suites, local viz export, visualization spec
-  checks, broadcast draft creation, external review packet creation, and static
-  HTML status reports when available. The generated reports and external drafts
-  are compiled views or channel records, not canonical memory.
+  checks, task archive, and static HTML status reports when available. The
+  generated reports are compiled views, not canonical memory.
 - Visualization and diagram information architecture is Claude-owned. Codex or
   another deterministic worker MAY implement static report rendering and
   `events.jsonl` adapter plumbing after task-local Claude visualization review.
@@ -217,12 +204,6 @@ A generated harness MUST include:
 - Non-local visualization backends MUST remain `UNVERIFIED` until human backend
   selection, bounded policy, credential lifecycle records, smoke evidence, and
   operator review exist.
-- Operators MAY create external-facing drafts after task closure, but automatic
-  external publication is denied. Publication requires human approval, redaction,
-  connector smoke evidence, and a publication ledger entry.
-- Operators MAY request external AI or human review at phase boundaries.
-  Reviewer output is evidence, not authority, and must not force consensus or
-  bypass normal evaluation/human-review gates.
 - Operators may modify operator/team `AGENT.md`, `SKILLS.md`, shared policies,
   templates, schemas, and linter rules as governance work based on documented
   success/failure records, according to `REGULATION_EVOLUTION.md`.
@@ -346,7 +327,7 @@ feature state, progress, and operator routing work for a fresh session.
   development managers.
 - New or resumed worker sessions MUST reload the relevant role files listed in
   `ROLE_FILE_INDEX.md`.
-- Dashboard, timeline, graph, external evidence HTML, manager-view, live status UI, and
+- Dashboard, timeline, graph, local evidence HTML, manager-view, live status UI, and
   state-visualization work MUST NOT start until the task has an approved
   task-local `VISUALIZATION_SPEC.md` or an explicit not-required rationale.
   The spec must define purpose, audience, source artifacts, data contract,
@@ -393,11 +374,10 @@ Side-effecting tools MUST NOT run without an approval policy.
   transforms, eval frameworks, and benchmark-style quality claims, clean
   `PASS` or `passing` requires held-out/challenge eval evidence, independent
   evaluator evidence, or an explicit accepted `WARN`.
-- Hidden, held-out, external reviewer, or challenge eval failures arriving after
-  closure MUST reopen the work as a feedback slice. The external record must be
-  summarized into internal artifacts, accepted failures must route to the
-  responsible artifact, and reusable failures SHOULD become local regression
-  fixtures before closure is reasserted.
+- Hidden, held-out, independent evaluator, or challenge eval failures arriving
+  after closure MUST reopen the work as a feedback slice. Accepted failures must
+  route to the responsible artifact, and reusable failures SHOULD become local
+  regression fixtures before closure is reasserted.
 - Project-specific eval suites MAY be added after planning/evaluation defines
   deterministic checks. Specialized LLM/RAG/agent eval tools may be integrated
   as evidence producers, but their outputs are not canonical memory until
@@ -423,7 +403,8 @@ Side-effecting tools MUST NOT run without an approval policy.
 - Each team SHOULD have a `TEAM_CONTEXT.md` shared by workers in that team.
 - Context pressure MUST be managed with bounded context packs, compaction
   triggers, source-path summaries, part-owner isolation, and explicit separation
-  between internal canonical records and external-channel records.
+  between canonical project records, compiled local views, and private overlay
+  outputs.
 - Worker model and effort SHOULD be the lowest verified level that can satisfy
   the task gates.
 - Planning, spec-writing, evaluation, cross-check, and worker-brief generation

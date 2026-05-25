@@ -19,7 +19,7 @@ Operators may refine it through regulation rules and task evidence.
   relevant upstream team through a task artifact.
 - Visualization work adds a pre-production spec gate: planning/design must
   approve a task-local `VISUALIZATION_SPEC.md` before dashboard, timeline,
-  graph, external evidence HTML, manager-view, live status UI, or state-visualization
+  graph, local evidence HTML, manager-view, live status UI, or state-visualization
   production starts.
 - Visualization/diagram information architecture is Claude-owned. Codex or a
   deterministic worker may implement `events.jsonl` plumbing and adapters after

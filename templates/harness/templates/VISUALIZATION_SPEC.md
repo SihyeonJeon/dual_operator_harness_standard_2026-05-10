@@ -23,7 +23,7 @@ Primary viewer:
 
 Control surface:
 
-- read_only | approval_queue | incident_triage | external evidence | UNKNOWN
+- read_only | approval_queue | incident_triage | local evidence | UNKNOWN
 
 Visualization backend:
 
@@ -132,7 +132,7 @@ Credential requirements:
 - `events.jsonl` adapter behavior is dry-run or local-only unless human approval,
   bounded policy, credential lifecycle record, and smoke evidence exist.
 - Claude visualization/design review has approved the information architecture
-  for any dashboard, timeline, graph, external evidence view, manager view, or live
+  for any dashboard, timeline, graph, local evidence view, manager view, or live
   status UI.
 
 ## Approval

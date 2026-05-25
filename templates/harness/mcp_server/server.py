@@ -66,7 +66,7 @@ def canonical_search_paths(root: Path) -> list[Path]:
         harness / "shared" / "MEMORY.md",
         harness / "shared" / "FAILURE_LEDGER.md",
         harness / "shared" / "RULE_CHANGE_LOG.md",
-        harness / "shared" / "CHANNEL_RECORDS.md",
+        harness / "shared" / "RECORDS_POLICY.md",
         harness / "events" / "events.jsonl",
     ]
     for task_path in sorted((harness / "tasks").glob("*/BLUEPRINT.md")):

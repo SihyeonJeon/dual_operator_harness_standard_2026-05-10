@@ -15,7 +15,7 @@ Every task should define a bounded context pack:
 - excluded stale or unrelated files.
 
 Agents should not load long logs, old tasks, full archives, generated reports,
-or external-channel drafts unless they are needed for the current decision.
+or private overlay records unless they are needed for the current decision.
 Use `harness/shared/WORKSPACE_LAYOUT.md` for active/archive separation and
 `harness/shared/MEMORY_BACKEND.json` for retrieval backends.
 
@@ -27,7 +27,7 @@ Treat these as context-pressure warnings:
 - worker confusion about active part ownership;
 - operator relying on private chat memory over files;
 - multiple unrelated part-owner sessions mixed into one conversation;
-- external drafts treated as canonical memory;
+- private overlay records treated as canonical memory;
 - task closure that updates reports but not internal state;
 - large logs loaded without a query;
 - unresolved conflicts between `progress.md`, `ACTIVE_SNAPSHOT.md`, and
@@ -40,7 +40,7 @@ Compact before continuing when:
 - a task or phase closes;
 - a worker hands off or is replaced;
 - a part is reopened after a long pause;
-- event logs or review packets become too long for the current step;
+- event logs or evidence packets become too long for the current step;
 - operator context becomes dominated by stale history;
 - the next step needs a lower-tier worker that should not receive full
   operator context.
@@ -78,8 +78,8 @@ a high-context part-owner session for unrelated work just because it is already
 warm. If a prior owner is unavailable, load the recorded context pack and record
 the replacement reason in `WORKER_SESSION_REGISTRY.json`.
 
-## External Channel Rule
+## Records Policy Rule
 
-Broadcast drafts, social comments, reviewer responses, cloud-runner logs, and
-mobile/chat approvals are external-channel records. They become internal context
-only after an operator summarizes and disposes them in canonical files.
+Private overlay connector responses, cloud-runner logs, mobile/chat approvals,
+raw transcripts, and long logs become internal context only after an operator
+summarizes the accepted decision, risk, or evidence path in canonical files.

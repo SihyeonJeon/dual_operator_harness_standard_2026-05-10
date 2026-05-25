@@ -22,6 +22,7 @@
     "feature_state_policy",
     "observability",
     "visualization_spec_gate",
+    "records_policy",
     "stop_conditions",
     "output_schema",
     "checkpoint_eta",

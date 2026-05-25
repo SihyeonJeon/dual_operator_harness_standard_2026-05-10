@@ -27,10 +27,9 @@ PASS | WARN | FAIL | NOT-RUN
 | sharp/deep scope preserved | NOT-RUN | UNKNOWN | UNKNOWN |
 | relevant eval suite executed or not-run reason recorded | NOT-RUN | `python3 scripts/harnessctl.py eval-run` | UNKNOWN |
 | pre-visualization spec gate satisfied when visualization exists | NOT-RUN | UNKNOWN | UNKNOWN |
-| internal/external channel boundary preserved | NOT-RUN | UNKNOWN | UNKNOWN |
+| records policy boundary preserved | NOT-RUN | UNKNOWN | UNKNOWN |
 | context pressure and context pack checked | NOT-RUN | UNKNOWN | UNKNOWN |
-| external reviewer findings treated as evidence, not authority | NOT-RUN | UNKNOWN | UNKNOWN |
-| broadcast drafts remain unapproved unless human approval and connector smoke exist | NOT-RUN | UNKNOWN | UNKNOWN |
+| private overlay outputs summarized only as accepted decisions risks or evidence paths | NOT-RUN | UNKNOWN | UNKNOWN |
 | debugging closure verified | NOT-RUN | UNKNOWN | UNKNOWN |
 | cross-evaluation completed or justified | NOT-RUN | UNKNOWN | UNKNOWN |
 | clean restart path checked | NOT-RUN | `./init.sh` | UNKNOWN |

@@ -15,7 +15,7 @@ Use these reusable skills when acting as the Claude Code fixed operator.
   delegated chores when available and safe.
 - Reuse part-owner sessions only for the same part.
 - Require the pre-visualization spec gate before dashboard, timeline, graph,
-  external evidence HTML, manager-view, or live status UI work.
+  local evidence HTML, manager-view, or live status UI work.
 - Own visualization/diagram information architecture review and record evidence
   before event plumbing or adapter implementation starts.
 - Do not enter production debugging or coding.

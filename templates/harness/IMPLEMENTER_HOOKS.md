@@ -38,7 +38,7 @@ scaffold controls, not operator authority.
 
 7. `HandoffComplete`
    - verifies human guide, implementer handoff, H0/H1/F0 tasks, fixed operator
-     session registry, channel-record boundary, and context-pressure controls;
+     session registry, records policy boundary, and context-pressure controls;
    - records that the implementer role is complete;
    - confirms production work has not started.
 

@@ -248,7 +248,7 @@ def handoff_complete(args: argparse.Namespace) -> int:
         target / "harness" / "tasks" / "H1-BOOTSTRAP-SMOKE" / "BLUEPRINT.md",
         target / "harness" / "tasks" / "F0-PLANNING-RUNWAY" / "BLUEPRINT.md",
         target / "harness" / "shared" / "OPERATOR_SESSION_REGISTRY.json",
-        target / "harness" / "shared" / "CHANNEL_RECORDS.md",
+        target / "harness" / "shared" / "RECORDS_POLICY.md",
         target / "harness" / "shared" / "CONTEXT_PRESSURE.md",
     ]
     missing = [str(path.relative_to(target)) for path in required if not path.exists()]

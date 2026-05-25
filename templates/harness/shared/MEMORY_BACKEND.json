@@ -30,9 +30,9 @@
   ],
   "mcp_export_endpoint": "harness/mcp_server/server.py",
   "rules": {
-    "index_external_channel_records_by_default": false,
-    "external_records_require_operator_summary": true,
     "private_plugin_memory_is_not_authority": true,
-    "retrieval_must_return_source_paths": true
+    "retrieval_must_return_source_paths": true,
+    "private_overlay_records_indexed_by_default": false,
+    "private_overlay_records_require_operator_summary": true
   }
 }

@@ -37,9 +37,8 @@ The implementer may:
 - create dual-operator parity, part ownership, plugin routing, and quality-gate
   files;
 - create visualization spec policy and template files;
-- create channel-record separation and context-pressure control files;
-- create broadcast draft queue, reviewer adapter, read-only MCP export, and spec
-  automation scaffold files;
+- create records policy and context-pressure control files;
+- create read-only MCP export and spec automation scaffold files;
 - create visualization backend policy, local event export adapter scaffold, and
   cloud/viz human decision guide;
 - create dependency-free eval suite scaffold and schema;
@@ -86,10 +85,10 @@ The implementer must not:
 11. Ensure visualization spec policy and template exist, and visualization
     production is blocked until a task-local spec is approved or explicitly not
     required.
-12. Ensure channel-record separation, context-pressure controls, broadcast draft
-    queue, external reviewer policy, read-only MCP export, and spec automation
-    policy exist. These start as scaffolded/`UNVERIFIED` surfaces and do not
-    approve external publication or reviewer authority.
+12. Ensure records policy, context-pressure controls, read-only MCP export, and
+    spec automation policy exist. These start as scaffolded/`UNVERIFIED`
+    surfaces and do not approve external posting, private adapters, or remote
+    operation.
 13. Ensure visualization backend descriptors exist under `harness/viz/`, with
     `local_file` as the only verified local backend and external backends denied
     until human selection, bounded policy, credential lifecycle, and smoke
@@ -153,21 +152,16 @@ The implementer must leave:
 - visualization spec policy, visualization spec template, and local
   `scripts/harnessctl.py` command surface for event logging, static HTML status
   reports, local viz export, visualization spec checks, dependency-free eval
-  suites, broadcast drafts, and external review packets;
+  suites, and task archive;
 - `harness/evals/` golden scaffold suite and `schemas/eval-suite.schema.json`
   so operators can run local invariant checks before adding specialized
   domain evals;
 - visualization backend policy under `harness/viz/`, with `local_file` as the
   only verified local backend and non-local adapters starting `UNVERIFIED`;
-- channel-record separation between internal canonical records and external
-  broadcast/reviewer/channel records;
+- records policy for canonical project records, compiled local report views, and
+  public-kit out-of-scope private overlay channels;
 - context-pressure controls for bounded context packs, compaction, plugin caps,
   and part-owner isolation;
-- broadcast draft policy, draft queue, connector descriptors, and publication
-  ledger, with publication denied until human approval and connector smoke
-  evidence exist;
-- reviewer policy, reviewer adapters, and review ledger, with reviewer output
-  treated as evidence rather than authority;
 - read-only MCP context export scaffold under `harness/mcp_server/`;
 - spec automation policy and PRD/anti-PRD templates for planning before
   sharp/deep production;

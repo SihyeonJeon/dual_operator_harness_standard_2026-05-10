@@ -13,7 +13,7 @@ treated as operational.
 - Root `scripts/implementer_hooks.py` exists for scaffold lifecycle hooks.
 - Root `scripts/harnessctl.py` exists for local validation, event logging,
   static HTML status reports, local viz export, visualization spec checks,
-  dependency-free eval suites, broadcast drafts, and external review packets.
+  dependency-free eval suites, task archive, and compiled local reports.
 - `feature_list.json` entries contain behavior, verification, state, and
   evidence.
 - `feature_list.json` verification commands contain no local user path,
@@ -77,16 +77,10 @@ treated as operational.
 - Visualization and diagram information architecture is Claude-owned. Codex or
   deterministic workers may implement event plumbing only after approved
   visualization spec review.
-- `CHANNEL_RECORDS.md` exists and separates internal canonical records from
-  external broadcast/reviewer/channel records.
+- `RECORDS_POLICY.md` exists and defines canonical project records, compiled
+  local report views, and public-kit out-of-scope private overlay channels.
 - `CONTEXT_PRESSURE.md` exists and defines context budget, compaction triggers,
   context pack rules, plugin caps, and part-owner isolation.
-- `BROADCAST_POLICY.md`, `DRAFT_QUEUE.md`, broadcast connector descriptors, and
-  `PUBLISHED_LEDGER.jsonl` exist. Automatic external publication is denied and
-  connector writes require human approval plus smoke evidence.
-- `REVIEWER_POLICY.md`, reviewer adapters, and `REVIEW_LEDGER.jsonl` exist.
-  External reviewer output is evidence, not authority, and cannot force
-  consensus.
 - `mcp_server/MANIFEST.json`, `mcp_server/README.md`, and `mcp_server/server.py`
   exist as a read-only `UNVERIFIED` harness context export.
 - `spec/INPUT_PACKET.md` exists and preserves the rendered two-input intake
@@ -125,7 +119,7 @@ treated as operational.
 - `FAILURE_LEDGER.md` and `RULE_CHANGE_LOG.md` exist.
 - Evaluation report template includes `PASS`, `WARN`, `FAIL`, and `NOT-RUN`.
 - Human review packet template exists for standard/full mode.
-- Reusable held-out, challenge, or reviewer failures are promoted into local
+- Reusable held-out, challenge, or independent evaluator failures are promoted into local
   regression fixtures when they can be checked deterministically.
 
 ## Failure Semantics

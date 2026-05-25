@@ -67,12 +67,12 @@
       "min_count": 1
     },
     {
-      "id": "broadcast_publish_denied",
-      "name": "Broadcast remains approval-gated until approved",
+      "id": "records_policy_internal_only",
+      "name": "Public harness records stay local and file-backed",
       "type": "text_contains",
       "severity": "required",
-      "path": "harness/broadcast/BROADCAST_POLICY.md",
-      "terms": ["Automatic external publish is denied", "human approval", "not canonical"]
+      "path": "harness/shared/RECORDS_POLICY.md",
+      "terms": ["Canonical Project Records", "Out Of Scope In Public Kit", "publication ledgers"]
     },
     {
       "id": "regulation_change_process",

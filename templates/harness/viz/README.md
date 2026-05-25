@@ -24,7 +24,7 @@ No network write is performed by the default backend.
 
 A task-local `VISUALIZATION_SPEC.md` must choose the visualization backend
 before production begins when the task creates a dashboard, timeline, graph,
-external report, manager view, live status UI, or external viz adapter.
+non-local report, manager view, live status UI, or external viz adapter.
 
 The built-in `local_file` backend is allowed for local evidence and smoke
 checks. Any remote, SaaS, cloud, live dashboard, WebSocket, database, or public

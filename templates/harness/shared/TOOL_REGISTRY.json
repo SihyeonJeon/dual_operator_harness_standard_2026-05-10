@@ -6,20 +6,34 @@
       "description": "Read scoped project files for context gathering.",
       "input_schema": {
         "type": "object",
-        "required": ["paths"],
+        "required": [
+          "paths"
+        ],
         "properties": {
           "paths": {
             "type": "array",
-            "items": {"type": "string"}
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["files_read", "summary"],
+        "required": [
+          "files_read",
+          "summary"
+        ],
         "properties": {
-          "files_read": {"type": "array", "items": {"type": "string"}},
-          "summary": {"type": "string"}
+          "files_read": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "summary": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "none",
@@ -27,7 +41,9 @@
       "timeout_seconds": 60,
       "retry_policy": "none",
       "idempotency": "idempotent",
-      "auth_scopes": ["read_fs:scoped"],
+      "auth_scopes": [
+        "read_fs:scoped"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.read_project_files"
     },
@@ -37,18 +53,38 @@
       "description": "Write files explicitly owned by an approved worker brief.",
       "input_schema": {
         "type": "object",
-        "required": ["owned_paths", "changes_summary"],
+        "required": [
+          "owned_paths",
+          "changes_summary"
+        ],
         "properties": {
-          "owned_paths": {"type": "array", "items": {"type": "string"}},
-          "changes_summary": {"type": "string"}
+          "owned_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "changes_summary": {
+            "type": "string"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["changed_files", "status"],
+        "required": [
+          "changed_files",
+          "status"
+        ],
         "properties": {
-          "changed_files": {"type": "array", "items": {"type": "string"}},
-          "status": {"type": "string"}
+          "changed_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "write_fs",
@@ -56,7 +92,9 @@
       "timeout_seconds": 300,
       "retry_policy": "manual_after_failure",
       "idempotency": "depends_on_patch",
-      "auth_scopes": ["write_fs:owned"],
+      "auth_scopes": [
+        "write_fs:owned"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.write_owned_files"
     },
@@ -71,10 +109,17 @@
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "output"],
+        "required": [
+          "status",
+          "output"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "output": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "shell_read",
@@ -82,7 +127,9 @@
       "timeout_seconds": 120,
       "retry_policy": "manual_after_failure",
       "idempotency": "idempotent",
-      "auth_scopes": ["shell:scoped"],
+      "auth_scopes": [
+        "shell:scoped"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.run_harness_bootstrap_check"
     },
@@ -92,19 +139,41 @@
       "description": "Update feature_list.json after verification evidence exists.",
       "input_schema": {
         "type": "object",
-        "required": ["feature_id", "next_state", "evidence"],
+        "required": [
+          "feature_id",
+          "next_state",
+          "evidence"
+        ],
         "properties": {
-          "feature_id": {"type": "string"},
-          "next_state": {"enum": ["not_started", "active", "blocked", "passing"]},
-          "evidence": {"type": "string"}
+          "feature_id": {
+            "type": "string"
+          },
+          "next_state": {
+            "enum": [
+              "not_started",
+              "active",
+              "blocked",
+              "passing"
+            ]
+          },
+          "evidence": {
+            "type": "string"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "feature_id"],
+        "required": [
+          "status",
+          "feature_id"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "feature_id": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "feature_id": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "write_fs",
@@ -112,7 +181,9 @@
       "timeout_seconds": 60,
       "retry_policy": "manual_after_failure",
       "idempotency": "depends_on_state_transition",
-      "auth_scopes": ["write_fs:feature_state"],
+      "auth_scopes": [
+        "write_fs:feature_state"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.update_feature_state"
     },
@@ -122,24 +193,55 @@
       "description": "Append one event to harness/events/events.jsonl.",
       "input_schema": {
         "type": "object",
-        "required": ["event_id", "trace_id", "task_id", "actor", "actor_type", "event_type", "timestamp"],
+        "required": [
+          "event_id",
+          "trace_id",
+          "task_id",
+          "actor",
+          "actor_type",
+          "event_type",
+          "timestamp"
+        ],
         "properties": {
-          "event_id": {"type": "string"},
-          "trace_id": {"type": "string"},
-          "task_id": {"type": "string"},
-          "actor": {"type": "string"},
-          "actor_type": {"type": "string"},
-          "event_type": {"type": "string"},
-          "timestamp": {"type": "string"},
-          "evidence_path": {"type": "string"}
+          "event_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "task_id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "actor_type": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "evidence_path": {
+            "type": "string"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "event_path"],
+        "required": [
+          "status",
+          "event_path"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "event_path": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "event_path": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "write_fs",
@@ -147,7 +249,9 @@
       "timeout_seconds": 60,
       "retry_policy": "manual_after_failure",
       "idempotency": "append_only_event_id_unique",
-      "auth_scopes": ["write_fs:observability_event"],
+      "auth_scopes": [
+        "write_fs:observability_event"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.append_observability_event"
     },
@@ -159,15 +263,24 @@
         "type": "object",
         "required": [],
         "properties": {
-          "output": {"type": "string"}
+          "output": {
+            "type": "string"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "report_path"],
+        "required": [
+          "status",
+          "report_path"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "report_path": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "report_path": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "write_fs",
@@ -175,7 +288,9 @@
       "timeout_seconds": 60,
       "retry_policy": "manual_after_failure",
       "idempotency": "idempotent_overwrite_generated_report",
-      "auth_scopes": ["write_fs:harness_reports"],
+      "auth_scopes": [
+        "write_fs:harness_reports"
+      ],
       "output_trust_level": "compiled_view",
       "audit_event": "tool.compile_harness_status_report"
     },
@@ -187,17 +302,30 @@
         "type": "object",
         "required": [],
         "properties": {
-          "task_id": {"type": "string"},
-          "path": {"type": "string"},
-          "require_approved": {"type": "boolean"}
+          "task_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "require_approved": {
+            "type": "boolean"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "spec_path"],
+        "required": [
+          "status",
+          "spec_path"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "spec_path": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "spec_path": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "none",
@@ -205,109 +333,11 @@
       "timeout_seconds": 30,
       "retry_policy": "manual_after_failure",
       "idempotency": "idempotent",
-      "auth_scopes": ["read_fs:harness_spec"],
+      "auth_scopes": [
+        "read_fs:harness_spec"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.check_visualization_spec"
-    },
-    {
-      "id": "create_broadcast_draft",
-      "owner": "harness",
-      "description": "Create a local external-facing draft and queue entry without publishing.",
-      "input_schema": {
-        "type": "object",
-        "required": ["task_id", "title"],
-        "properties": {
-          "task_id": {"type": "string"},
-          "trace_id": {"type": "string"},
-          "type": {"type": "string"},
-          "title": {"type": "string"},
-          "summary": {"type": "string"},
-          "audience": {"type": "string"},
-          "evidence": {"type": "array", "items": {"type": "string"}},
-          "connector": {"type": "string"}
-        }
-      },
-      "output_schema": {
-        "type": "object",
-        "required": ["status", "draft_path", "queue_path"],
-        "properties": {
-          "status": {"type": "string"},
-          "draft_path": {"type": "string"},
-          "queue_path": {"type": "string"}
-        }
-      },
-      "side_effect_class": "write_fs",
-      "approval": "operator_or_task_close_scope_required",
-      "timeout_seconds": 60,
-      "retry_policy": "manual_after_failure",
-      "idempotency": "append_only_draft_id_unique",
-      "auth_scopes": ["write_fs:broadcast_drafts"],
-      "output_trust_level": "draft_only",
-      "audit_event": "tool.create_broadcast_draft"
-    },
-    {
-      "id": "publish_broadcast_connector",
-      "owner": "harness",
-      "description": "Publish an approved broadcast draft through a verified connector.",
-      "input_schema": {
-        "type": "object",
-        "required": ["draft_id", "connector_id", "approval_evidence"],
-        "properties": {
-          "draft_id": {"type": "string"},
-          "connector_id": {"type": "string"},
-          "approval_evidence": {"type": "string"},
-          "dry_run": {"type": "boolean"}
-        }
-      },
-      "output_schema": {
-        "type": "object",
-        "required": ["status", "published_record"],
-        "properties": {
-          "status": {"type": "string"},
-          "published_record": {"type": "string"}
-        }
-      },
-      "side_effect_class": "network_write",
-      "approval": "explicit_human_approval_and_verified_connector_required",
-      "timeout_seconds": 300,
-      "retry_policy": "manual_after_failure",
-      "idempotency": "connector_specific_publication_id",
-      "auth_scopes": ["network_write:approved_broadcast_connector"],
-      "output_trust_level": "external_action_result",
-      "audit_event": "tool.publish_broadcast_connector"
-    },
-    {
-      "id": "request_external_review",
-      "owner": "harness",
-      "description": "Create or send a redaction-ready external reviewer packet.",
-      "input_schema": {
-        "type": "object",
-        "required": ["task_id", "reviewer_id", "axes", "evidence_paths"],
-        "properties": {
-          "task_id": {"type": "string"},
-          "reviewer_id": {"type": "string"},
-          "axes": {"type": "array", "items": {"type": "string"}},
-          "evidence_paths": {"type": "array", "items": {"type": "string"}},
-          "review_question": {"type": "string"}
-        }
-      },
-      "output_schema": {
-        "type": "object",
-        "required": ["status", "packet_path", "ledger_path"],
-        "properties": {
-          "status": {"type": "string"},
-          "packet_path": {"type": "string"},
-          "ledger_path": {"type": "string"}
-        }
-      },
-      "side_effect_class": "external_action",
-      "approval": "operator_scope_and_redaction_required",
-      "timeout_seconds": 300,
-      "retry_policy": "manual_after_failure",
-      "idempotency": "review_id_unique",
-      "auth_scopes": ["external_review:redacted_packet"],
-      "output_trust_level": "review_evidence",
-      "audit_event": "tool.request_external_review"
     },
     {
       "id": "mcp_read_harness_context",
@@ -315,18 +345,31 @@
       "description": "Read canonical harness context through the generated read-only MCP export.",
       "input_schema": {
         "type": "object",
-        "required": ["tool_name"],
+        "required": [
+          "tool_name"
+        ],
         "properties": {
-          "tool_name": {"type": "string"},
-          "arguments": {"type": "object"}
+          "tool_name": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "object"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "result"],
+        "required": [
+          "status",
+          "result"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "result": {"type": "object"}
+          "status": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object"
+          }
         }
       },
       "side_effect_class": "none",
@@ -334,7 +377,9 @@
       "timeout_seconds": 30,
       "retry_policy": "manual_after_failure",
       "idempotency": "idempotent",
-      "auth_scopes": ["read_fs:harness_shared"],
+      "auth_scopes": [
+        "read_fs:harness_shared"
+      ],
       "output_trust_level": "tool_output_advisory",
       "audit_event": "tool.mcp_read_harness_context"
     },
@@ -344,19 +389,34 @@
       "description": "Move a non-active task directory to harness/tasks/archive according to WORKSPACE_LAYOUT.md.",
       "input_schema": {
         "type": "object",
-        "required": ["task_id"],
+        "required": [
+          "task_id"
+        ],
         "properties": {
-          "task_id": {"type": "string"},
-          "reason": {"type": "string"},
-          "force": {"type": "boolean"}
+          "task_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "force": {
+            "type": "boolean"
+          }
         }
       },
       "output_schema": {
         "type": "object",
-        "required": ["status", "archive_path"],
+        "required": [
+          "status",
+          "archive_path"
+        ],
         "properties": {
-          "status": {"type": "string"},
-          "archive_path": {"type": "string"}
+          "status": {
+            "type": "string"
+          },
+          "archive_path": {
+            "type": "string"
+          }
         }
       },
       "side_effect_class": "write_fs",
@@ -364,7 +424,9 @@
       "timeout_seconds": 60,
       "retry_policy": "manual_after_failure",
       "idempotency": "move_once_task_id_unique",
-      "auth_scopes": ["write_fs:harness_tasks_archive"],
+      "auth_scopes": [
+        "write_fs:harness_tasks_archive"
+      ],
       "output_trust_level": "tool_output",
       "audit_event": "tool.archive_task_workspace"
     }

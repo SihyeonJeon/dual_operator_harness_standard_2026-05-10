@@ -20,8 +20,6 @@ and which files are copied into the generated harness.
   - includes root `.claude/` Claude Code adapter templates and
     `scripts/harnessctl.py`
 - `templates/harness/shared/*`
-- `templates/harness/broadcast/*`
-- `templates/harness/reviewers/*`
 - `templates/harness/mcp_server/*`
 - `templates/harness/spec/*`
 - `templates/harness/viz/*`

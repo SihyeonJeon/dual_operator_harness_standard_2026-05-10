@@ -45,11 +45,11 @@ Keep root verification commands portable. Local user paths, package-cache
 paths, `NODE_PATH` workarounds, credential paths, and temp-only reproduction
 commands belong in task evidence files, not in `feature_list.json`.
 
-External-channel records are separate. Broadcast drafts, publication ledgers,
-review packets, external reviewer outputs, social comments, connector responses,
-chat approvals, and mobile approvals are not canonical memory until an operator
-summarizes and disposes the relevant evidence in internal files. Use
-`harness/shared/CHANNEL_RECORDS.md` as the boundary.
+Records policy is separate from local status views and private overlay logs.
+Connector responses, chat approvals, mobile approvals, raw transcripts, and
+long logs are not canonical memory until an operator summarizes the decision or
+risk into internal files. Use `harness/shared/RECORDS_POLICY.md` as the
+boundary.
 
 Raw transcripts, full patch diffs, browser logs, connector responses, and local
 private paths are internal evidence. Human-facing or public-facing records
@@ -87,8 +87,8 @@ Material ambiguity includes:
   external APIs;
 - remote terminal, cloud runner, mobile approval, chat connector, or always-on
   operation;
-- external publication, external evidence posting, release publication, social posting,
-  or outreach;
+- external publication, release publication, social posting, outreach, or
+  private overlay connector use;
 - final approval, WARN acceptance, merge, deploy, publish, or customer contact.
 
 When asking the user:
@@ -123,7 +123,7 @@ evidence collection. Operators do not step into the development loop to debug or
 code. If a worker is blocked by missing or contradictory specification details,
 the worker routes the question to the appropriate upstream team artifact.
 
-Dashboard, timeline, graph, external evidence HTML, manager-view, live status UI, and
+Dashboard, timeline, graph, status HTML, manager-view, live status UI, and
 state-visualization work requires a task-local `VISUALIZATION_SPEC.md` before
 production, unless the task explicitly records that the gate is not required.
 Operators may use `python3 scripts/harnessctl.py report` for human visibility,
@@ -149,12 +149,12 @@ specialized LLM/RAG/agent eval frameworks.
 For deterministic parsers, classifiers, extractors, ranking or scoring systems,
 data transforms, eval frameworks, and benchmark-style quality claims, a visible
 golden set alone is not enough for a clean `PASS`. The task needs held-out or
-challenge eval evidence, independent reviewer/evaluator evidence, or an
+challenge eval evidence, independent evaluator evidence, or an
 explicit `WARN` accepted by the operator or human. If hidden, held-out,
-challenge, or external reviewer feedback arrives after closure, reopen the work
-as a feedback slice, summarize the external record into internal artifacts,
-route accepted failures to the responsible artifact, and promote reusable
-failures into local regression fixtures before reasserting closure.
+challenge, or independent evaluator feedback arrives after closure, reopen the
+work as a feedback slice, route accepted failures to the responsible artifact,
+and promote reusable failures into local regression fixtures before reasserting
+closure.
 
 Operators may use `python3 scripts/harnessctl.py viz-export --backend
 local_file` to create sanitized local payloads under `harness/reports/viz/`.
@@ -162,16 +162,10 @@ Non-local visualization backends require human backend selection, bounded
 policy, credential lifecycle records, smoke evidence, and operator review before
 any network write or live dashboard connection.
 
-Operators may use `python3 scripts/harnessctl.py broadcast-draft` after task
-closure to create local blog, social, release, or external evidence drafts under
-`harness/broadcast/`. This does not approve or publish anything. Publication
-requires human approval, redaction, connector smoke evidence, and a ledger
-entry under `harness/broadcast/PUBLISHED_LEDGER.jsonl`.
-
-Operators may use `python3 scripts/harnessctl.py review-packet` to prepare an
-external reviewer packet. External AI or human reviewer output is evidence, not
-authority; it cannot force consensus, bypass evaluation gates, or directly
-change feature state.
+The public kit does not include publication draft queues, social channel logs,
+or private review ledgers. Projects that need those workflows should keep
+them in a private overlay and summarize only accepted decisions, risks, and
+evidence paths back into canonical files.
 
 Council MCP may preserve external operator continuity, but material outcomes
 must be summarized into the current task artifact and shared files. MCP

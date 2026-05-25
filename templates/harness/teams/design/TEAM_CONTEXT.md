@@ -8,7 +8,7 @@ Shared by design workers.
 - target audience
 - quality bar
 - visual/content/media constraints
-- visualization spec status when dashboards, timelines, graphs, external evidence HTML
+- visualization spec status when dashboards, timelines, graphs, local evidence HTML
   views, manager views, live status UI, or state visualizations are in scope
 - implementation feasibility notes
 

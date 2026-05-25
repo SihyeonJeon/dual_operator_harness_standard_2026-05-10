@@ -39,7 +39,7 @@ Planning must define:
 - definition of done;
 - required design/spec work;
 - required visualization spec work before any dashboard, timeline, graph, HTML
-  external evidence view, manager view, or live status UI is built;
+  local evidence view, manager view, or live status UI is built;
 - required production work;
 - required debugging/evaluation/cross-evaluation;
 - evidence needed for operator closure;

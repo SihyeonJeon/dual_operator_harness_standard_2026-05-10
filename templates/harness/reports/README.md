@@ -1,6 +1,6 @@
 # Reports
 
-Generated reports and external evidence views live here.
+Generated reports and local evidence views live here.
 
 Default local report:
 
@@ -23,5 +23,6 @@ The report UI and any diagram/timeline/information architecture are
 Claude-owned design surfaces. Worker implementation should follow an approved
 task-local `VISUALIZATION_SPEC.md`.
 
-External evidence drafts belong in `harness/broadcast/`, not directly in
-reports. Publication requires `harness/broadcast/BROADCAST_POLICY.md`.
+Publication drafts, social channel logs, outreach records, connector logs, and
+private review ledgers are outside the public kit. Private overlays may create them,
+but reports remain compiled local views over canonical harness files.

@@ -19,12 +19,12 @@ Rules:
   evidence.
 - Define UI/UX/layout/design evidence that evaluation must inspect when the
   output has a user-facing surface.
-- For dashboards, timelines, graphs, external evidence HTML views, manager views, live
+- For dashboards, timelines, graphs, local evidence HTML views, manager views, live
   status UI, or state visualization, fill or review a task-local
   `VISUALIZATION_SPEC.md` before visual production starts.
 - Claude is the default owner for visualization and diagram information
   architecture. Do not let a non-Claude worker finalize dashboards, timelines,
-  graphs, external evidence views, manager views, or live status UI without Claude
+  graphs, local evidence views, manager views, or live status UI without Claude
   design review evidence.
 - Codex is the default owner for generated bitmap assets such as product photos,
   mock photographs, hero images, raster illustrations, and image-generation

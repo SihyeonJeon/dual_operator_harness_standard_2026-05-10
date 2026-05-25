@@ -41,20 +41,18 @@ validate them, and leave a scaffolding report, `harness/IMPLEMENTER_HANDOFF.md`,
 project-root `guide_for_human.md`, project-root `AGENTS.md`, and generated
 Claude Code adapters under `.claude/`.
 
-Also leave the external-interface and context-safety scaffolds:
+Also leave the local record, visibility, and context-safety scaffolds:
 
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
-- `harness/broadcast/`
-- `harness/reviewers/`
 - `harness/mcp_server/`
 - `harness/spec/`
 - `harness/spec/INPUT_PACKET.md`
 - `harness/viz/`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md`
 
-These surfaces start as draft-only or `UNVERIFIED`; they do not approve
-external publication, reviewer authority, cloud use, or project execution
+These surfaces start local or `UNVERIFIED`; they do not approve cloud use,
+remote operation, external posting, private adapters, or project execution
 strategy. The generated fixed operators will take over after H0/H1 smoke is
 ready.
 

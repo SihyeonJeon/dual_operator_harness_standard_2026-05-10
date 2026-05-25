@@ -2,8 +2,8 @@
 """Tiny generated harness control surface.
 
 This is not an agent runtime. It validates the file-backed harness, appends
-events, checks visualization specs, drafts broadcast/review packets, and
-compiles a local static HTML report.
+events, checks visualization specs, runs local eval suites, and compiles a
+local static HTML report.
 
 The report is a compiled view over canonical harness files, not canonical
 memory.
@@ -552,185 +552,6 @@ def check_visualization_spec(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
-def safe_slug(value: str) -> str:
-    slug = "".join(char.lower() if char.isalnum() else "-" for char in value)
-    slug = "-".join(part for part in slug.split("-") if part)
-    return slug[:60] or "untitled"
-
-
-def split_values(value: str) -> list[str]:
-    return [item.strip() for item in value.split(",") if item.strip()]
-
-
-def create_broadcast_draft(args: argparse.Namespace, root: Path) -> int:
-    policy = root / "harness" / "broadcast" / "BROADCAST_POLICY.md"
-    queue = root / "harness" / "broadcast" / "DRAFT_QUEUE.md"
-    if not policy.exists() or not queue.exists():
-        print("ERROR: broadcast policy or draft queue is missing", file=sys.stderr)
-        return 1
-    draft_id = args.draft_id or f"draft_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{uuid.uuid4().hex[:8]}"
-    title = args.title or f"{args.task_id} broadcast draft"
-    draft_type = args.type or "external_evidence_summary"
-    evidence = split_values(args.evidence)
-    evidence_lines = "\n".join(f"- {item}" for item in evidence) if evidence else "- UNKNOWN"
-    path = root / "harness" / "broadcast" / "drafts" / f"{draft_id}-{safe_slug(title)}.md"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    content = f"""# Broadcast Draft
-
-Draft ID: {draft_id}
-Task ID: {args.task_id}
-Trace ID: {args.trace_id}
-Type: {draft_type}
-Status: DRAFTED
-Approval: NOT_APPROVED
-Connector: {args.connector or "UNKNOWN"}
-
-## Title
-
-{title}
-
-## Source Evidence
-
-{evidence_lines}
-
-## Audience
-
-{args.audience or "UNKNOWN"}
-
-## Redaction
-
-Status: NEEDS_REVIEW
-
-## Summary
-
-{args.summary or "UNKNOWN"}
-
-## Korean Draft
-
-UNKNOWN
-
-## English Draft
-
-UNKNOWN
-
-## Publication Checklist
-
-- [ ] Source evidence is listed.
-- [ ] Private data, credentials, and internal-only details are removed.
-- [ ] Claims are supported by evidence.
-- [ ] Human approval is recorded.
-- [ ] Connector smoke evidence exists if publication will use an adapter.
-- [ ] Rollback or correction path is known.
-"""
-    path.write_text(content, encoding="utf-8")
-    with queue.open("a", encoding="utf-8") as handle:
-        handle.write(
-            f"| {draft_id} | {args.task_id} / {args.trace_id} | {draft_type} | {title} | "
-            f"{'; '.join(evidence) if evidence else 'UNKNOWN'} | NEEDS_REVIEW | NOT_APPROVED | "
-            f"{args.connector or 'UNKNOWN'} | DRAFTED |\n"
-        )
-    write_event(
-        root,
-        {
-            "event_id": f"evt_{uuid.uuid4().hex}",
-            "trace_id": args.trace_id,
-            "task_id": args.task_id,
-            "actor": "harnessctl",
-            "actor_type": "hook",
-            "event_type": "broadcast.draft_created",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "verdict": "NONE",
-            "summary": f"Broadcast draft created: {draft_id}",
-            "evidence_path": display_path(path, root),
-            "part_id": "",
-            "worker_id": "",
-            "model": "",
-            "effort": "",
-        },
-    )
-    print(f"broadcast draft written: {display_path(path, root)}")
-    return 0
-
-
-def create_review_packet(args: argparse.Namespace, root: Path) -> int:
-    policy = root / "harness" / "reviewers" / "REVIEWER_POLICY.md"
-    if not policy.exists():
-        print("ERROR: reviewer policy is missing", file=sys.stderr)
-        return 1
-    review_id = args.review_id or f"review_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{uuid.uuid4().hex[:8]}"
-    axes = split_values(args.axes)
-    evidence = split_values(args.evidence)
-    axes_lines = "\n".join(f"- {item}" for item in axes) if axes else "- UNKNOWN"
-    evidence_lines = "\n".join(f"- {item}" for item in evidence) if evidence else "- UNKNOWN"
-    path = root / "harness" / "reviewers" / "packets" / f"{review_id}-{safe_slug(args.task_id)}.md"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    content = f"""# External Review Packet
-
-Review ID: {review_id}
-Task ID: {args.task_id}
-Phase: {args.phase or "UNKNOWN"}
-Requested By: {args.requested_by or "operator"}
-Reviewer Adapter: {args.reviewer or "UNKNOWN"}
-Status: DRAFT
-
-## Review Question
-
-{args.question or "UNKNOWN"}
-
-## Axes
-
-{axes_lines}
-
-## Source Evidence
-
-{evidence_lines}
-
-## Context Summary
-
-{args.summary or "UNKNOWN"}
-
-## Redactions
-
-- UNKNOWN
-
-## Constraints
-
-- Reviewer output is evidence, not authority.
-- Do not force consensus.
-- Do not request or reveal secrets, private data, credentials, or unapproved
-  customer/user information.
-
-## Requested Output
-
-- Findings ordered by severity.
-- Evidence-backed rationale.
-- Open questions.
-- Suggested follow-up tasks.
-"""
-    path.write_text(content, encoding="utf-8")
-    write_event(
-        root,
-        {
-            "event_id": f"evt_{uuid.uuid4().hex}",
-            "trace_id": args.trace_id,
-            "task_id": args.task_id,
-            "actor": "harnessctl",
-            "actor_type": "hook",
-            "event_type": "review.packet_created",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "verdict": "NONE",
-            "summary": f"External review packet created: {review_id}",
-            "evidence_path": display_path(path, root),
-            "part_id": "",
-            "worker_id": "",
-            "model": "",
-            "effort": "",
-        },
-    )
-    print(f"review packet written: {display_path(path, root)}")
-    return 0
-
-
 def archive_task(args: argparse.Namespace, root: Path) -> int:
     layout = root / "harness" / "shared" / "WORKSPACE_LAYOUT.md"
     if not layout.exists():
@@ -944,20 +765,6 @@ def check_verified_evidence(root: Path) -> tuple[bool, str]:
             if not evidence_file_exists(root, item.get("smoke_evidence_path")):
                 failures.append(f"viz backend {item.get('id', 'UNKNOWN')} lacks smoke evidence")
 
-    for path in sorted((root / "harness" / "broadcast" / "connectors").glob("*.json")):
-        data = load_json(path, {})
-        if isinstance(data, dict) and data.get("status") == "VERIFIED":
-            evidence = data.get("smoke_evidence_path") or data.get("evidence_path")
-            if not evidence_file_exists(root, evidence):
-                failures.append(f"connector {path.name} lacks smoke evidence")
-
-    for path in sorted((root / "harness" / "reviewers" / "adapters").glob("*.json")):
-        data = load_json(path, {})
-        if isinstance(data, dict) and data.get("status") == "VERIFIED":
-            evidence = data.get("smoke_evidence_path") or data.get("evidence_path")
-            if not evidence_file_exists(root, evidence):
-                failures.append(f"reviewer {path.name} lacks smoke evidence")
-
     if failures:
         return False, "; ".join(failures[:5])
     return True, "all VERIFIED surfaces have evidence or remain honestly unverified"
@@ -1095,7 +902,7 @@ def eval_markdown(result: dict[str, Any]) -> str:
             "",
             "- This eval runner performs no network writes.",
             "- This eval runner does not execute arbitrary shell commands.",
-            "- External-channel publication remains governed by `harness/broadcast/BROADCAST_POLICY.md`.",
+            "- This public harness helper performs no external publication, connector, or private review actions.",
             "",
         ]
     )
@@ -1235,29 +1042,6 @@ def main(argv: list[str]) -> int:
     eval_run.add_argument("--task-id", default="EVAL-RUN")
     eval_run.add_argument("--trace-id", default="trace_eval_run")
 
-    draft = sub.add_parser("broadcast-draft", help="Create a local external-facing draft without publishing")
-    draft.add_argument("--task-id", required=True)
-    draft.add_argument("--trace-id", default="trace_UNKNOWN")
-    draft.add_argument("--draft-id", default="")
-    draft.add_argument("--type", default="external_evidence_summary")
-    draft.add_argument("--title", default="")
-    draft.add_argument("--summary", default="")
-    draft.add_argument("--audience", default="")
-    draft.add_argument("--evidence", default="")
-    draft.add_argument("--connector", default="")
-
-    review = sub.add_parser("review-packet", help="Create a redaction-ready external reviewer packet")
-    review.add_argument("--task-id", required=True)
-    review.add_argument("--trace-id", default="trace_UNKNOWN")
-    review.add_argument("--review-id", default="")
-    review.add_argument("--phase", default="")
-    review.add_argument("--reviewer", default="")
-    review.add_argument("--requested-by", default="operator")
-    review.add_argument("--question", default="")
-    review.add_argument("--axes", default="")
-    review.add_argument("--evidence", default="")
-    review.add_argument("--summary", default="")
-
     archive = sub.add_parser("archive", help="Move a non-active task directory into harness/tasks/archive")
     archive.add_argument("--task-id", required=True)
     archive.add_argument("--trace-id", default="trace_UNKNOWN")
@@ -1278,10 +1062,6 @@ def main(argv: list[str]) -> int:
         return export_viz_events(args, root)
     if args.command == "eval-run":
         return run_eval_suite(args, root)
-    if args.command == "broadcast-draft":
-        return create_broadcast_draft(args, root)
-    if args.command == "review-packet":
-        return create_review_packet(args, root)
     if args.command == "archive":
         return archive_task(args, root)
     return 2

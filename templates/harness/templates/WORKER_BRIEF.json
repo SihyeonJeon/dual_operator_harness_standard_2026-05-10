@@ -7,8 +7,12 @@
   "goal": "UNKNOWN",
   "quality_mode": "stability",
   "iteration_budget": 1,
-  "owned_paths": ["UNKNOWN"],
-  "no_touch_paths": ["UNKNOWN"],
+  "owned_paths": [
+    "UNKNOWN"
+  ],
+  "no_touch_paths": [
+    "UNKNOWN"
+  ],
   "ownership_contract": {
     "exclusive_owner_for_part": true,
     "do_not_edit_outside_owned_scope": true,
@@ -16,7 +20,9 @@
     "reuse_this_session_only_for_same_part": true,
     "read_other_parts_only_through_bounded_artifact_summary": true
   },
-  "read_only_context": ["UNKNOWN"],
+  "read_only_context": [
+    "UNKNOWN"
+  ],
   "role_files_to_read": [
     "harness/shared/ROLE_FILE_INDEX.md",
     "team AGENT.md",
@@ -28,11 +34,17 @@
     "policy": "harness/shared/CONTEXT_PRESSURE.md",
     "bounded_context_pack_required": true,
     "compaction_required_before_resume_or_lower_tier_dispatch": true,
-    "external_channel_records_are_not_canonical_context": true
+    "private_overlay_records_are_not_canonical_context": true
   },
-  "relevant_governance": ["UNKNOWN"],
-  "success_criteria": ["UNKNOWN"],
-  "commands_or_evidence_required": ["UNKNOWN"],
+  "relevant_governance": [
+    "UNKNOWN"
+  ],
+  "success_criteria": [
+    "UNKNOWN"
+  ],
+  "commands_or_evidence_required": [
+    "UNKNOWN"
+  ],
   "feature_state_policy": {
     "source": "feature_list.json",
     "passing_requires_verification_evidence": true,
@@ -51,18 +63,15 @@
     "production_blocked_until_approved": true,
     "missing_or_ambiguous_spec_status": "SPEC_BLOCKED"
   },
-  "external_channel_gate": {
-    "policy": "harness/shared/CHANNEL_RECORDS.md",
-    "broadcast_policy": "harness/broadcast/BROADCAST_POLICY.md",
-    "reviewer_policy": "harness/reviewers/REVIEWER_POLICY.md",
-    "worker_may_publish": false,
-    "worker_may_treat_external_feedback_as_authority": false
-  },
   "upstream_question_protocol": {
     "when_spec_missing": "ask_planning_or_design_through_task_artifact",
     "do_not_route_to": "fixed_operator_development_debugging"
   },
-  "stop_conditions": ["SPEC_BLOCKED", "PERMISSION_BLOCKED", "EVIDENCE_BLOCKED"],
+  "stop_conditions": [
+    "SPEC_BLOCKED",
+    "PERMISSION_BLOCKED",
+    "EVIDENCE_BLOCKED"
+  ],
   "output_schema": {
     "files_changed": "array",
     "summary": "string",
@@ -94,10 +103,22 @@
   },
   "plugin_routing": {
     "max_active_context_plugins": 4,
-    "preferred_slots": ["context_compression", "repo_or_artifact_index", "evidence_or_test_summary", "domain_or_reference_retrieval"],
+    "preferred_slots": [
+      "context_compression",
+      "repo_or_artifact_index",
+      "evidence_or_test_summary",
+      "domain_or_reference_retrieval"
+    ],
     "caveman_preferred_for_context_compression": true,
     "plugin_outputs_are_advisory_until_written_to_harness_files": true
   },
   "internal_subagents_allowed": false,
-  "independent_verification": "mandatory"
+  "independent_verification": "mandatory",
+  "records_policy": {
+    "policy": "harness/shared/RECORDS_POLICY.md",
+    "worker_may_create_publication_drafts": false,
+    "worker_may_write_external_records": false,
+    "notes": "Public kit keeps project records local. Private overlays own account-specific posting, outreach, connector, and review workflows.",
+    "private_overlay_records": false
+  }
 }

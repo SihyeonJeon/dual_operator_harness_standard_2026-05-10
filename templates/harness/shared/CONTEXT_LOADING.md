@@ -20,7 +20,7 @@ starts crowding out the current task, compact `progress.md`,
 - `harness/shared/ROLE_FILE_INDEX.md`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OBSERVABILITY.md`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - current task blueprint
 
@@ -36,11 +36,8 @@ starts crowding out the current task, compact `progress.md`,
 - `PERMISSION_POLICY.json`
 - `MCP_TRUST.json`
 - `OBSERVABILITY.md`
-- `CHANNEL_RECORDS.md`
+- `RECORDS_POLICY.md`
 - `CONTEXT_PRESSURE.md`
-- `broadcast/BROADCAST_POLICY.md` when external drafts, external evidence, or
-  public release notes are in scope
-- `reviewers/REVIEWER_POLICY.md` when external AI/human review is being used
 - `mcp_server/README.md` when read-only context export is being verified
 - `VISUALIZATION_SPEC_POLICY.md`
 - `CLEAN_STATE.md`
@@ -114,7 +111,7 @@ On demand:
 - domain gates
 - prior regressions
 - traces/screenshots/logs
-- external review packets or ledgers only when the review is part of the active
-  evidence chain
+- private overlay review summaries only when they are part of the active
+  evidence chain and have been summarized into task artifacts
 - visualization spec and generated HTML report when visualization is in scope
 - cross-vendor verification policy

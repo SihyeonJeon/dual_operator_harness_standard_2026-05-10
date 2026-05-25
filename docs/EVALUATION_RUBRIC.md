@@ -25,13 +25,13 @@ operations, media, business, data, education, and other project domains.
 | Operator/worker separation | Fixed operators orchestrate/review; workers own production; roles are file-backed. | `2` |
 | Dual-operator parity | Codex and Claude remain equal fixed operators; dissent is preserved. | `2` |
 | Planning before sharp/deep production | PRD/anti-PRD/candidate slices precede production. | `2` |
-| Cross-verification loop | Evaluation and review packets exist; reviewer output is evidence, not authority. | `2` |
+| Cross-verification loop | Evaluation reports and independent review evidence exist; no evaluator output becomes authority by itself. | `2` |
 | Held-out or challenge eval discipline | Deterministic metric claims require held-out/challenge eval, independent evaluator evidence, or accepted WARN beyond visible golden fixtures. | `2` |
 | Context and memory continuity | Shared context, team context, session registries, part ownership, and context pressure rules exist. | `2` |
 | Restartability | Fresh agent can load root state, shared context, active task, and resume from files. | `2` |
 | Observability | Events, status HTML/JSON, local viz export payloads, and source hashes exist. | `2` |
 | Visualization governance | `VISUALIZATION_SPEC.md` selects purpose/backend/redaction before dashboards or live views. | `2` |
-| External publication safety | Broadcast drafts are approval gated publish requires approval redaction connector smoke and ledger | `2` |
+| Public/private boundary | Public kit keeps account-specific posting, publication ledgers, connector logs, and private review ledgers outside the scaffold. | `2` |
 | Credential and cloud safety | Default no secret access; remote/cloud/network writers are denied until bounded policy and smoke evidence exist. | `2` |
 | Failure/success governance evolution | Failure ledger, rule change log, regulation evolution, and team context update loop exist. | `2` |
 | Runtime durable execution | Checkpointed runtime that resumes exact graph execution after failure. | `N/A` |
@@ -54,7 +54,7 @@ A claim may be used publicly only if it has at least one of:
   project goal.
 - The generated harness includes restart files, shared/team memory, operator and
   worker role files, event logging, local report generation, visualization
-  backend policy, external draft policy, and remote/cloud denial defaults.
+  backend policy, local records policy, and remote/cloud denial defaults.
 - The website demo generated a richer static storefront with 5 generated bitmap
   assets, 27 task evidence files, 44 events, desktop/mobile screenshots, and
   operator closure records.

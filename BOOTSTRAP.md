@@ -63,7 +63,7 @@ goal unless the inputs explicitly specify that strategy.
    - `harness/shared/PLUGIN_ROUTING.json`
    - `harness/shared/QUALITY_GATES.md`
    - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
-   - `harness/shared/CHANNEL_RECORDS.md`
+   - `harness/shared/RECORDS_POLICY.md`
    - `harness/shared/CONTEXT_PRESSURE.md`
    - `harness/shared/COUNCIL_MCP.md`
    - `harness/shared/ROLE_FILE_INDEX.md`
@@ -91,15 +91,8 @@ goal unless the inputs explicitly specify that strategy.
     `UNVERIFIED` and network-denied by default.
 23. Create active/archive workspace placeholders under `harness/tasks/active/`
     and `harness/tasks/archive/`.
-24. Create external-interface, reviewer, MCP export, and spec automation
+24. Create MCP export and spec automation
     scaffolds:
-    - `harness/broadcast/BROADCAST_POLICY.md`
-    - `harness/broadcast/DRAFT_QUEUE.md`
-    - `harness/broadcast/PUBLISHED_LEDGER.jsonl`
-    - `harness/broadcast/connectors/`
-    - `harness/reviewers/REVIEWER_POLICY.md`
-    - `harness/reviewers/REVIEW_LEDGER.jsonl`
-    - `harness/reviewers/adapters/`
     - `harness/mcp_server/`
     - `harness/spec/INPUT_PACKET.md`
     - `harness/spec/SPEC_AUTOMATION_POLICY.md`
@@ -119,9 +112,8 @@ goal unless the inputs explicitly specify that strategy.
     generated harness can be validated after this kit is moved or deleted.
 28. Copy or generate `scripts/harnessctl.py` so the generated project can log
     events, compile local static HTML status reports, export local viz payloads,
-    check visualization specs, run dependency-free eval suites, create broadcast
-    drafts, and create external review packets without the standard kit
-    directory.
+    check visualization specs, run dependency-free eval suites, and archive
+    tasks without the standard kit directory.
 29. Run and record implementer scaffold lifecycle hooks:
     `PreScaffoldGoalIntake`, `IntakeValidate`, `ProfileDeriveAudit`,
     `AdoptionModeSelect`, `DomainPackSelect`, `PostScaffoldValidation`, and
@@ -177,15 +169,14 @@ Bootstrap is complete only when:
 - plugin routing caps context-saving plugins at four and includes caveman as the
   preferred compression slot when verified;
 - visualization spec policy exists and blocks dashboard, timeline, graph, HTML
-  external evidence, manager-view, live status UI, and state-visualization production
+  status view, manager-view, live status UI, and state-visualization production
   until a task-local spec is approved or explicitly marked not required;
 - visualization backend policy exists, `local_file` is the only verified local
   backend, and external viz backends remain `UNVERIFIED` until human selection,
   bounded policy, credential lifecycle, and smoke evidence exist;
 - local `scripts/harnessctl.py` exists for validation, event logging, static
   HTML report compilation, local viz export, visualization spec checks,
-  dependency-free eval suite execution, broadcast draft creation, and external
-  review packet creation;
+  dependency-free eval suite execution, and task archive;
 - `harness/evals/golden_suite.json` exists and can be run with
   `python3 scripts/harnessctl.py eval-run` without network writes or arbitrary
   command execution;
@@ -221,15 +212,10 @@ Bootstrap is complete only when:
   and adapter activation.
 - generated project validation does not require the standard kit directory to
   remain inside the target project.
-- `CHANNEL_RECORDS.md` separates internal canonical records from external
-  broadcast/reviewer/channel records.
+- `RECORDS_POLICY.md` defines canonical project records, compiled local report
+  views, and public-kit out-of-scope private overlay channels.
 - `CONTEXT_PRESSURE.md` defines context budget, compaction triggers, context
   pack rules, plugin caps, and part-owner isolation.
-- `BROADCAST_POLICY.md`, `DRAFT_QUEUE.md`, broadcast connector descriptors, and
-  `PUBLISHED_LEDGER.jsonl` exist. Broadcast is draft-only until human approval
-  and connector smoke evidence exist.
-- `REVIEWER_POLICY.md`, reviewer adapters, and `REVIEW_LEDGER.jsonl` exist.
-  External reviewer output is evidence, not authority.
 - `mcp_server/` exists as a read-only `UNVERIFIED` context export with
   `search_past_decisions`, `get_capability_status`, `get_current_task`, and
   `list_open_questions`.

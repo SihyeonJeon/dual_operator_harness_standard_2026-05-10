@@ -26,10 +26,9 @@ belongs to fixed operators and approved workers.
 - Plugin routing policy: UNKNOWN
 - Quality gates: UNKNOWN
 - Visualization spec policy: UNKNOWN
-- Channel-record separation: UNKNOWN
+- Records policy: UNKNOWN
 - Context-pressure controls: UNKNOWN
-- Broadcast draft queue: UNKNOWN
-- External reviewer scaffold: UNKNOWN
+- Private overlay posting/review workflows: not scaffolded in public kit
 - Read-only MCP export scaffold: UNKNOWN
 - Spec automation policy: UNKNOWN
 - Local harness control surface: UNKNOWN

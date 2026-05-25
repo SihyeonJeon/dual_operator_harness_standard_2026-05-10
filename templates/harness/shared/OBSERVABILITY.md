@@ -19,8 +19,6 @@ python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py viz-export --backend local_file
 python3 scripts/harnessctl.py viz-spec-check
 python3 scripts/harnessctl.py eval-run
-python3 scripts/harnessctl.py broadcast-draft --task-id TASK --title "Draft title"
-python3 scripts/harnessctl.py review-packet --task-id TASK --question "Review question"
 ```
 
 `harnessctl.py` is a thin file-backed helper, not an agent runtime.
@@ -61,11 +59,8 @@ become canonical only when summarized into harness files.
 - operator disagreement or human decision;
 - regulation change.
 - visualization spec drafted, approved, blocked, or marked not required.
-- broadcast draft created, approved, rejected, published, corrected, or rolled
-  back.
-- external review packet created, review received, reviewer finding accepted,
-  reviewer finding rejected, or follow-up created.
-- internal/external channel summary promoted into canonical memory.
+- local report or visualization export created.
+- private overlay output summarized into canonical memory.
 
 ## Trace Rule
 
@@ -75,17 +70,13 @@ feature state, evaluation reports, and event log entries should agree.
 ## Human Visibility
 
 `scripts/harnessctl.py report` compiles a local static HTML status page under
-`harness/reports/`. The report is useful for human review and external evidence
+`harness/reports/`. The report is useful for human review and local evidence
 history, but it is a compiled view over canonical files and must not replace
 them.
 
 Report UI/UX and diagrams are Claude-owned design surfaces. Claude should draft
 or review the information architecture before workers change dashboard,
-timeline, graph, manager-view, external evidence, or live-status rendering.
-
-`harness/broadcast/` and `harness/reviewers/` are external-channel records.
-They improve visibility and feedback, but they are not canonical memory until
-operators summarize the relevant result into internal files.
+timeline, graph, manager-view, status, or live-status rendering.
 
 ## Minimal Manual Event
 

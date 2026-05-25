@@ -6,10 +6,13 @@ This guide is copied into generated projects as
 ## Core Rule
 
 `VISUALIZATION_SPEC.md` decides the visualization shape before production.
+This guide is for optional project overlays. The default public harness remains
+local-file only unless the project records a bounded policy, credential
+lifecycle, smoke evidence, and operator review.
 
 - Local status HTML from `python3 scripts/harnessctl.py report` is built in and
   safe as a compiled local view.
-- External dashboards, live status UIs, external evidence views, and remote viz
+- Non-local dashboards, live status UIs, local evidence views, and remote viz
   backends require task-local backend selection first.
 - `events.jsonl` can be exported locally with
   `python3 scripts/harnessctl.py viz-export --backend local_file`.

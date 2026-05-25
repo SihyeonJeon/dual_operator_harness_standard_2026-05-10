@@ -23,7 +23,7 @@ Before doing project work:
 8. Read `harness/shared/OPERATOR_SESSION_REGISTRY.json`.
 9. Read `harness/shared/OBSERVABILITY.md` and
    `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-10. Read `harness/shared/CHANNEL_RECORDS.md` and
+10. Read `harness/shared/RECORDS_POLICY.md` and
    `harness/shared/CONTEXT_PRESSURE.md`.
 11. Read the role file that matches the user's instruction or the current agent
    surface.
@@ -47,9 +47,9 @@ become the fixed operator for the current agent surface:
 - Treat private chat memory as advisory only.
 - Treat Claude Code adapters, Codex session context, MCP transcripts, and
   plugin summaries as advisory until written into canonical harness files.
-- Treat broadcast drafts, reviewer packets, social comments, connector
-  responses, and mobile/chat approvals as external-channel records until an
-  operator summarizes them into canonical internal files.
+- Treat private overlay connector responses, mobile/chat approvals, and long raw
+  logs as non-canonical until an operator summarizes the decision or risk into
+  canonical internal files.
 - Preserve dual-operator parity: do not force consensus, erase dissent, or let
   one operator's runtime adapter outrank the other operator.
 - Preserve context accumulation and shared feedback loops: update
@@ -57,7 +57,7 @@ become the fixed operator for the current agent surface:
   `harness/shared/FAILURE_LEDGER.md`, and `harness/shared/RULE_CHANGE_LOG.md`
   when evidence requires it.
 - Work one feature or sharp/deep slice at a time.
-- For dashboards, timelines, graphs, external evidence HTML views, manager views, live
+- For dashboards, timelines, graphs, status HTML views, manager views, live
   status UI, or state visualizations, create or approve a task-local
   `VISUALIZATION_SPEC.md` before production work.
 - Use `python3 scripts/harnessctl.py event` and
@@ -66,10 +66,6 @@ become the fixed operator for the current agent surface:
 - Use `python3 scripts/harnessctl.py eval-run` for local scaffold/governance
   regression checks when relevant. It does not run arbitrary shell commands or
   perform network writes.
-- Use `python3 scripts/harnessctl.py broadcast-draft` only to create local
-  drafts under `harness/broadcast/`; it does not approve or publish anything.
-- Use `python3 scripts/harnessctl.py review-packet` to prepare redaction-ready
-  external reviewer packets. Reviewer output is evidence, not authority.
 - Use bounded context packs and `harness/shared/CONTEXT_PRESSURE.md` before
   delegating to worker sessions, especially lower-tier or part-owner sessions.
 - Do not mark any feature or task complete without executable evidence or an
@@ -99,10 +95,8 @@ Before ending a session:
 6. Append a material event with `python3 scripts/harnessctl.py event` when the
    command is available.
 7. Regenerate `harness/reports/status.html` with
-   `python3 scripts/harnessctl.py report` when human visibility or external evidence
-   history matters.
+   `python3 scripts/harnessctl.py report` when human visibility or local
+   evidence history matters.
 8. Run or record the relevant `harness/evals/` suite when scaffold or
    governance regression matters.
-9. When appropriate, create an unapproved broadcast draft or external review
-   packet, then record that it is not canonical memory until disposed.
-10. Leave a clean restart path through `./init.sh`.
+9. Leave a clean restart path through `./init.sh`.

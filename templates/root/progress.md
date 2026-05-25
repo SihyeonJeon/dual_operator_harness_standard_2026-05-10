@@ -21,9 +21,8 @@ H0 - Harness scaffold doctor
 - Project-local `harness/` directory created.
 - Root agent entry files created.
 - Shared context and operator role files created.
-- Channel-record separation and context-pressure controls created.
-- Broadcast draft queue, external reviewer scaffold, MCP export, and spec
-  automation scaffolds created.
+- Records policy and context-pressure controls created.
+- MCP export and spec automation scaffolds created.
 
 ## In Progress
 
@@ -34,8 +33,7 @@ H0 - Harness scaffold doctor
 - Project-specific runtime commands are UNKNOWN.
 - Planning runway and slice approval criteria are UNKNOWN.
 - Material human decisions remain in `harness/shared/ACTIVE_SNAPSHOT.md`.
-- External-channel records remain separate until summarized into canonical
-  files.
+- Local report views remain separate from canonical project records.
 
 ## Decisions
 

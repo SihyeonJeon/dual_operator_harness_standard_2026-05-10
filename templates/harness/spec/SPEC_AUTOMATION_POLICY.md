@@ -70,6 +70,6 @@ executable. If not, the task stays in planning.
 
 ## Visualization Dependency
 
-If the planned work creates dashboards, timelines, graphs, external evidence HTML
+If the planned work creates dashboards, timelines, graphs, local evidence HTML
 views, manager views, live status UI, or state visualizations, the
 pre-visualization specification gate must pass before production.

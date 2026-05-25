@@ -20,7 +20,7 @@ Root always-load for any operator invocation:
 - `harness/shared/MODEL_ROUTING.json`
 - `harness/shared/PLUGIN_ROUTING.json`
 - `harness/shared/OBSERVABILITY.md`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
@@ -36,7 +36,7 @@ Claude Code operator always-load:
 - `harness/shared/HARNESS_CONFIG.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OPERATOR_SESSION_REGISTRY.json`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
@@ -50,7 +50,7 @@ Codex operator always-load:
 - `harness/shared/HARNESS_CONFIG.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OPERATOR_SESSION_REGISTRY.json`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
@@ -103,7 +103,7 @@ Evaluation worker always-load:
 - `harness/teams/evaluation/SKILLS.md`
 - `harness/teams/evaluation/TEAM_CONTEXT.md`
 - `harness/shared/QUALITY_GATES.md`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/evals/README.md`

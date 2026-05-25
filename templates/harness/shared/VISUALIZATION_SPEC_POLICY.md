@@ -1,7 +1,7 @@
 # Visualization Specification Policy
 
 Visualization is a control surface, not decoration. Do not build a dashboard,
-timeline, graph, external evidence page, manager view, or live status UI until the
+timeline, graph, local evidence page, manager view, or live status UI until the
 pre-visualization specification gate passes.
 
 ## Authority
@@ -15,7 +15,7 @@ Canonical sources remain the file-backed harness artifacts:
 - `harness/tasks/`
 - `harness/events/events.jsonl`
 
-HTML, dashboards, graphs, timelines, and external evidence pages are compiled views over
+HTML, dashboards, graphs, timelines, and local evidence pages are compiled views over
 those sources. They must not become competing memory or decision authority.
 
 ## Design Ownership
@@ -57,7 +57,7 @@ record:
   - `local_file` for dependency-free local status/evidence payloads;
   - project-selected external backend only after human approval.
 - backend mode: static, refresh-on-command, live, external dashboard, or
-  external evidence export.
+  local evidence export.
 - adapter owner and smoke evidence path when `events.jsonl` will flow to a
   backend.
 
@@ -68,7 +68,7 @@ Visualization production is blocked until:
 - planning confirms the visualization is needed for the active slice;
 - design confirms the information architecture and state model;
 - Claude visualization/design review exists for diagrams, dashboards, timelines,
-  graphs, external evidence views, manager views, or live status UI;
+  graphs, local evidence views, manager views, or live status UI;
 - evaluation defines how the visualization will be checked;
 - any redaction or external sharing risk is recorded;
 - the current task artifact links the approved `VISUALIZATION_SPEC.md`.

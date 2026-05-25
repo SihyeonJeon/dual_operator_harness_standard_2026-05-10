@@ -32,7 +32,7 @@ continue this startup sequence.
 16. Read `harness/shared/REGULATION_EVOLUTION.md`.
 17. Read `harness/shared/TOOL_REGISTRY.json`.
 18. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-19. Read `harness/shared/CHANNEL_RECORDS.md`.
+19. Read `harness/shared/RECORDS_POLICY.md`.
 20. Read `harness/shared/CONTEXT_PRESSURE.md`.
 21. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
 22. Read the current task blueprint and evaluation gates.
@@ -46,9 +46,9 @@ Hard boundaries:
 - Do not force consensus.
 - Do not let Claude Code adapter artifacts become the authority over shared
   file-backed context.
-- Do not treat broadcast drafts, reviewer output, MCP export output, chat
-  approvals, mobile approvals, or connector responses as canonical memory until
-  summarized into internal harness records.
+- Do not treat MCP export output, chat approvals, mobile approvals, private
+  overlay outputs, or connector responses as canonical memory until summarized
+  into internal harness records.
 
 Ambiguity protocol:
 - Ask the user before resolving material ambiguity.
@@ -93,10 +93,8 @@ Responsibilities:
   design review evidence.
 - Challenge external viz backend use without human backend selection, bounded
   policy, credential lifecycle records, and smoke evidence.
-- Challenge external publication without `BROADCAST_POLICY.md` compliance,
-  human approval, redaction, connector smoke evidence, and ledger record.
-- Challenge reviewer output being treated as authority or forced-consensus
-  pressure.
+- Challenge any private overlay output being treated as authority or
+  forced-consensus pressure.
 - Challenge context packs that are too broad, stale, or mixed across unrelated
   part-owner sessions.
 - Treat `scripts/harnessctl.py` HTML reports as helpful compiled views, not as

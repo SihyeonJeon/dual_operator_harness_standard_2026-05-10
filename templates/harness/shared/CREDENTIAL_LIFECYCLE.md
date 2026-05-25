@@ -4,12 +4,12 @@ Default: no secret access.
 
 Credentials are human-owned. Workers receive credential ids and scopes, not raw
 secret values. `.env` files, token values, connector responses, and account
-secrets must not be committed, copied into reports, or summarized into public
-channel records.
+secrets must not be committed, copied into reports, or summarized into canonical
+project records.
 
-For viz backend adapters, cloud lanes, public posting, deploys, remote terminal,
-mobile approval, or chat connectors, record a lifecycle entry here before any
-worker is allowed to use credentials.
+For viz backend adapters, cloud lanes, deploys, remote terminal, mobile
+approval, chat connectors, or private overlay adapters, record a lifecycle entry
+here before any worker is allowed to use credentials.
 
 ## Required Fields For Any Approved Credential
 

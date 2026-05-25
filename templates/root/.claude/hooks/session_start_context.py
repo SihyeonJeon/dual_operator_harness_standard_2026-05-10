@@ -60,12 +60,10 @@ def main() -> int:
         f"- current task: {first_matching_line(root / 'harness' / 'shared' / 'ACTIVE_SNAPSHOT.md', ('Current task id:',))}",
         "- canonical memory: feature_list.json, progress.md, session-handoff.md, harness/shared/, harness/tasks/",
         "- team shared memory: harness/teams/*/TEAM_CONTEXT.md plus task artifacts",
-        "- internal/external boundary: load harness/shared/CHANNEL_RECORDS.md before using broadcast, reviewer, chat, mobile, or connector records",
+        "- records policy boundary: load harness/shared/RECORDS_POLICY.md before using local reports, private overlays, chat approvals, mobile approvals, or connector summaries",
         "- context pressure: load harness/shared/CONTEXT_PRESSURE.md before delegation, compaction, or part-owner worker resume",
         "- local visibility: python3 scripts/harnessctl.py report",
         "- local viz export: python3 scripts/harnessctl.py viz-export --backend local_file",
-        "- external drafts: python3 scripts/harnessctl.py broadcast-draft creates drafts only; no automatic publication",
-        "- external review: python3 scripts/harnessctl.py review-packet creates evidence packets; reviewer output is not authority",
         "- visualization gate: Claude owns visualization/diagram IA; load harness/shared/VISUALIZATION_SPEC_POLICY.md before dashboard/timeline/graph/report UI work",
     ]
     payload = {

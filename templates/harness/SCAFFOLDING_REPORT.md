@@ -47,10 +47,8 @@ Domain packs selected: UNKNOWN
 - `harness/shared/PLUGIN_ROUTING.json`
 - `harness/shared/QUALITY_GATES.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
-- `harness/shared/CHANNEL_RECORDS.md`
+- `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
-- `harness/broadcast/`
-- `harness/reviewers/`
 - `harness/mcp_server/`
 - `harness/spec/`
 - `harness/runtime/REMOTE_OPERATION_POLICY.md`
@@ -71,10 +69,8 @@ secret-access capabilities start as `UNVERIFIED`.
 - Confirm local context-saving plugin stack; caveman is the preferred
   compression slot when verified.
 - Confirm visualization spec before creating dashboards, timelines, graphs,
-  external evidence HTML views, manager views, live status UI, or state visualizations.
-- Confirm broadcast draft, external reviewer, and MCP context export needs
-  before activating external interfaces. Broadcast drafts are not publication
-  and reviewer output is not authority.
+  status HTML views, manager views, live status UI, or state visualizations.
+- Confirm MCP context export needs before activating non-local interfaces.
 - Confirm remote terminal, mobile approval, chat connector, or cloud runner
   requirements before enabling them.
 

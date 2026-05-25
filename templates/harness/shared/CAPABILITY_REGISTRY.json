@@ -118,27 +118,7 @@
       "evidence_path": "",
       "verified_at": "",
       "reviewer": "",
-      "notes": "Generated at scripts/harnessctl.py. It appends events, validates, checks visualization specs, creates broadcast/review drafts, and compiles static HTML reports as views over canonical files."
-    },
-    {
-      "id": "broadcast_draft_queue",
-      "name": "Broadcast and external evidence draft queue",
-      "class": "external_interface",
-      "status": "UNVERIFIED",
-      "evidence_path": "",
-      "verified_at": "",
-      "reviewer": "",
-      "notes": "Draft-only external signal layer under harness/broadcast. Publication is denied until human approval, connector smoke, and redaction evidence exist."
-    },
-    {
-      "id": "external_reviewer_adapters",
-      "name": "External AI and human reviewer adapters",
-      "class": "evaluation",
-      "status": "UNVERIFIED",
-      "evidence_path": "",
-      "verified_at": "",
-      "reviewer": "",
-      "notes": "Reviewer output is evidence, not authority. Adapters require redaction and target-runtime smoke before use."
+      "notes": "Generated at scripts/harnessctl.py. It appends events, validates, checks visualization specs, runs local eval suites, archives tasks, and compiles static HTML reports as views over canonical files."
     },
     {
       "id": "harness_mcp_server",

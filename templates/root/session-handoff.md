@@ -17,7 +17,7 @@ Status: IMPLEMENTER_HANDOFF_COMPLETE
 - Current progress: `progress.md`
 - Shared harness memory: `harness/shared/`
 - Current task artifacts: `harness/tasks/`
-- Internal/external boundary: `harness/shared/CHANNEL_RECORDS.md`
+- Records policy boundary: `harness/shared/RECORDS_POLICY.md`
 - Context pressure controls: `harness/shared/CONTEXT_PRESSURE.md`
 
 ## Open Work
@@ -32,5 +32,5 @@ Status: IMPLEMENTER_HANDOFF_COMPLETE
 - Hidden chat context from the implementer.
 - Unrecorded assumptions about domain strategy, budget, tools, deployment,
   audience, or compliance.
-- Broadcast drafts, reviewer output, MCP export output, social comments, or
-  connector responses that were not summarized into internal harness files.
+- MCP export output, private overlay outputs, long logs, or connector responses
+  that were not summarized into internal harness files.

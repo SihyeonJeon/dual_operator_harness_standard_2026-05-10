@@ -40,9 +40,8 @@ you are operator
 - 외부 viz backend human approval policy credential smoke evidence 필요
 - status html compiled view
 - harness eval run local regression
-- BROADCAST_POLICY.md draft queue
-- external publish human approval required
-- reviewer output evidence only
+- RECORDS_POLICY.md local canonical record policy
+- public kit no external posting scaffold
 - MCP read only context export
 - remote mobile cloud denied by default
 
@@ -61,8 +60,6 @@ you are operator
 - `harness/tasks`
 - `harness/viz`
 - `harness/evals`
-- `harness/broadcast`
-- `harness/reviewers`
 - `harness/mcp_server`
 - `harness/runtime`
 - `harness/events/events.jsonl`
@@ -108,9 +105,8 @@ you are operator
 - external viz backend human approval policy credential smoke evidence required
 - status html compiled view
 - harness eval run local regression
-- BROADCAST_POLICY.md draft queue
-- external publish human approval required
-- reviewer output evidence only
+- RECORDS_POLICY.md local canonical record policy
+- public kit no external posting scaffold
 - MCP read only context export
 - remote mobile cloud denied by default
 
@@ -129,8 +125,6 @@ you are operator
 - `harness/tasks`
 - `harness/viz`
 - `harness/evals`
-- `harness/broadcast`
-- `harness/reviewers`
 - `harness/mcp_server`
 - `harness/runtime`
 - `harness/events/events.jsonl`

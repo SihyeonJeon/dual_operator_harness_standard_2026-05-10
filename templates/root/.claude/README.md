@@ -28,8 +28,6 @@ Local visibility helpers live outside this adapter:
 - `python3 scripts/harnessctl.py viz-export --backend local_file`
 - `python3 scripts/harnessctl.py viz-spec-check`
 - `python3 scripts/harnessctl.py eval-run`
-- `python3 scripts/harnessctl.py broadcast-draft`
-- `python3 scripts/harnessctl.py review-packet`
 
 Generated HTML reports are compiled views over canonical state. Visualization
 production still requires `harness/shared/VISUALIZATION_SPEC_POLICY.md` and a
@@ -38,6 +36,6 @@ task-local `VISUALIZATION_SPEC.md`.
 Claude owns visualization/diagram information architecture. Codex or another
 worker may implement event plumbing after the approved visualization spec.
 
-Broadcast drafts and external review packets are external-channel records. They
-are not canonical memory until summarized into internal harness files under the
-rules in `harness/shared/CHANNEL_RECORDS.md`.
+The public kit keeps account-specific posting, connector logs, outreach, and
+private review workflows outside this adapter. Private overlays may add those
+workflows, but canonical memory remains in the harness files listed above.

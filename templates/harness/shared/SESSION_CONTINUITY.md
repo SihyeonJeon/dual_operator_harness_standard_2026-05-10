@@ -21,9 +21,9 @@ hidden stale memory, and hallucination carried across unrelated work.
   paths, package-cache paths, `NODE_PATH`, or other machine-specific smoke
   commands in `feature_list.json`; keep those reproduction details in task
   evidence files.
-- External-channel records such as broadcast drafts, reviewer packets, chat or
-  mobile approvals, and connector responses must not be carried forward as
-  canonical context until summarized into internal files.
+- Private overlay records such as connector responses, chat or mobile approvals,
+  and long logs must not be carried forward as canonical context until the
+  decision or risk is summarized into internal files.
 - Context pressure should trigger compaction before unrelated worker sessions,
   lower-tier workers, or reopened parts receive stale full-session context.
 

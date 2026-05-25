@@ -43,7 +43,7 @@ P0_REQUIRED = [
     "shared/PLUGIN_ROUTING.json",
     "shared/QUALITY_GATES.md",
     "shared/VISUALIZATION_SPEC_POLICY.md",
-    "shared/CHANNEL_RECORDS.md",
+    "shared/RECORDS_POLICY.md",
     "shared/CONTEXT_PRESSURE.md",
     "shared/TEAM_TOPOLOGY.md",
     "shared/WORKSTREAM_PROFILE.json",
@@ -70,22 +70,11 @@ P0_REQUIRED = [
     "templates/EVALUATION_REPORT.md",
     "templates/HUMAN_REVIEW_PACKET.md",
     "templates/VISUALIZATION_SPEC.md",
-    "templates/BROADCAST_DRAFT.md",
-    "templates/EXTERNAL_REVIEW_PACKET.md",
     "templates/BUDGET.json",
     "spec/INPUT_PACKET.md",
     "spec/SPEC_AUTOMATION_POLICY.md",
     "spec/PRD_DRAFT.md",
     "spec/ANTI_PRD.md",
-    "broadcast/BROADCAST_POLICY.md",
-    "broadcast/DRAFT_QUEUE.md",
-    "broadcast/PUBLISHED_LEDGER.jsonl",
-    "broadcast/connectors/generic_publication.example.json",
-    "broadcast/connectors/manual_export.example.json",
-    "reviewers/REVIEWER_POLICY.md",
-    "reviewers/REVIEW_LEDGER.jsonl",
-    "reviewers/adapters/ai_reviewer.example.json",
-    "reviewers/adapters/human_reviewer.json",
     "mcp_server/README.md",
     "mcp_server/MANIFEST.json",
     "mcp_server/server.py",
@@ -130,7 +119,6 @@ ROOT_REQUIRED = [
     "scripts/validate_harness.py",
     "scripts/harnessctl.py",
     "schemas/feature-list.schema.json",
-    "schemas/broadcast-connector.schema.json",
     "schemas/capability-registry.schema.json",
     "schemas/eval-suite.schema.json",
     "schemas/harness-config.schema.json",
@@ -143,7 +131,6 @@ ROOT_REQUIRED = [
     "schemas/permission-policy.schema.json",
     "schemas/plugin-routing.schema.json",
     "schemas/project-profile.schema.json",
-    "schemas/reviewer-adapter.schema.json",
     "schemas/runner-config.schema.json",
     "schemas/task-state.schema.json",
     "schemas/tool-registry.schema.json",
@@ -235,8 +222,6 @@ def check_capabilities(registry: dict[str, Any], errors: list[str]) -> None:
         "codex_operator_session",
         "codex_image_generation",
         "harnessctl_local_report",
-        "broadcast_draft_queue",
-        "external_reviewer_adapters",
         "harness_mcp_server",
     }:
         if required_id not in cap_ids:
@@ -594,26 +579,16 @@ def check_visualization_policy(harness: Path, errors: list[str]) -> None:
 
 
 def check_external_interfaces(harness: Path, errors: list[str]) -> None:
-    broadcast = harness / "broadcast" / "BROADCAST_POLICY.md"
-    broadcast_text = broadcast.read_text(encoding="utf-8")
+    records_text = (harness / "shared" / "RECORDS_POLICY.md").read_text(encoding="utf-8")
     for phrase in [
-        "Draft Queue",
-        "human approval",
-        "Automatic external publish is denied",
-        "not canonical",
+        "Canonical Project Records",
+        "Local Report Views",
+        "Out Of Scope In Public Kit",
+        "social, blog",
+        "publication ledgers",
     ]:
-        if phrase not in broadcast_text:
-            errors.append(f"BROADCAST_POLICY.md lacks required phrase: {phrase}")
-
-    channel_text = (harness / "shared" / "CHANNEL_RECORDS.md").read_text(encoding="utf-8")
-    for phrase in [
-        "Internal Canonical Records",
-        "External Channel Records",
-        "not canonical memory until",
-        "Reviewer findings remain evidence",
-    ]:
-        if phrase not in channel_text:
-            errors.append(f"CHANNEL_RECORDS.md lacks required phrase: {phrase}")
+        if phrase not in records_text:
+            errors.append(f"RECORDS_POLICY.md lacks required phrase: {phrase}")
 
     pressure_text = (harness / "shared" / "CONTEXT_PRESSURE.md").read_text(encoding="utf-8")
     for phrase in [
@@ -638,16 +613,6 @@ def check_external_interfaces(harness: Path, errors: list[str]) -> None:
         rules = memory_backend.get("rules", {})
         if isinstance(rules, dict) and rules.get("retrieval_must_return_source_paths") is not True:
             errors.append("MEMORY_BACKEND.json must require source paths for retrieval")
-
-    reviewer_text = (harness / "reviewers" / "REVIEWER_POLICY.md").read_text(encoding="utf-8")
-    for phrase in [
-        "evidence, not authority",
-        "No forced consensus",
-        "Review Packet",
-        "Ledger",
-    ]:
-        if phrase not in reviewer_text:
-            errors.append(f"REVIEWER_POLICY.md lacks required phrase: {phrase}")
 
     spec_text = (harness / "spec" / "SPEC_AUTOMATION_POLICY.md").read_text(encoding="utf-8")
     for phrase in [
@@ -681,39 +646,22 @@ def check_external_interfaces(harness: Path, errors: list[str]) -> None:
         if phrase not in mcp_trust_text:
             errors.append(f"MCP_TRUST.json lacks required trust-boundary phrase: {phrase}")
 
-    connector_paths = [
-        "broadcast/connectors/generic_publication.example.json",
-        "broadcast/connectors/manual_export.example.json",
-    ]
-    for rel in connector_paths:
-        connector = load_json(harness / rel, errors)
-        if isinstance(connector, dict):
-            if connector.get("status") not in {"UNVERIFIED", "AVAILABLE_LOCAL"}:
-                errors.append(f"{rel} must start UNVERIFIED or AVAILABLE_LOCAL")
-            if connector.get("requires_human_approval") is not True:
-                errors.append(f"{rel} must require human approval")
-            if connector.get("network_write_default") != "DENIED":
-                errors.append(f"{rel} must deny network writes by default")
-
-    adapter_paths = [
-        "reviewers/adapters/ai_reviewer.example.json",
-        "reviewers/adapters/human_reviewer.json",
-    ]
-    for rel in adapter_paths:
-        adapter = load_json(harness / rel, errors)
-        if isinstance(adapter, dict):
-            if adapter.get("status") != "UNVERIFIED":
-                errors.append(f"{rel} must start UNVERIFIED")
-            if "evidence" not in str(adapter.get("authority", "")):
-                errors.append(f"{rel} must mark reviewer authority as evidence-oriented")
-
 
 def check_harnessctl(project_root: Path, errors: list[str]) -> None:
     path = project_root / "scripts" / "harnessctl.py"
     text = path.read_text(encoding="utf-8")
-    for phrase in ["event", "report", "viz-export", "viz-spec-check", "eval-run", "broadcast-draft", "review-packet", "archive", "compiled view"]:
+    for phrase in ["event", "report", "viz-export", "viz-spec-check", "eval-run", "archive", "compiled view"]:
         if phrase not in text:
             errors.append(f"scripts/harnessctl.py lacks {phrase}")
+    forbidden_public_commands = [
+        "broad" + "cast" + "-draft",
+        "review" + "-packet",
+        "create_" + "broad" + "cast_draft",
+        "create_" + "review_packet",
+    ]
+    for forbidden in forbidden_public_commands:
+        if forbidden in text:
+            errors.append(f"scripts/harnessctl.py must not include public external command {forbidden}")
 
 
 def check_one_eval_suite(path: Path, errors: list[str]) -> set[str]:
@@ -761,16 +709,16 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "workstream_profile_detected",
         "dual_operator_parity",
         "visualization_spec_gate",
-        "broadcast_publish_denied",
         "regulation_change_process",
+        "records_policy_internal_only",
         "held_out_challenge_eval_gate",
     }
     for required_id in required_ids:
         if required_id not in ids:
             errors.append(f"golden_suite.json missing required eval case: {required_id}")
     public_ids = check_one_eval_suite(harness / "evals" / "public_release_suite.json", errors)
-    if len(public_ids) < 22:
-        errors.append("public_release_suite.json must include at least 22 checklist-derived cases")
+    if len(public_ids) < 20:
+        errors.append("public_release_suite.json must include at least 20 checklist-derived cases")
     for required_id in {
         "topology_dual_operator_dissent",
         "planning_before_production",
@@ -858,7 +806,7 @@ def check_portability(project_root: Path, errors: list[str]) -> None:
 def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> None:
     readme = project_root / "README.md"
     readme_text = readme.read_text(encoding="utf-8")
-    for phrase in ["## 한국어", "## English", "you are operator", "VISUALIZATION_SPEC.md", "BROADCAST_POLICY.md"]:
+    for phrase in ["## 한국어", "## English", "you are operator", "VISUALIZATION_SPEC.md", "RECORDS_POLICY.md"]:
         if phrase not in readme_text:
             errors.append(f"README.md lacks required bilingual/operation phrase: {phrase}")
     report = harness / "SCAFFOLDING_REPORT.md"
@@ -936,7 +884,7 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         if phrase not in remote_text:
             errors.append(f"REMOTE_OPERATION_POLICY.md lacks {phrase}")
     task_close_skill = (project_root / ".claude" / "skills" / "harness-task-close" / "SKILL.md").read_text(encoding="utf-8")
-    for phrase in ["broadcast", "external reviewer", "canonical"]:
+    for phrase in ["canonical", "records policy"]:
         if phrase not in task_close_skill.lower():
             errors.append(f"harness-task-close skill lacks {phrase}")
 
@@ -1044,7 +992,7 @@ def main(argv: list[str]) -> int:
                 "model_routing",
                 "plugin_routing",
                 "context_pressure",
-                "external_channel_gate",
+                "records_policy",
                 "visualization_spec_gate",
                 "independent_verification",
             ],

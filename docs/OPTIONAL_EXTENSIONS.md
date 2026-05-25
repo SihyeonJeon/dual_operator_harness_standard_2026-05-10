@@ -13,8 +13,8 @@ Public kit rule
 
 | Surface | Public kit | Private or project overlay |
 | --- | --- | --- |
-| broadcast | draft queue, generic publication descriptor, manual export descriptor | real social, blog, release, or webhook adapter |
-| external reviewer | redaction packet, provider neutral AI reviewer descriptor, human reviewer descriptor | real model call, hosted review service, domain reviewer workflow |
+| publication or social channel | not scaffolded | real social, blog, release, or webhook adapter |
+| private review workflow | not scaffolded | real model call, hosted review service, domain reviewer workflow |
 | MCP export | dependency free read-only local server | production MCP runtime wrapper, auth boundary, hosted registry |
 | cloud runner | disabled runner descriptor, bounded policy checklist | actual cloud job, remote terminal bridge, mobile approval connector |
 | visualization | local file export, static report, backend selection policy | live dashboard, SaaS telemetry, websocket stream, hosted viewer |
@@ -44,4 +44,6 @@ Generated projects may keep real adapters in a private overlay such as:
 - a private deployment repo
 - a local secrets manager
 
-The public kit should expose only the interface and safety contract.
+The public kit exposes the local harness and safety contract. Account-specific
+publication, outreach, and private review workflows stay outside the public
+repository.

@@ -12,12 +12,8 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] `QUALITY_GATES.md` exists.
 - [ ] `VISUALIZATION_SPEC_POLICY.md` and `templates/VISUALIZATION_SPEC.md` exist.
 - [ ] Visualization production is blocked until a task-local spec is approved or marked not required.
-- [ ] `CHANNEL_RECORDS.md` exists and separates internal canonical records from external channel records.
+- [ ] `RECORDS_POLICY.md` exists and separates canonical records from compiled local report views.
 - [ ] `CONTEXT_PRESSURE.md` exists and defines context budget, compaction triggers, and context packs.
-- [ ] `broadcast/BROADCAST_POLICY.md`, `broadcast/DRAFT_QUEUE.md`, broadcast connectors, and `PUBLISHED_LEDGER.jsonl` exist.
-- [ ] Broadcast is draft-only until human approval, redaction, connector smoke evidence, and ledger records exist.
-- [ ] `reviewers/REVIEWER_POLICY.md`, reviewer adapters, and `REVIEW_LEDGER.jsonl` exist.
-- [ ] External reviewer output is evidence, not authority.
 - [ ] `mcp_server/` exists as a read-only `UNVERIFIED` context export.
 - [ ] `spec/SPEC_AUTOMATION_POLICY.md`, `spec/PRD_DRAFT.md`, and `spec/ANTI_PRD.md` exist.
 - [ ] Missing facts are represented as `UNKNOWN`.
@@ -26,7 +22,7 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] Claude Code adapters point to `harness/shared/` and team `TEAM_CONTEXT.md` rather than private memory.
 - [ ] Root `init.sh` exists and runs local harness checks.
 - [ ] Root `scripts/implementer_hooks.py` exists.
-- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `broadcast-draft`, `review-packet`, and `archive`.
+- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `eval-run`, `viz-export`, and `archive`.
 - [ ] Root `feature_list.json` exists and has behavior, verification, state, and evidence fields.
 - [ ] Root `progress.md` and `session-handoff.md` exist.
 - [ ] `ACTIVE_SNAPSHOT.md` includes open questions.

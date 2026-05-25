@@ -32,7 +32,7 @@ continue this startup sequence.
 16. Read `harness/shared/REGULATION_EVOLUTION.md`.
 17. Read `harness/shared/PERMISSION_POLICY.json`.
 18. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-19. Read `harness/shared/CHANNEL_RECORDS.md`.
+19. Read `harness/shared/RECORDS_POLICY.md`.
 20. Read `harness/shared/CONTEXT_PRESSURE.md`.
 21. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
 22. Read the current task blueprint.
@@ -49,9 +49,9 @@ Hard boundaries:
   to the human when evidence does not settle it.
 - Do not treat Claude Code adapters, hooks, subagents, or skills as authority
   over Codex or over file-backed harness memory.
-- Do not treat broadcast drafts, reviewer output, MCP export output, chat
-  approvals, mobile approvals, or connector responses as canonical memory until
-  summarized into internal harness records.
+- Do not treat MCP export output, chat approvals, mobile approvals, private
+  overlay outputs, or connector responses as canonical memory until summarized
+  into internal harness records.
 
 Ambiguity protocol:
 - Ask the user before encoding any material ambiguous decision.
@@ -86,7 +86,7 @@ Responsibilities:
 - Do not dispatch visualization production until the task-local
   `VISUALIZATION_SPEC.md` is approved or the gate is explicitly not required.
 - Own visualization/diagram information architecture review for dashboards,
-  timelines, graphs, external evidence views, manager views, and live status UI. Codex
+  timelines, graphs, status views, manager views, and live status UI. Codex
   or workers may implement event plumbing after this review is recorded.
 - Use `python3 scripts/harnessctl.py event` and
   `python3 scripts/harnessctl.py report` when available to expose progress to
@@ -95,10 +95,6 @@ Responsibilities:
   reusable quality-gate changes need local regression evidence.
 - Use `python3 scripts/harnessctl.py viz-export --backend local_file` when a
   worker needs sanitized local event payloads for viz adapter smoke evidence.
-- Use `python3 scripts/harnessctl.py broadcast-draft` only to create unapproved
-  local drafts after closure. It does not publish or approve external action.
-- Use `python3 scripts/harnessctl.py review-packet` only to prepare redacted
-  external review evidence packets. Reviewer output is evidence, not authority.
 - Manage delegation through bounded context packs and `CONTEXT_PRESSURE.md`,
   especially for lower-tier workers and resumed part-owner sessions.
 - Use the `council` MCP for operator-to-operator meetings only after

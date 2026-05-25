@@ -29,7 +29,7 @@ Rules:
   candidate slices, and worker brief before production.
 - For software work, define code convention, lint/spec governance, and
   verification surfaces before production.
-- Before any dashboard, timeline, graph, external evidence HTML view, manager view, live
+- Before any dashboard, timeline, graph, local evidence HTML view, manager view, live
   status UI, or state visualization work, require a task-local
   `VISUALIZATION_SPEC.md` or mark the gate not required with rationale.
 - For external viz backend work, planning must identify the backend decision as

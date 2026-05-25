@@ -6,6 +6,9 @@
 정리합니다. worker는 이 결정 없이 외부 backend, cloud runner, remote
 terminal, public connector를 활성화하면 안 됩니다.
 
+이 문서는 optional project overlay용입니다. 기본 public harness는
+local file과 static report만 사용합니다.
+
 ### 이번 웹사이트 데모에도 같은가?
 
 예. 원칙은 같습니다.
@@ -13,7 +16,7 @@ terminal, public connector를 활성화하면 안 됩니다.
 - `scripts/harnessctl.py report`가 만드는 `harness/reports/status.html`은
   내장 local compiled view입니다. 별도 backend 선택 없이 로컬 확인용으로
   사용할 수 있습니다.
-- dashboard, timeline, graph, external report, live status UI, 외부 viz
+- dashboard, timeline, graph, non-local report, live status UI, 외부 viz
   backend 연결은 task-local `VISUALIZATION_SPEC.md`가 먼저 backend,
   data contract, redaction, acceptance criteria를 확정해야 합니다.
 - 외부 backend는 `events.jsonl`을 보내기 전에 human approval, bounded
@@ -25,7 +28,7 @@ terminal, public connector를 활성화하면 안 됩니다.
 
    - `local_file`: 기본값. 네트워크 없음. `harnessctl.py viz-export`로
      `harness/reports/viz/`에 sanitized payload를 만듭니다.
-   - external dashboard/SaaS/cloud/backend: 직접 선택하고, 목적과 공개 범위,
+   - non-local dashboard/SaaS/cloud/backend: 직접 선택하고, 목적과 공개 범위,
      보관 기간, private data 위험을 적습니다.
 
 2. Cloud lane 선택
@@ -62,7 +65,7 @@ terminal, public connector를 활성화하면 안 됩니다.
 - local dry-run payload 생성
 - smoke evidence 파일 생성
 - redaction tests
-- README/external evidence 정리
+- README/local report evidence 정리
 
 ### 금지
 
@@ -78,13 +81,17 @@ terminal, public connector를 활성화하면 안 됩니다.
 This guide defines the human decision boundary for cloud runners, visualization
 backends, credentials, and external adapters.
 
+It is for optional project overlays. The default public harness remains
+local-file and static-report only until bounded policy, credential lifecycle,
+smoke evidence, and operator review exist.
+
 ### Does the website demo follow the same rule?
 
 Yes.
 
 - `scripts/harnessctl.py report` generates a built-in local compiled view and
   needs no external backend selection.
-- Dashboards, timelines, graphs, external reports, live status UIs, and external
+- Dashboards, timelines, graphs, non-local reports, live status UIs, and external
   viz backends require a task-local `VISUALIZATION_SPEC.md` before production.
 - External backends require human approval, bounded policy, credential lifecycle
   records, and smoke evidence before events can be pushed.

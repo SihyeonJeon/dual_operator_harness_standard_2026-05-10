@@ -140,20 +140,12 @@
       "expected": "local_file"
     },
     {
-      "id": "broadcast_draft_gate",
-      "name": "Broadcast is draft-only and approval gated",
+      "id": "records_policy_internal_only",
+      "name": "Public harness does not scaffold private overlay records",
       "type": "text_contains",
       "severity": "required",
-      "path": "harness/broadcast/BROADCAST_POLICY.md",
-      "terms": ["Automatic external publish is denied", "human approval", "project-private overlay"]
-    },
-    {
-      "id": "external_reviewer_evidence_only",
-      "name": "External reviewer output is evidence only",
-      "type": "text_contains",
-      "severity": "required",
-      "path": "harness/reviewers/REVIEWER_POLICY.md",
-      "terms": ["evidence, not authority", "No forced consensus", "redact sensitive data"]
+      "path": "harness/shared/RECORDS_POLICY.md",
+      "terms": ["Canonical Project Records", "Out Of Scope In Public Kit", "social, blog"]
     },
     {
       "id": "mcp_readonly_export",

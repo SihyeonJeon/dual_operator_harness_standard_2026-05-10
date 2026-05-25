@@ -24,7 +24,7 @@ Rules:
   explicitly approved.
 - Match the target project's existing conventions.
 - If the spec is impossible or underdefined, return `SPEC_BLOCKED`.
-- If asked to build a dashboard, timeline, graph, external evidence HTML view, manager
+- If asked to build a dashboard, timeline, graph, local evidence HTML view, manager
   view, live status UI, or state visualization, require an approved task-local
   `VISUALIZATION_SPEC.md` before implementation.
 - If asked to connect `harness/events/events.jsonl` to a viz backend, start with

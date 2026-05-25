@@ -69,11 +69,11 @@ Merge or double-edit protocol:
   goal;
 - runtime evidence where applicable;
 - visualization pre-spec evidence where dashboards, timelines, graphs, HTML
-  external evidence views, manager views, or live status UI are requested;
+  status views, manager views, or live status UI are requested;
 - UI/UX/layout/design evidence where applicable;
 - debugging closure evidence;
 - cross-evaluation evidence or `NOT-RUN` rationale;
-- held-out, challenge, independent reviewer, or explicit `WARN` evidence when
+- held-out, challenge, independent evaluator, or explicit `WARN` evidence when
   deterministic metrics, parser/classifier/extractor behavior, eval framework
   claims, or benchmark-style quality claims are in scope;
 - regulation review result.
@@ -89,18 +89,18 @@ Status: NOT_REQUIRED | REQUIRED_PENDING | PASS | WARN_ACCEPTED | BLOCKED | NOT-R
 Required:
 
 - local golden/self eval result;
-- held-out or challenge eval result, independent reviewer packet, or accepted
+- held-out or challenge eval result, independent evaluator result, or accepted
   `WARN` explaining why no independent/challenge evidence exists;
-- routing decision for every held-out or reviewer failure;
+- routing decision for every held-out or independent evaluator failure;
 - accepted reusable failures promoted into local regression fixtures;
 - portable root verification command separated from local hidden/private
   evaluator paths.
 
 ## Visualization Pre-Spec Gate
 
-Use when the task creates or changes a dashboard, timeline, graph, HTML
-external evidence view, manager view, live status UI, or any other visualization of the
-harness or project state.
+Use when the task creates or changes a dashboard, timeline, graph, HTML status
+view, manager view, live status UI, or any other visualization of the harness or
+project state.
 
 Policy: `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 Spec template: `harness/templates/VISUALIZATION_SPEC.md`
@@ -112,23 +112,20 @@ Visualization production is blocked until planning, design, evaluation, and
 operator review approve the task-local visualization spec or explicitly record
 why the gate is not required.
 
-## External Channel Gate
+## Records Policy Gate
 
-Use when the task creates broadcast drafts, external evidence records, public release
-notes, social posts, external reviewer packets, mobile/chat approvals, or
-connector outputs.
+Use when the task creates local reports, evidence summaries, private overlay
+adapter outputs, mobile/chat approvals, or connector response summaries.
 
 Policy:
 
-- `harness/shared/CHANNEL_RECORDS.md`
-- `harness/broadcast/BROADCAST_POLICY.md`
-- `harness/reviewers/REVIEWER_POLICY.md`
+- `harness/shared/RECORDS_POLICY.md`
 
-Status: NOT_REQUIRED | DRAFT_ONLY | REVIEW_PACKET_ONLY | APPROVED_EXTERNAL_ACTION | BLOCKED | NOT-RUN
+Status: NOT_REQUIRED | LOCAL_ONLY | PRIVATE_OVERLAY_ONLY | BLOCKED | NOT-RUN
 
-External drafts and reviewer outputs are not canonical memory until summarized
-into internal files. External publication is blocked until human approval,
-redaction, connector smoke evidence, and ledger records exist.
+Canonical project records stay local to the harness. Publication drafts, social
+channel logs, outreach records, connector logs, and private review ledgers are
+outside the public kit and belong in private overlays.
 
 ## Context Pressure Gate
 

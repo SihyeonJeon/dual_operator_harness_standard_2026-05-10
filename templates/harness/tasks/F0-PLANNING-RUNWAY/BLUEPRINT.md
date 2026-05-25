@@ -63,7 +63,7 @@ A sharp/deep slice becomes active only after:
   evaluation lanes.
 - A project-specific task blueprint exists under `harness/tasks/`, or exact
   blockers are recorded.
-- Any dashboard, timeline, graph, external evidence HTML view, manager view, live status
+- Any dashboard, timeline, graph, local evidence HTML view, manager view, live status
   UI, or state visualization has passed the pre-visualization spec gate or is
   blocked before production.
 - A worker brief exists only if a slice passed the approval gate.

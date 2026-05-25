@@ -43,11 +43,18 @@ ROOT_REQUIRED = [
     "templates/harness/shared/DUAL_OPERATOR_PROTOCOL.md",
     "templates/harness/shared/SESSION_CONTINUITY.md",
     "templates/harness/shared/REGULATION_EVOLUTION.md",
+    "templates/harness/shared/RECORDS_POLICY.md",
     "templates/harness/shared/MCP_TRUST.json",
     "templates/harness/templates/BUDGET.json",
 ]
 
 FORBIDDEN_PUBLIC_MARKERS = [
+    "broad" + "cast" + "-draft",
+    "review" + "-packet",
+    "channel" + "_records",
+    "harness/" + "broad" + "cast",
+    "harness/" + "reviewers",
+    "published" + "_ledger",
     "th" + "reads",
     "x_" + "thread",
     "blog" + "_push",
