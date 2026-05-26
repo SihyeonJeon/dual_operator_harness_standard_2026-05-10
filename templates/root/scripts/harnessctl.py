@@ -1229,6 +1229,8 @@ def default_context_files(root: Path, task_id: str, software: bool) -> list[str]
         "harness/shared/PART_OWNERSHIP.md",
         "harness/shared/MODEL_ROUTING.json",
         "harness/shared/AGENT_COMMUNICATION.md",
+        "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+        "harness/shared/CROSS_FEEDBACK_LOOP.md",
         "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
         "harness/shared/QUALITY_GATES.md",
         "harness/shared/CONTEXT_PRESSURE.md",
@@ -1547,6 +1549,187 @@ def create_task_packet(args: argparse.Namespace, root: Path) -> int:
     print(f"task packet written: {display_path(output, root)}")
     if missing and not args.allow_missing_evidence:
         print("ERROR: task packet has missing evidence paths: " + ", ".join(missing), file=sys.stderr)
+        return 1
+    return 0
+
+
+def record_current_research(args: argparse.Namespace, root: Path) -> int:
+    queries = split_values(args.query)
+    sources = split_values(args.source)
+    findings = split_values(args.finding)
+    alternatives = split_values(args.alternative)
+    impacts = split_values(args.decision_impact)
+    not_run_reason = args.not_run_reason.strip()
+    if not_run_reason:
+        verdict = "NOT-RUN"
+    elif sources and findings:
+        verdict = "PASS"
+    else:
+        verdict = "WARN"
+
+    output = artifact_path(root, args.output, args.task_id, "CURRENT_RESEARCH.json")
+    payload = {
+        "artifact": "current_research",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "policy": "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+        "as_of": args.as_of or datetime.now(timezone.utc).date().isoformat(),
+        "scope": args.scope or "current_market_and_comparable_state",
+        "must_precede": "overall_plan",
+        "verdict": verdict,
+        "queries": queries,
+        "sources": sources,
+        "alternatives_or_comparables": alternatives,
+        "findings": findings,
+        "decision_impact": impacts,
+        "not_run_reason": not_run_reason,
+        "external_network_write": False,
+        "claim_boundary": [
+            "records current-state research evidence",
+            "does not browse or buy data",
+            "does not replace source quality judgment",
+        ],
+    }
+    json_artifact(output, payload)
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Current Research",
+        "",
+        f"Task: `{args.task_id}`",
+        f"Verdict: {verdict}",
+        f"As-of: {payload['as_of']}",
+        "",
+        "## Queries",
+        "",
+        *[f"- {scrub_text(item)}" for item in queries],
+        "",
+        "## Sources",
+        "",
+        *[f"- {scrub_text(item)}" for item in sources],
+        "",
+        "## Alternatives Or Comparables",
+        "",
+        *[f"- {scrub_text(item)}" for item in alternatives],
+        "",
+        "## Findings",
+        "",
+        *[f"- {scrub_text(item)}" for item in findings],
+        "",
+        "## Decision Impact",
+        "",
+        *[f"- {scrub_text(item)}" for item in impacts],
+    ]
+    if not_run_reason:
+        lines.extend(["", "## NOT-RUN Reason", "", scrub_text(not_run_reason)])
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "hook",
+            "event_type": "current_research.completed",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": f"Current research recorded with {verdict}.",
+            "evidence_path": display_path(output, root),
+            "part_id": "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"current research written: {display_path(output, root)}")
+    print(f"current research markdown written: {display_path(markdown, root)}")
+    print(f"verdict: {verdict}")
+    if verdict == "PASS" or (verdict == "NOT-RUN" and args.allow_not_run):
+        return 0
+    return 1
+
+
+def record_cross_feedback(args: argparse.Namespace, root: Path) -> int:
+    evidence_paths = split_values(args.evidence_path)
+    missing = []
+    for value in evidence_paths:
+        path = Path(value)
+        candidate = path if path.is_absolute() else root / path
+        if value != "UNKNOWN" and not candidate.exists():
+            missing.append(value)
+    verdict = args.verdict
+    if missing and verdict == "PASS":
+        verdict = "WARN"
+    output = artifact_path(root, args.output, args.task_id, "CROSS_FEEDBACK.json")
+    payload = {
+        "artifact": "cross_feedback",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "policy": "harness/shared/CROSS_FEEDBACK_LOOP.md",
+        "round": args.round,
+        "producer": args.producer,
+        "reviewer": args.reviewer,
+        "verdict": verdict,
+        "feedback": bounded_text(args.feedback, args.max_feedback_chars),
+        "requested_action": args.requested_action or "UNKNOWN",
+        "route_to": args.route_to or "UNKNOWN",
+        "evidence_paths": evidence_paths,
+        "missing_evidence_paths": missing,
+        "dissent_preserved": args.dissent_preserved,
+        "force_consensus": False,
+    }
+    json_artifact(output, payload)
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Cross Feedback",
+        "",
+        f"Task: `{args.task_id}`",
+        f"Round: {args.round}",
+        f"Producer: `{args.producer}`",
+        f"Reviewer: `{args.reviewer}`",
+        f"Verdict: {verdict}",
+        "",
+        "## Feedback",
+        "",
+        scrub_text(args.feedback),
+        "",
+        "## Requested Action",
+        "",
+        scrub_text(args.requested_action or "UNKNOWN"),
+        "",
+        "## Evidence Paths",
+        "",
+        *[f"- `{scrub_text(item)}`" for item in evidence_paths],
+    ]
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "evaluator",
+            "event_type": "cross_feedback.recorded",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": f"Cross feedback recorded by {args.reviewer} for {args.producer}.",
+            "evidence_path": display_path(output, root),
+            "part_id": "",
+            "worker_id": args.reviewer,
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"cross feedback written: {display_path(output, root)}")
+    print(f"cross feedback markdown written: {display_path(markdown, root)}")
+    print(f"verdict: {verdict}")
+    if missing and not args.allow_missing_evidence:
+        print("ERROR: cross feedback has missing evidence paths: " + ", ".join(missing), file=sys.stderr)
+        return 1
+    if verdict == "FAIL" and not args.allow_fail:
         return 1
     return 0
 
@@ -2153,6 +2336,37 @@ def main(argv: list[str]) -> int:
     task_packet.add_argument("--trace-id", default="trace_task_packet")
     task_packet.add_argument("--output", default="")
 
+    current_research = sub.add_parser("current-research", help="Record current-state research before overall planning")
+    current_research.add_argument("--task-id", required=True)
+    current_research.add_argument("--trace-id", default="trace_current_research")
+    current_research.add_argument("--query", action="append", default=[])
+    current_research.add_argument("--source", action="append", default=[])
+    current_research.add_argument("--alternative", action="append", default=[])
+    current_research.add_argument("--finding", action="append", default=[])
+    current_research.add_argument("--decision-impact", action="append", default=[])
+    current_research.add_argument("--not-run-reason", default="")
+    current_research.add_argument("--allow-not-run", action="store_true")
+    current_research.add_argument("--as-of", default="")
+    current_research.add_argument("--scope", default="")
+    current_research.add_argument("--output", default="")
+
+    cross_feedback = sub.add_parser("cross-feedback", help="Record independent cross-feedback for a task artifact")
+    cross_feedback.add_argument("--task-id", required=True)
+    cross_feedback.add_argument("--trace-id", default="trace_cross_feedback")
+    cross_feedback.add_argument("--round", default="1")
+    cross_feedback.add_argument("--producer", required=True)
+    cross_feedback.add_argument("--reviewer", required=True)
+    cross_feedback.add_argument("--verdict", choices=["PASS", "WARN", "FAIL", "NOT-RUN"], required=True)
+    cross_feedback.add_argument("--feedback", required=True)
+    cross_feedback.add_argument("--requested-action", default="")
+    cross_feedback.add_argument("--route-to", choices=["planning", "design", "production", "evaluation", "context_update", "governance_update", "human_decision", "none"], default="none")
+    cross_feedback.add_argument("--evidence-path", action="append", default=[])
+    cross_feedback.add_argument("--dissent-preserved", action="store_true")
+    cross_feedback.add_argument("--allow-missing-evidence", action="store_true")
+    cross_feedback.add_argument("--allow-fail", action="store_true")
+    cross_feedback.add_argument("--max-feedback-chars", type=int, default=1600)
+    cross_feedback.add_argument("--output", default="")
+
     concept = sub.add_parser("concept-check", help="Check user-facing artifacts for literal prompt or task-label leakage")
     concept.add_argument("--task-id", required=True)
     concept.add_argument("--trace-id", default="trace_concept_check")
@@ -2207,6 +2421,10 @@ def main(argv: list[str]) -> int:
         return generate_worker_brief(args, root)
     if args.command == "task-packet":
         return create_task_packet(args, root)
+    if args.command == "current-research":
+        return record_current_research(args, root)
+    if args.command == "cross-feedback":
+        return record_cross_feedback(args, root)
     if args.command == "concept-check":
         return concept_check(args, root)
     if args.command == "software-feedback":

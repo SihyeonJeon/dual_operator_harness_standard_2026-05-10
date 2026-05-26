@@ -83,6 +83,8 @@ ROOT_REQUIRED = [
     "templates/harness/shared/SESSION_CONTINUITY.md",
     "templates/harness/shared/REGULATION_EVOLUTION.md",
     "templates/harness/shared/AGENT_COMMUNICATION.md",
+    "templates/harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+    "templates/harness/shared/CROSS_FEEDBACK_LOOP.md",
     "templates/harness/shared/CONCEPT_TRANSLATION_POLICY.md",
     "templates/harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
     "templates/harness/shared/BUDGET_GOVERNANCE.md",
@@ -286,6 +288,46 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         ],
         target,
     )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "current-research",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--query",
+            "current comparable harness control surfaces",
+            "--source",
+            "local smoke fixture",
+            "--alternative",
+            "direct transcript",
+            "--finding",
+            "Current-state research artifact records planning evidence before overall plan approval.",
+            "--decision-impact",
+            "Keep file-backed planning evidence before production.",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "cross-feedback",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--producer",
+            "harnessctl",
+            "--reviewer",
+            "evaluator",
+            "--verdict",
+            "PASS",
+            "--feedback",
+            "Executable governance smoke artifacts are independently reviewable.",
+            "--evidence-path",
+            "harness/tasks/H0-LOCAL-SMOKE/TASK_PACKET.json",
+        ],
+        target,
+    )
     concept_sample = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "USER_FACING_SAMPLE.txt"
     concept_sample.write_text(
         "Noon Archive\nPolarized frames for clear streets, long drives, and bright weekends.\n",
@@ -366,6 +408,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "model_route.selected",
         "worker_brief.created",
         "task_packet.created",
+        "current_research.completed",
+        "cross_feedback.recorded",
         "concept_check.completed",
         "software_feedback.completed",
     ]:
@@ -376,6 +420,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     public = load_json(target / "harness" / "evals" / "results" / "public_release.json")
     viz = load_json(target / "harness" / "reports" / "viz" / "summary.json")
     context_pack = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONTEXT_PACK.json")
+    current_research = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CURRENT_RESEARCH.json")
+    cross_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CROSS_FEEDBACK.json")
     concept_check = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK.json")
     concept_check_context = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_CONTEXT.json")
     concept_check_bad = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_BAD.json")
@@ -389,6 +435,10 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("viz smoke performed or reported an external network write")
     if context_pack.get("artifact") != "context_pack":
         raise SystemExit("context-pack smoke did not write the expected artifact")
+    if current_research.get("verdict") != "PASS":
+        raise SystemExit("current-research smoke did not pass")
+    if cross_feedback.get("verdict") != "PASS":
+        raise SystemExit("cross-feedback smoke did not pass")
     if concept_check.get("verdict") != "PASS":
         raise SystemExit("concept-check smoke did not pass")
     if concept_check_context.get("verdict") != "PASS":
@@ -426,6 +476,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         },
         "executable_governance": {
             "context_pack_sources": context_pack.get("source_count"),
+            "current_research_verdict": current_research.get("verdict"),
+            "cross_feedback_verdict": cross_feedback.get("verdict"),
             "concept_check_verdict": concept_check.get("verdict"),
             "concept_check_contextual_verdict": concept_check_context.get("verdict"),
             "concept_check_negative_verdict": concept_check_bad.get("verdict"),

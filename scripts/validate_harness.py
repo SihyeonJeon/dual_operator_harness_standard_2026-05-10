@@ -46,6 +46,8 @@ P0_REQUIRED = [
     "shared/RECORDS_POLICY.md",
     "shared/CONTEXT_PRESSURE.md",
     "shared/AGENT_COMMUNICATION.md",
+    "shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+    "shared/CROSS_FEEDBACK_LOOP.md",
     "shared/CONCEPT_TRANSLATION_POLICY.md",
     "shared/SOFTWARE_FEEDBACK_POLICY.md",
     "shared/BUDGET_GOVERNANCE.md",
@@ -338,6 +340,8 @@ def check_workstream_profile(profile: dict[str, Any], errors: list[str]) -> None
             "detected_workstreams",
             "risk_tier",
             "team_topology",
+            "current_market_research",
+            "cross_feedback_loop",
             "operator_boundary",
             "required_loop",
             "initial_feature_seeds",
@@ -383,10 +387,12 @@ def check_workstream_profile(profile: dict[str, Any], errors: list[str]) -> None
     required_loop = profile.get("required_loop", [])
     if isinstance(required_loop, list):
         for required_step in [
+            "current_state_research_before_overall_plan",
             "planning_runway",
             "pre_visualization_spec_gate_when_needed",
             "slice_approval_gate",
             "production",
+            "cross_feedback_loop",
         ]:
             if required_step not in required_loop:
                 errors.append(f"WORKSTREAM_PROFILE.json required_loop lacks {required_step}")
@@ -865,6 +871,8 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "agent_communication_packets",
         "software_feedback_policy",
         "concept_translation_policy",
+        "current_market_research_policy",
+        "cross_feedback_loop_policy",
         "harnessctl_executable_governance_commands",
     }:
         if required_id not in public_ids:
@@ -961,18 +969,22 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "gpt-5.3-codex-spark",
         "SOFTWARE_FEEDBACK_POLICY.md",
         "AGENT_COMMUNICATION.md",
+        "CURRENT_MARKET_RESEARCH_POLICY.md",
+        "CROSS_FEEDBACK_LOOP.md",
         "CONCEPT_TRANSLATION_POLICY.md",
         "context-pack",
         "worker-brief",
         "model-route",
         "task-packet",
+        "current-research",
+        "cross-feedback",
         "concept-check",
         "software-feedback",
     ]:
         if phrase not in readme_text:
             errors.append(f"README.md lacks required bilingual/operation phrase: {phrase}")
     claude_text = (project_root / "CLAUDE.md").read_text(encoding="utf-8")
-    for phrase in ["Root `CLAUDE.md` is intentional", ".claude/", "SOFTWARE_FEEDBACK_POLICY.md"]:
+    for phrase in ["Root `CLAUDE.md` is intentional", ".claude/", "SOFTWARE_FEEDBACK_POLICY.md", "CURRENT_MARKET_RESEARCH_POLICY.md", "CROSS_FEEDBACK_LOOP.md"]:
         if phrase not in claude_text:
             errors.append(f"CLAUDE.md lacks required Claude adapter phrase: {phrase}")
     report = harness / "SCAFFOLDING_REPORT.md"
@@ -1018,9 +1030,29 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "future regression fixtures",
         "SOFTWARE_FEEDBACK_POLICY.md",
         "Playwright or equivalent evidence",
+        "Current Research Gate",
+        "Cross Feedback Gate",
     ]:
         if phrase not in quality_text:
             errors.append(f"QUALITY_GATES.md lacks required held-out eval phrase: {phrase}")
+    current_research = (harness / "shared" / "CURRENT_MARKET_RESEARCH_POLICY.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Before the operator approves an overall plan",
+        "as-of the command date",
+        "CURRENT_RESEARCH.json",
+        "harnessctl.py current-research",
+    ]:
+        if phrase not in current_research:
+            errors.append(f"CURRENT_MARKET_RESEARCH_POLICY.md lacks {phrase}")
+    cross_feedback = (harness / "shared" / "CROSS_FEEDBACK_LOOP.md").read_text(encoding="utf-8")
+    for phrase in [
+        "independent feedback path",
+        "Do not forward full transcripts",
+        "Material dissent is preserved",
+        "harnessctl.py cross-feedback",
+    ]:
+        if phrase not in cross_feedback:
+            errors.append(f"CROSS_FEEDBACK_LOOP.md lacks {phrase}")
     software_feedback = (harness / "shared" / "SOFTWARE_FEEDBACK_POLICY.md").read_text(encoding="utf-8")
     for phrase in ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN", "harnessctl.py software-feedback"]:
         if phrase not in software_feedback:

@@ -26,8 +26,10 @@ Before doing project work:
 10. Read `harness/shared/RECORDS_POLICY.md` and
    `harness/shared/CONTEXT_PRESSURE.md`.
 11. Read `harness/shared/AGENT_COMMUNICATION.md`.
-12. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
-13. Read the role file that matches the user's instruction or the current agent
+12. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+13. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+14. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+15. Read the role file that matches the user's instruction or the current agent
    surface.
 
 If the user says only "you are operator", "act as operator", or equivalent,
@@ -72,13 +74,21 @@ become the fixed operator for the current agent surface:
   delegating to worker sessions, especially lower-tier or part-owner sessions.
 - Use `harness/shared/AGENT_COMMUNICATION.md` to pass concise task packets and
   evidence paths instead of forwarding long transcripts between agents.
+- Use `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md` before approving the
+  overall plan when the goal depends on current market, tools, comparables,
+  standards, regulations, or public facts. Prefer
+  `python3 scripts/harnessctl.py current-research` to record the evidence.
+- Use `harness/shared/CROSS_FEEDBACK_LOOP.md` before operator closure for
+  material artifacts. Prefer `python3 scripts/harnessctl.py cross-feedback` to
+  record independent feedback without forcing consensus.
 - Use `harness/shared/CONCEPT_TRANSLATION_POLICY.md` for user-facing output.
   Treat the user's wording as concept, not artifact copy, unless literal text
   was explicitly requested. Ordinary domain terms remain allowed when they read
   naturally in the artifact.
 - Prefer `python3 scripts/harnessctl.py context-pack`, `worker-brief`,
-  `model-route`, and `task-packet` for repeatable routing and handoff mechanics
-  when the generated command surface is available.
+  `model-route`, `task-packet`, `current-research`, and `cross-feedback` for
+  repeatable routing, planning evidence, feedback, and handoff mechanics when
+  the generated command surface is available.
 - For software, web, app, API, game, automation, or UI work, require the
   evaluation packet to follow `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.
   Prefer `python3 scripts/harnessctl.py software-feedback` when project

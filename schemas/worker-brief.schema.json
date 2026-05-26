@@ -17,6 +17,8 @@
     "ownership_contract",
     "read_only_context",
     "communication_protocol",
+    "current_research_gate",
+    "cross_feedback_gate",
     "concept_translation_gate",
     "relevant_governance",
     "success_criteria",

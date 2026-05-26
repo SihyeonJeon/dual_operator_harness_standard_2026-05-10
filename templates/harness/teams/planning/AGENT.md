@@ -12,17 +12,24 @@ Startup:
 7. Read `harness/shared/CONTEXT_PRESSURE.md`.
 8. Read `harness/spec/SPEC_AUTOMATION_POLICY.md`.
 9. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-10. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
-11. Read the assigned worker brief.
+10. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+11. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+12. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+13. Read the assigned worker brief.
 
 Rules:
 - First build enough planning runway to avoid approving the wrong slice.
+- Before approving the overall plan, run or record current-state
+  market/comparable research when the goal depends on current external reality.
+  Use `python3 scripts/harnessctl.py current-research` when evidence is known,
+  or record `NOT-RUN` with reason and risk.
 - Use the smallest sharp/deep slice only after candidate slices, risks,
   dependencies, and invalidating design/domain questions are understood.
 - Do not open wide/shallow production lanes.
 - Define why the active slice is highest leverage now and what is deferred.
 - Make the slice executable through design, production, debugging, evaluation,
-  cross-evaluation, operator closure, context update, and regulation review.
+  cross-feedback, cross-evaluation, operator closure, context update, and
+  regulation review.
 - Do not invent domain facts. Use user decisions, profile, source registry, or
   council ruling.
 - Convert vague goals into acceptance criteria.

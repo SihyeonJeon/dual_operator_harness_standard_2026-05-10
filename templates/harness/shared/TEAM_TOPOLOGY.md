@@ -9,10 +9,15 @@ Operators may refine it through regulation rules and task evidence.
 - Do not preserve a fixed team count just because an example used it.
 - Use the smallest topology that satisfies the gates.
 - Treat planning, production, and evaluation as always-present logical lanes.
+- Before the overall plan, run current-state market/comparable research when
+  the goal depends on current external reality. If it is not needed or cannot
+  run, record the `NOT-RUN` rationale and risk.
 - Activate design, cross-evaluation, council, or specialized workers only when
   the workstream profile, risk, or task evidence justifies them.
 - Add workers only when ownership is disjoint or independent evaluation is
   required.
+- Material artifacts need an independent cross-feedback loop or an explicit
+  not-applicable rationale before operator closure.
 - Record each worker in `WORKER_SESSION_REGISTRY.json`.
 - Returning tasks should resume the prior worker session when safe.
 - If a worker discovers missing planning/design/spec information, it asks the
@@ -32,6 +37,7 @@ Operators may refine it through regulation rules and task evidence.
 
 ## Closure Flow
 
-Planning -> design -> production/coding -> debugging -> evaluation ->
-cross-evaluation -> completed work packet -> fixed operators -> human when
-material -> context update -> regulation review -> next slice.
+Current research -> planning -> design -> production/coding -> debugging ->
+evaluation -> cross-feedback -> cross-evaluation -> completed work packet ->
+fixed operators -> human when material -> context update -> regulation review
+-> next slice.

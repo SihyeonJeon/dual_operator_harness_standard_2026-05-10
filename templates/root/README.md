@@ -20,6 +20,8 @@ python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
 python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py current-research --task-id H0-LOCAL-SMOKE --query "current alternatives" --source "SOURCE" --finding "finding"
+python3 scripts/harnessctl.py cross-feedback --task-id H0-LOCAL-SMOKE --producer A --reviewer B --verdict PASS --feedback "feedback"
 python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
@@ -44,6 +46,8 @@ you are operator
 - part owner session same part reuse
 - token saving agent communication via bounded task packets
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
+- current-research records command-date market/comparable evidence before overall planning
+- cross-feedback records independent feedback before operator closure
 - concept-check catches prompt wording leakage in user-facing artifacts
 - CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical
@@ -81,6 +85,8 @@ you are operator
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
+- `harness/shared/CROSS_FEEDBACK_LOOP.md`
 - `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`
@@ -106,6 +112,8 @@ python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
 python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py current-research --task-id H0-LOCAL-SMOKE --query "current alternatives" --source "SOURCE" --finding "finding"
+python3 scripts/harnessctl.py cross-feedback --task-id H0-LOCAL-SMOKE --producer A --reviewer B --verdict PASS --feedback "feedback"
 python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
@@ -130,6 +138,8 @@ you are operator
 - part owner session same part reuse
 - token-saving agent communication through bounded task packets
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
+- current-research records command-date market/comparable evidence before overall planning
+- cross-feedback records independent feedback before operator closure
 - concept-check catches prompt wording leakage in user-facing artifacts
 - CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical
@@ -167,6 +177,8 @@ you are operator
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
+- `harness/shared/CROSS_FEEDBACK_LOOP.md`
 - `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`

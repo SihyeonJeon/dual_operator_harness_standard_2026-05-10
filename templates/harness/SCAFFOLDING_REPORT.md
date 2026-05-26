@@ -46,6 +46,8 @@ Domain packs selected: UNKNOWN
 - `harness/shared/PART_OWNERSHIP.md`
 - `harness/shared/PLUGIN_ROUTING.json`
 - `harness/shared/QUALITY_GATES.md`
+- `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
+- `harness/shared/CROSS_FEEDBACK_LOOP.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`

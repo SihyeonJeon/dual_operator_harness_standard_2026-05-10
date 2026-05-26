@@ -154,9 +154,19 @@ python3 scripts/harnessctl.py context-pack --task-id TASK
 python3 scripts/harnessctl.py worker-brief --task-id TASK --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+python3 scripts/harnessctl.py current-research --task-id TASK --query "..." --source "..." --finding "..."
+python3 scripts/harnessctl.py cross-feedback --task-id TASK --producer A --reviewer B --verdict PASS --feedback "..."
 python3 scripts/harnessctl.py concept-check --task-id TASK --artifact-path PATH --forbidden-phrase "..."
 python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
 ```
+
+Before approving the overall plan, record current-state market/comparable
+research when current external reality could change the plan. If it is
+unavailable or not applicable, record `NOT-RUN` with reason and risk.
+
+Before operator closure on material work, record independent cross-feedback or
+an explicit not-applicable rationale. Do not convert dissent into agreement to
+make closure look cleaner.
 
 For user-facing output, treat the user's wording as concept and constraint, not
 as artifact copy. Ask for explicit approval before using prompt phrases,

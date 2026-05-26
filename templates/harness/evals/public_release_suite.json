@@ -202,12 +202,28 @@
       "terms": ["Treat the user's request as intent", "Do not treat the request text as copy", "satisfy the concept without announcing", "concept-check"]
     },
     {
+      "id": "current_market_research_policy",
+      "name": "Current-state market research precedes overall planning when relevant",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+      "terms": ["Before the operator approves an overall plan", "as-of the command date", "CURRENT_RESEARCH.json", "current-research"]
+    },
+    {
+      "id": "cross_feedback_loop_policy",
+      "name": "Cross feedback loop records independent feedback before closure",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/CROSS_FEEDBACK_LOOP.md",
+      "terms": ["independent feedback path", "Material dissent is preserved", "Do not forward full transcripts", "cross-feedback"]
+    },
+    {
       "id": "harnessctl_executable_governance_commands",
       "name": "Harness control surface includes executable context routing and feedback helpers",
       "type": "text_contains",
       "severity": "required",
       "path": "scripts/harnessctl.py",
-      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "concept-check", "software-feedback"]
+      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "current-research", "cross-feedback", "concept-check", "software-feedback"]
     },
     {
       "id": "recovery_restart_path",

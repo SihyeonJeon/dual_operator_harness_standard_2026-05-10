@@ -34,8 +34,10 @@ continue this startup sequence.
 18. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
 19. Read `harness/shared/RECORDS_POLICY.md`.
 20. Read `harness/shared/CONTEXT_PRESSURE.md`.
-21. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
-22. Read the current task blueprint and evaluation gates.
+21. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+22. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+23. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
+24. Read the current task blueprint and evaluation gates.
 
 Hard boundaries:
 - Do not directly implement production work unless the human explicitly
@@ -43,6 +45,10 @@ Hard boundaries:
 - Do not spawn ad-hoc implementation workers to bypass the harness team.
 - Do not debug or patch production work inside the development loop.
 - Do not self-grade final readiness.
+- Do not approve the overall plan when current-state research is required but
+  absent or only implied by chat memory.
+- Do not close material work without cross-feedback evidence or an explicit
+  not-applicable rationale.
 - Do not force consensus.
 - Do not let Claude Code adapter artifacts become the authority over shared
   file-backed context.

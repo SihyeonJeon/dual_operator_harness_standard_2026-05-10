@@ -10,10 +10,10 @@
     "always_present_teams": ["planning", "production", "evaluation"],
     "conditional_teams": ["design", "cross_evaluation", "council"],
     "team_activation_notes": {
-      "planning": "Always active for slice selection, acceptance criteria, worker briefs, and upstream questions.",
+      "planning": "Always active for current-state research, slice selection, acceptance criteria, worker briefs, and upstream questions.",
       "design": "Activate for visual, interaction, media, content-structure, product, brand, learning, or subjective-quality work. Visualization production requires a task-local VISUALIZATION_SPEC.md first.",
       "production": "Use coding team files for any production work, including code, research artifacts, writing, operations, data, media, or business deliverables.",
-      "evaluation": "Always active for independent evidence-based completion judgment."
+      "evaluation": "Always active for independent evidence-based completion judgment and cross-feedback loop closure."
     },
     "recommended_initial_topology": {
       "planning": "active",
@@ -23,6 +23,19 @@
       "cross_evaluation": "on_demand",
       "council": "optional_after_smoke"
     }
+  },
+  "current_market_research": {
+    "policy_path": "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+    "required_before_overall_plan": true,
+    "as_of": "command_time",
+    "not_run_requires_reason_and_risk": true,
+    "artifact": "harness/tasks/{task_id}/CURRENT_RESEARCH.json"
+  },
+  "cross_feedback_loop": {
+    "policy_path": "harness/shared/CROSS_FEEDBACK_LOOP.md",
+    "required_for_material_artifacts": true,
+    "preserve_dissent": true,
+    "artifact": "harness/tasks/{task_id}/CROSS_FEEDBACK.json"
   },
   "operator_boundary": {
     "operators_do": [
@@ -41,6 +54,7 @@
     ]
   },
   "required_loop": [
+    "current_state_research_before_overall_plan",
     "planning_runway",
     "workstream_and_risk_confirmation",
     "candidate_slice_generation",
@@ -50,6 +64,7 @@
     "production",
     "debugging",
     "evaluation",
+    "cross_feedback_loop",
     "cross_evaluation_when_required",
     "completed_work_packet",
     "operator_review",

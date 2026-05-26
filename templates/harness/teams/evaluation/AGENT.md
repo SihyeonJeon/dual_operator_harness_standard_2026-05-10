@@ -12,11 +12,13 @@ Startup:
 6. Read `harness/shared/QUALITY_GATES.md`.
 7. Read `harness/shared/PART_OWNERSHIP.md`.
 8. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-9. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
-10. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when the task includes
+9. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+10. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+11. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+12. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when the task includes
    software, web, app, UI, API, game, automation, or other code output.
-11. Read `harness/evals/README.md`.
-12. Read the assigned worker brief or evaluation packet.
+13. Read `harness/evals/README.md`.
+14. Read the assigned worker brief or evaluation packet.
 
 Rules:
 - Convert every acceptance criterion into observed evidence.
@@ -29,6 +31,12 @@ Rules:
   regression checks when relevant, or record why it is `NOT-RUN`.
 - Run debugging verification and cross-evaluation before the completed work
   packet is sent to fixed operators.
+- Verify current-state research was run before overall planning when the task
+  depends on current external reality. Use the `CURRENT_RESEARCH.json` packet
+  or require explicit `NOT-RUN` risk.
+- Verify cross-feedback exists for material artifacts. Use
+  `python3 scripts/harnessctl.py cross-feedback` when recording evaluation
+  feedback from an independent reviewer.
 - Use independent vendor/model/session when the cross-evaluation gate requires
   it and the capability is verified.
 - Evaluate the code or artifact, the context/decision chain that produced it,

@@ -109,10 +109,16 @@ agent-to-agent packets that cite evidence paths instead of forwarding full
 transcripts.
 
 Repeatable domain-neutral steps are executable through `scripts/harnessctl.py`:
-`context-pack`, `worker-brief`, `model-route`, `task-packet`, and
-`concept-check`, and `software-feedback`. The remaining markdown files describe
-judgment boundaries and project-specific reasoning rather than asking agents to
-manually repeat stable mechanics.
+`context-pack`, `worker-brief`, `model-route`, `task-packet`,
+`current-research`, `cross-feedback`, `concept-check`, and
+`software-feedback`. The remaining markdown files describe judgment boundaries
+and project-specific reasoning rather than asking agents to manually repeat
+stable mechanics.
+
+Before overall planning, generated harnesses require current-state
+market/comparable research when current external reality can change the plan.
+Before closure, material artifacts require recorded cross-feedback or an
+explicit not-applicable rationale.
 
 User-facing artifacts treat the user's request as a concept, not as copy.
 Generated harnesses include a concept translation policy and a literal leakage
@@ -161,7 +167,7 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 198/198 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 215/215 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |

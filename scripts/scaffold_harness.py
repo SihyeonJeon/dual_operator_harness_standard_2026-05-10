@@ -111,6 +111,7 @@ def build_workstream_profile(goal: str, primary: str, streams: list[str], risk_t
     needs_design = any(stream in streams for stream in ["software", "design", "media", "writing", "education", "game"])
     needs_council = risk_tier >= 2 or primary == "mixed"
     required_loop = [
+        "current_state_research_before_overall_plan",
         "planning_runway",
         "workstream_and_risk_confirmation",
         "candidate_slice_generation",
@@ -120,6 +121,7 @@ def build_workstream_profile(goal: str, primary: str, streams: list[str], risk_t
         "production",
         "debugging_or_revision",
         "evaluation",
+        "cross_feedback_loop",
         "cross_evaluation_when_required" if needs_council else "cross_evaluation_optional",
         "completed_work_packet",
         "operator_review",
@@ -128,10 +130,10 @@ def build_workstream_profile(goal: str, primary: str, streams: list[str], risk_t
         "regulation_review",
     ]
     activation_notes = {
-        "planning": "Always active. Builds the planning runway, confirms workstream/risk assumptions, proposes candidate slices, then approves one sharp/deep slice before production.",
+        "planning": "Always active. Runs current-state market/comparable research when external reality matters, builds the planning runway, confirms workstream/risk assumptions, proposes candidate slices, then approves one sharp/deep slice before production.",
         "design": "Activate when output quality depends on interaction, visual form, information architecture, narrative structure, media continuity, curriculum shape, or subjective taste. Visualization production requires a task-local VISUALIZATION_SPEC.md first.",
         "production": "Use coding/production team files for any artifact production: code, research notes, writing, media plans, data artifacts, business operations, or documentation.",
-        "evaluation": "Always active. Converts acceptance criteria into evidence and returns failures to the correct phase.",
+        "evaluation": "Always active. Converts acceptance criteria into evidence, records cross-feedback for material artifacts, and returns failures to the correct phase.",
     }
     if "research" in streams:
         activation_notes["planning"] += " For research, it must define sources, claim hygiene, and provenance gates."
@@ -160,6 +162,19 @@ def build_workstream_profile(goal: str, primary: str, streams: list[str], risk_t
                 "cross_evaluation": "required" if needs_council else "on_demand",
                 "council": "advisory_after_smoke" if needs_council else "optional_after_smoke",
             },
+        },
+        "current_market_research": {
+            "policy_path": "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+            "required_before_overall_plan": True,
+            "as_of": "command_time",
+            "not_run_requires_reason_and_risk": True,
+            "artifact": "harness/tasks/{task_id}/CURRENT_RESEARCH.json",
+        },
+        "cross_feedback_loop": {
+            "policy_path": "harness/shared/CROSS_FEEDBACK_LOOP.md",
+            "required_for_material_artifacts": True,
+            "preserve_dissent": True,
+            "artifact": "harness/tasks/{task_id}/CROSS_FEEDBACK.json",
         },
         "operator_boundary": {
             "operators_do": [

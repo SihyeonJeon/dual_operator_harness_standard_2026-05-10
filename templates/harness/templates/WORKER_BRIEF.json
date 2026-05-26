@@ -43,6 +43,21 @@
     "operator_receives_completed_work_packet_not_raw_chatter": true,
     "upstream_questions_go_through_task_artifact": true
   },
+  "current_research_gate": {
+    "required_before_overall_plan_when_current_state_matters": true,
+    "policy": "harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md",
+    "as_of": "command_time",
+    "artifact": "harness/tasks/{task_id}/CURRENT_RESEARCH.json",
+    "not_run_requires_reason_and_risk": true
+  },
+  "cross_feedback_gate": {
+    "required_for_material_artifacts": true,
+    "policy": "harness/shared/CROSS_FEEDBACK_LOOP.md",
+    "producer_reviewer_independence_required_when_available": true,
+    "artifact": "harness/tasks/{task_id}/CROSS_FEEDBACK.json",
+    "fail_routes_to_one_owner": true,
+    "warn_requires_risk_acceptance": true
+  },
   "concept_translation_gate": {
     "required_for_user_facing_output": true,
     "policy": "harness/shared/CONCEPT_TRANSLATION_POLICY.md",

@@ -22,6 +22,10 @@ Local record policy and context-pressure control are defined in
 `harness/shared/RECORDS_POLICY.md` and `harness/shared/CONTEXT_PRESSURE.md`.
 Agent-to-agent communication and token-saving context packets are defined in
 `harness/shared/AGENT_COMMUNICATION.md`.
+Current-state research before overall planning is defined in
+`harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+Cross-feedback before closure is defined in
+`harness/shared/CROSS_FEEDBACK_LOOP.md`.
 Concept-to-artifact copy rules are defined in
 `harness/shared/CONCEPT_TRANSLATION_POLICY.md`. Ordinary domain terms are
 allowed when they read naturally in the artifact.
@@ -42,7 +46,8 @@ evidence for interactive surfaces when available.
 
 For repeatable mechanics, prefer the executable helpers over manual prose:
 `python3 scripts/harnessctl.py context-pack`, `worker-brief`, `model-route`,
-`task-packet`, `concept-check`, and `software-feedback`.
+`task-packet`, `current-research`, `cross-feedback`, `concept-check`, and
+`software-feedback`.
 
 The public kit keeps account-specific posting, outreach, connector logs, and
 private review workflows outside the scaffold. Private overlays own those

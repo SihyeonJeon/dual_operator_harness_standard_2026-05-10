@@ -10,6 +10,8 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] `PART_OWNERSHIP.md` exists and preserves part-owner worker sessions for the same part.
 - [ ] `PLUGIN_ROUTING.json` exists, caps active context plugins at four, and includes caveman.
 - [ ] `QUALITY_GATES.md` exists.
+- [ ] `CURRENT_MARKET_RESEARCH_POLICY.md` exists and requires command-date research before overall planning when current external reality matters.
+- [ ] `CROSS_FEEDBACK_LOOP.md` exists and records independent feedback before material operator closure.
 - [ ] `VISUALIZATION_SPEC_POLICY.md` and `templates/VISUALIZATION_SPEC.md` exist.
 - [ ] Visualization production is blocked until a task-local spec is approved or marked not required.
 - [ ] `RECORDS_POLICY.md` exists and separates canonical records from compiled local report views.
@@ -22,7 +24,7 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] Claude Code adapters point to `harness/shared/` and team `TEAM_CONTEXT.md` rather than private memory.
 - [ ] Root `init.sh` exists and runs local harness checks.
 - [ ] Root `scripts/implementer_hooks.py` exists.
-- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `eval-run`, `viz-export`, `archive`, `context-pack`, `worker-brief`, `model-route`, `task-packet`, `concept-check`, and `software-feedback`.
+- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `eval-run`, `viz-export`, `archive`, `context-pack`, `worker-brief`, `model-route`, `task-packet`, `current-research`, `cross-feedback`, `concept-check`, and `software-feedback`.
 - [ ] Root `feature_list.json` exists and has behavior, verification, state, and evidence fields.
 - [ ] Root `progress.md` and `session-handoff.md` exist.
 - [ ] `ACTIVE_SNAPSHOT.md` includes open questions.

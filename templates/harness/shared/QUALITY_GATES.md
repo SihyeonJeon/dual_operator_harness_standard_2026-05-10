@@ -17,8 +17,32 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
   `harness/shared/RECORDS_POLICY.md`.
 - Context pressure is checked for long, reopened, cross-team, or externally
   visible tasks per `harness/shared/CONTEXT_PRESSURE.md`.
+- Current-state market/comparable research ran before overall planning when the
+  task depends on current external reality, or `NOT-RUN` risk is explicit per
+  `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
 - Failures route back to the correct upstream team.
 - Cross-evaluation is complete or explicitly justified.
+- Cross-feedback is recorded for material artifacts, or `NOT-RUN` risk is
+  explicit per `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+
+## Current Research Gate
+
+- Load `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md` before approving the
+  overall plan.
+- The research is as-of the command date, not model training date.
+- Required outputs: source list or `NOT-RUN` rationale, current alternatives or
+  comparable references when relevant, findings that change the plan, and
+  planning decision impact.
+- Prefer `python3 scripts/harnessctl.py current-research` to record the
+  evidence packet.
+
+## Cross Feedback Gate
+
+- Load `harness/shared/CROSS_FEEDBACK_LOOP.md` before operator closure.
+- Producer and reviewer should be independent for material artifacts.
+- `FAIL` routes to exactly one upstream owner. `WARN` requires accepted risk.
+- Prefer `python3 scripts/harnessctl.py cross-feedback` to record feedback
+  evidence.
 
 ## Concept Translation Gate
 

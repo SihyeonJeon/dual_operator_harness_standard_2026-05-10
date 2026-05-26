@@ -17,6 +17,8 @@ worker-ready slice candidate or an explicit blocker.
 - `harness/shared/PROJECT_PROFILE.json`
 - `harness/shared/WORKSTREAM_PROFILE.json`
 - `harness/shared/TEAM_TOPOLOGY.md`
+- `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
+- `harness/shared/CROSS_FEEDBACK_LOOP.md`
 - `harness/shared/SHARP_DEEP_EXECUTION.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/templates/TASK_BLUEPRINT.md`
@@ -28,6 +30,9 @@ worker-ready slice candidate or an explicit blocker.
 Before approving a slice, planning must record:
 
 - confirmed and rejected interpretations of the project goal;
+- current-state market/comparable research as-of the command date, or a
+  `NOT-RUN` rationale with risk when current external reality does not matter
+  or cannot be checked;
 - detected workstreams and risk assumptions;
 - material unknowns and human-decision blockers;
 - candidate deliverable map;
@@ -47,6 +52,8 @@ A sharp/deep slice becomes active only after:
 
 - planning states why this slice is highest leverage now;
 - design or domain discovery has run when it could change the slice boundary;
+- current-state research has informed the plan when market, tools,
+  alternatives, standards, regulations, or public facts could change it;
 - evaluation defines the evidence needed for closure;
 - visualization work, if present, has a task-local `VISUALIZATION_SPEC.md`
   approved or is explicitly marked not required;
@@ -59,6 +66,10 @@ A sharp/deep slice becomes active only after:
 ## Completion Evidence
 
 - `WORKSTREAM_PROFILE.json` is confirmed or updated with rationale.
+- `CURRENT_RESEARCH.json` exists when current-state research is material, or
+  the task records a `NOT-RUN` rationale and risk.
+- Cross-feedback is scheduled for material artifacts, or not-applicable
+  rationale is recorded.
 - `TEAM_TOPOLOGY.md` remains compatible with planning, production, and
   evaluation lanes.
 - A project-specific task blueprint exists under `harness/tasks/`, or exact

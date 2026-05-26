@@ -23,6 +23,8 @@ starts crowding out the current task, compact `progress.md`,
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
+- `harness/shared/CROSS_FEEDBACK_LOOP.md`
 - `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - current task blueprint
 
@@ -41,6 +43,8 @@ starts crowding out the current task, compact `progress.md`,
 - `RECORDS_POLICY.md`
 - `CONTEXT_PRESSURE.md`
 - `AGENT_COMMUNICATION.md`
+- `CURRENT_MARKET_RESEARCH_POLICY.md`
+- `CROSS_FEEDBACK_LOOP.md`
 - `CONCEPT_TRANSLATION_POLICY.md`
 - `mcp_server/README.md` when read-only context export is being verified
 - `VISUALIZATION_SPEC_POLICY.md`
@@ -65,6 +69,8 @@ On demand:
 - source registry
 - prior planning reports
 - market/frontier scan reports
+- current research packet before overall plan approval
+- cross-feedback records when changing topology or acceptance criteria
 - workstream profile when team topology is being changed
 - `harness/spec/SPEC_AUTOMATION_POLICY.md`
 - PRD/anti-PRD drafts when a goal is not yet executable
@@ -100,6 +106,7 @@ On demand:
 - design spec
 - visualization spec for dashboard/report/status UI work
 - source registry
+- current research packet when production choices depend on current external reality
 - failure ledger entries
 
 ## Evaluation Team
@@ -119,5 +126,7 @@ On demand:
   evidence chain and have been summarized into task artifacts
 - visualization spec and generated HTML report when visualization is in scope
 - cross-vendor verification policy
+- current research packet when plan quality depends on current external reality
+- cross-feedback loop records
 - software feedback policy when evaluating development or coding work
 - concept translation policy when reviewing user-facing output

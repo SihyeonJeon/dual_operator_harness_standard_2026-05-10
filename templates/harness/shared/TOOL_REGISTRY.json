@@ -510,6 +510,73 @@
       "audit_event": "tool.write_task_packet"
     },
     {
+      "id": "record_current_research",
+      "owner": "harness",
+      "description": "Record command-date current-state market or comparable research before overall planning.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "queries": {"type": "array", "items": {"type": "string"}},
+          "sources": {"type": "array", "items": {"type": "string"}},
+          "findings": {"type": "array", "items": {"type": "string"}},
+          "not_run_reason": {"type": "string"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "current_research_path", "verdict"],
+        "properties": {
+          "status": {"type": "string"},
+          "current_research_path": {"type": "string"},
+          "verdict": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_artifact_scope_required",
+      "timeout_seconds": 30,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.record_current_research"
+    },
+    {
+      "id": "record_cross_feedback",
+      "owner": "harness",
+      "description": "Record independent cross-feedback for a material artifact without forcing consensus.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "producer", "reviewer", "verdict", "feedback"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "producer": {"type": "string"},
+          "reviewer": {"type": "string"},
+          "verdict": {"type": "string"},
+          "feedback": {"type": "string"},
+          "evidence_paths": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "cross_feedback_path", "verdict"],
+        "properties": {
+          "status": {"type": "string"},
+          "cross_feedback_path": {"type": "string"},
+          "verdict": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_artifact_scope_required",
+      "timeout_seconds": 30,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["read_fs:scoped", "write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.record_cross_feedback"
+    },
+    {
       "id": "run_concept_check",
       "owner": "harness",
       "description": "Check user-facing artifacts for literal prompt phrase, task label, or meta-copy leakage.",
