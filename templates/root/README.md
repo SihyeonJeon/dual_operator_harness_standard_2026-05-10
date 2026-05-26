@@ -15,6 +15,7 @@
 python3 scripts/validate_harness.py .
 python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py eval-run
+python3 scripts/harnessctl.py budget-check --task-id F0-PLANNING-RUNWAY --time-elapsed-minutes 1
 ```
 
 ### operator 진입
@@ -30,6 +31,7 @@ you are operator
 - planning runway 우선
 - sharp deep slice 승인 후 production
 - worker model effort task difficulty routing
+- BUDGET.json token time cost cap and budget-check kill surface
 - routine worker configured low cost model 가능
 - part owner session same part reuse
 - shared context canonical
@@ -44,6 +46,7 @@ you are operator
 - public kit no external posting scaffold
 - MCP read only context export
 - remote mobile cloud denied by default
+- disabled Discord approval connector example only no publication adapter
 
 ### 파일
 
@@ -62,6 +65,7 @@ you are operator
 - `harness/evals`
 - `harness/mcp_server`
 - `harness/runtime`
+- `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`
 
@@ -80,6 +84,7 @@ Goal
 python3 scripts/validate_harness.py .
 python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py eval-run
+python3 scripts/harnessctl.py budget-check --task-id F0-PLANNING-RUNWAY --time-elapsed-minutes 1
 ```
 
 ### Operator Entry
@@ -95,6 +100,7 @@ you are operator
 - planning runway first
 - production after approved sharp deep slice
 - worker model effort task difficulty routing
+- BUDGET.json token time cost caps and budget-check kill surface
 - routine worker configured low cost model when verified
 - part owner session same part reuse
 - shared context canonical
@@ -109,6 +115,7 @@ you are operator
 - public kit no external posting scaffold
 - MCP read only context export
 - remote mobile cloud denied by default
+- disabled Discord approval connector example only no publication adapter
 
 ### Files
 
@@ -127,5 +134,6 @@ you are operator
 - `harness/evals`
 - `harness/mcp_server`
 - `harness/runtime`
+- `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`

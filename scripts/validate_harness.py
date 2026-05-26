@@ -45,6 +45,7 @@ P0_REQUIRED = [
     "shared/VISUALIZATION_SPEC_POLICY.md",
     "shared/RECORDS_POLICY.md",
     "shared/CONTEXT_PRESSURE.md",
+    "shared/BUDGET_GOVERNANCE.md",
     "shared/TEAM_TOPOLOGY.md",
     "shared/WORKSTREAM_PROFILE.json",
     "shared/OBSERVABILITY.md",
@@ -102,6 +103,8 @@ P0_REQUIRED = [
     "runtime/RUNNERS/codex_runner.json",
     "runtime/RUNNERS/remote_runner.json",
     "runtime/RUNNERS/cloud_runner.example.json",
+    "runtime/CONNECTORS/README.md",
+    "runtime/CONNECTORS/discord_approval.example.json",
     "tasks/active/.gitkeep",
     "tasks/archive/.gitkeep",
 ]
@@ -488,7 +491,17 @@ def check_operator_sessions(registry: dict[str, Any], errors: list[str]) -> None
 
 def check_runner_configs(harness: Path, errors: list[str]) -> None:
     runner_dir = harness / "runtime" / "RUNNERS"
-    required = ["id", "status", "surface", "allowed_tools", "network_default", "audit_path", "smoke_evidence_path"]
+    required = [
+        "id",
+        "status",
+        "surface",
+        "allowed_tools",
+        "network_default",
+        "budget",
+        "audit_path",
+        "smoke_evidence_path",
+        "kill_procedure",
+    ]
     for name in ["local_runner", "claude_code_runner", "codex_runner", "remote_runner", "cloud_runner.example"]:
         path = runner_dir / f"{name}.json"
         runner = load_json(path, errors)
@@ -500,6 +513,101 @@ def check_runner_configs(harness: Path, errors: list[str]) -> None:
                 errors.append(f"runner {name} must deny network by default")
             if runner.get("audit_path") != "harness/events/events.jsonl":
                 errors.append(f"runner {name} must audit to harness/events/events.jsonl")
+            if not runner.get("budget"):
+                errors.append(f"runner {name} must define budget policy")
+            if not runner.get("kill_procedure"):
+                errors.append(f"runner {name} must define kill_procedure")
+
+
+def check_connector_configs(harness: Path, errors: list[str]) -> None:
+    connector_dir = harness / "runtime" / "CONNECTORS"
+    readme = connector_dir / "README.md"
+    for phrase in ["disabled reference surfaces", "UNVERIFIED", "no credentials", "private overlay"]:
+        if phrase not in readme.read_text(encoding="utf-8"):
+            errors.append(f"runtime/CONNECTORS/README.md lacks {phrase}")
+    connector = load_json(connector_dir / "discord_approval.example.json", errors)
+    if not isinstance(connector, dict):
+        return
+    for key in [
+        "id",
+        "status",
+        "surface",
+        "purpose",
+        "network_default",
+        "allowed_directions",
+        "allowed_payloads",
+        "denied_payloads",
+        "credential_scope",
+        "audit_path",
+        "smoke_evidence_path",
+        "disable_path",
+    ]:
+        if key not in connector:
+            errors.append(f"discord approval connector lacks {key}")
+    if connector.get("status") != "UNVERIFIED":
+        errors.append("discord approval connector must start UNVERIFIED")
+    if connector.get("network_default") != "DENIED":
+        errors.append("discord approval connector must deny network by default")
+    denied = connector.get("denied_payloads", [])
+    if not isinstance(denied, list) or "automatic_public_posting" not in denied:
+        errors.append("discord approval connector must deny automatic_public_posting")
+
+
+def check_budget_governance(harness: Path, project_root: Path, errors: list[str]) -> None:
+    budget_text = (harness / "shared" / "BUDGET_GOVERNANCE.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Every dispatched task must carry a `BUDGET.json`",
+        "budget-check",
+        "budget.warning",
+        "budget.kill_required",
+        "runner can stop dispatch",
+    ]:
+        if phrase not in budget_text:
+            errors.append(f"BUDGET_GOVERNANCE.md lacks {phrase}")
+
+    budget_files = [
+        harness / "templates" / "BUDGET.json",
+        harness / "tasks" / "H0-LOCAL-SMOKE" / "BUDGET.json",
+        harness / "tasks" / "H1-BOOTSTRAP-SMOKE" / "BUDGET.json",
+        harness / "tasks" / "F0-PLANNING-RUNWAY" / "BUDGET.json",
+    ]
+    required = [
+        "task_id",
+        "token_cap",
+        "time_cap_minutes",
+        "cost_cap_usd",
+        "warning_threshold_percent",
+        "kill_threshold_percent",
+        "kill_procedure",
+        "escalation",
+        "usage_event_fields",
+        "enforcement",
+    ]
+    for path in budget_files:
+        budget = load_json(path, errors)
+        if not isinstance(budget, dict):
+            continue
+        require_keys(budget, required, path.name, errors)
+        if not budget.get("kill_procedure"):
+            errors.append(f"{path} lacks kill_procedure")
+        fields = budget.get("usage_event_fields", [])
+        for field in ["token_used", "time_elapsed_minutes", "cost_used_usd", "budget_percent", "budget_status"]:
+            if field not in fields:
+                errors.append(f"{path} usage_event_fields lacks {field}")
+        enforcement = budget.get("enforcement", {})
+        if isinstance(enforcement, dict):
+            if enforcement.get("kill_event_type") != "budget.kill_required":
+                errors.append(f"{path} enforcement must use budget.kill_required")
+            if enforcement.get("runner_must_stop_on_kill") is not True:
+                errors.append(f"{path} must require runner_must_stop_on_kill")
+        escalation = budget.get("escalation", {})
+        if not isinstance(escalation, dict) or escalation.get("event_type") != "budget.escalation_required":
+            errors.append(f"{path} escalation must use budget.escalation_required")
+
+    harnessctl_text = (project_root / "scripts" / "harnessctl.py").read_text(encoding="utf-8")
+    for phrase in ["budget-check", "budget.kill_required", "budget.escalation_required", "token_used"]:
+        if phrase not in harnessctl_text:
+            errors.append(f"scripts/harnessctl.py lacks budget governance phrase {phrase}")
 
 
 def check_viz_backend_configs(harness: Path, errors: list[str]) -> None:
@@ -651,7 +759,7 @@ def check_external_interfaces(harness: Path, errors: list[str]) -> None:
 def check_harnessctl(project_root: Path, errors: list[str]) -> None:
     path = project_root / "scripts" / "harnessctl.py"
     text = path.read_text(encoding="utf-8")
-    for phrase in ["event", "report", "viz-export", "viz-spec-check", "eval-run", "archive", "compiled view"]:
+    for phrase in ["event", "report", "budget-check", "viz-export", "viz-spec-check", "eval-run", "archive", "compiled view"]:
         if phrase not in text:
             errors.append(f"scripts/harnessctl.py lacks {phrase}")
     forbidden_public_commands = [
@@ -1015,6 +1123,8 @@ def main(argv: list[str]) -> int:
         check_claude_adapter(project_root, claude_settings, errors)
     check_dual_operator_protocol(harness / "shared" / "DUAL_OPERATOR_PROTOCOL.md", errors)
     check_runner_configs(harness, errors)
+    check_connector_configs(harness, errors)
+    check_budget_governance(harness, project_root, errors)
     check_viz_backend_configs(harness, errors)
     check_visualization_policy(harness, errors)
     check_external_interfaces(harness, errors)

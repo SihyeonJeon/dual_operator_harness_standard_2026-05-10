@@ -188,6 +188,12 @@ def append_event(args: argparse.Namespace, root: Path) -> int:
         "model": args.model or "",
         "effort": args.effort or "",
     }
+    for key in ["token_used", "time_elapsed_minutes", "cost_used_usd", "budget_percent"]:
+        value = getattr(args, key, None)
+        if value is not None:
+            event[key] = value
+    if getattr(args, "budget_status", ""):
+        event["budget_status"] = args.budget_status
     write_event(root, event)
     print(f"event appended: {event['event_id']}")
     return 0
@@ -216,6 +222,11 @@ EVENT_ALLOWED_FIELDS = {
     "decision_id",
     "redaction",
     "summary",
+    "token_used",
+    "time_elapsed_minutes",
+    "cost_used_usd",
+    "budget_percent",
+    "budget_status",
 }
 
 
@@ -279,6 +290,142 @@ def short_time(value: Any) -> str:
 
 def html_or_empty(value: str, empty: str) -> str:
     return value if value else f'<p class="empty">{html.escape(empty)}</p>'
+
+
+def parse_cap(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)) and value >= 0:
+        return float(value)
+    if isinstance(value, str):
+        try:
+            parsed = float(value)
+        except ValueError:
+            return None
+        return parsed if parsed >= 0 else None
+    return None
+
+
+def load_task_budget(root: Path, task_id: str) -> tuple[Path, dict[str, Any]]:
+    candidates = [
+        root / "harness" / "tasks" / task_id / "BUDGET.json",
+        root / "harness" / "tasks" / "active" / task_id / "BUDGET.json",
+        root / "harness" / "templates" / "BUDGET.json",
+    ]
+    for path in candidates:
+        if path.exists():
+            return path, load_json(path, {})
+    return candidates[0], {}
+
+
+def budget_check(args: argparse.Namespace, root: Path) -> int:
+    budget_path, budget = load_task_budget(root, args.task_id)
+    if not budget:
+        write_event(
+            root,
+            {
+                "event_id": f"evt_{uuid.uuid4().hex}",
+                "trace_id": args.trace_id,
+                "task_id": args.task_id,
+                "actor": "harnessctl",
+                "actor_type": "hook",
+                "event_type": "budget.kill_required",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "verdict": "FAIL",
+                "summary": "Task budget file is missing; dispatch must stop.",
+                "evidence_path": display_path(budget_path, root),
+                "budget_status": "missing_budget",
+            },
+        )
+        return 3
+
+    caps = {
+        "token": parse_cap(budget.get("token_cap")),
+        "time": parse_cap(budget.get("time_cap_minutes")),
+        "cost": parse_cap(budget.get("cost_cap_usd")),
+    }
+    observed = {
+        "token": args.token_used,
+        "time": args.time_elapsed_minutes,
+        "cost": args.cost_used_usd,
+    }
+    percents = [
+        (observed[key] / cap) * 100
+        for key, cap in caps.items()
+        if cap and observed.get(key) is not None
+    ]
+    budget_percent = max(percents) if percents else 0.0
+    warning_threshold = float(budget.get("warning_threshold_percent", 80) or 80)
+    kill_threshold = float(budget.get("kill_threshold_percent", 100) or 100)
+    generated_at = datetime.now(timezone.utc).isoformat()
+    if budget_percent >= kill_threshold:
+        event_type = "budget.kill_required"
+        verdict = "FAIL"
+        status = "kill_required"
+    elif budget_percent >= warning_threshold:
+        event_type = "budget.warning"
+        verdict = "WARN"
+        status = "warning"
+    elif percents:
+        event_type = "budget.ok"
+        verdict = "PASS"
+        status = "ok"
+    else:
+        event_type = "budget.warning"
+        verdict = "WARN"
+        status = "unmetered"
+
+    summary = (
+        f"Budget check for {args.task_id}: {status}, "
+        f"max usage {budget_percent:.1f}%."
+    )
+    event = {
+        "event_id": f"evt_{uuid.uuid4().hex}",
+        "trace_id": args.trace_id,
+        "task_id": args.task_id,
+        "actor": "harnessctl",
+        "actor_type": "hook",
+        "event_type": event_type,
+        "timestamp": generated_at,
+        "verdict": verdict,
+        "summary": summary,
+        "evidence_path": display_path(budget_path, root),
+        "budget_percent": round(budget_percent, 3),
+        "budget_status": status,
+    }
+    if args.token_used is not None:
+        event["token_used"] = args.token_used
+    if args.time_elapsed_minutes is not None:
+        event["time_elapsed_minutes"] = args.time_elapsed_minutes
+    if args.cost_used_usd is not None:
+        event["cost_used_usd"] = args.cost_used_usd
+    write_event(root, event)
+
+    if status == "kill_required":
+        escalation = budget.get("escalation", {}) if isinstance(budget.get("escalation"), dict) else {}
+        write_event(
+            root,
+            {
+                "event_id": f"evt_{uuid.uuid4().hex}",
+                "trace_id": args.trace_id,
+                "task_id": args.task_id,
+                "actor": "harnessctl",
+                "actor_type": "hook",
+                "event_type": escalation.get("event_type", "budget.escalation_required"),
+                "timestamp": generated_at,
+                "verdict": "FAIL",
+                "summary": budget.get("kill_procedure", "Stop worker dispatch and escalate to operator."),
+                "evidence_path": display_path(budget_path, root),
+                "budget_percent": round(budget_percent, 3),
+                "budget_status": "escalated",
+            },
+        )
+        print(summary)
+        print("budget kill required")
+        return 3
+
+    print(summary)
+    return 0 if status == "ok" else 1
 
 
 def build_report(args: argparse.Namespace, root: Path) -> int:
@@ -1049,10 +1196,22 @@ def main(argv: list[str]) -> int:
     event.add_argument("--worker-id", default="")
     event.add_argument("--model", default="")
     event.add_argument("--effort", default="")
+    event.add_argument("--token-used", type=float, default=None)
+    event.add_argument("--time-elapsed-minutes", type=float, default=None)
+    event.add_argument("--cost-used-usd", type=float, default=None)
+    event.add_argument("--budget-percent", type=float, default=None)
+    event.add_argument("--budget-status", default="")
 
     report = sub.add_parser("report", help="Compile local static HTML status report")
     report.add_argument("--output", default="")
     report.add_argument("--max-events", type=int, default=80)
+
+    budget = sub.add_parser("budget-check", help="Check task budget thresholds and write budget events")
+    budget.add_argument("--task-id", required=True)
+    budget.add_argument("--trace-id", default="trace_budget")
+    budget.add_argument("--token-used", type=float, default=None)
+    budget.add_argument("--time-elapsed-minutes", type=float, default=None)
+    budget.add_argument("--cost-used-usd", type=float, default=None)
 
     viz = sub.add_parser("viz-spec-check", help="Check the pre-visualization spec gate")
     viz.add_argument("--task-id", default="")
@@ -1087,6 +1246,8 @@ def main(argv: list[str]) -> int:
         return append_event(args, root)
     if args.command == "report":
         return build_report(args, root)
+    if args.command == "budget-check":
+        return budget_check(args, root)
     if args.command == "viz-spec-check":
         return check_visualization_spec(args, root)
     if args.command == "viz-export":

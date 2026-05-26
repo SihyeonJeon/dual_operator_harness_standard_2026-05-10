@@ -1,0 +1,28 @@
+{
+  "id": "discord_approval_example",
+  "status": "UNVERIFIED",
+  "surface": "discord-webhook-or-bot",
+  "purpose": "optional human approval bridge for remote runner stop or continue decisions",
+  "network_default": "DENIED",
+  "allowed_directions": ["inbound_approval_summary", "outbound_redacted_approval_request"],
+  "allowed_payloads": [
+    "task_id",
+    "decision_id",
+    "redacted_summary",
+    "requested_action",
+    "approve_or_reject"
+  ],
+  "denied_payloads": [
+    "secret_values",
+    "private_logs",
+    "full_internal_deliberation",
+    "customer_data",
+    "source_code_diff",
+    "automatic_public_posting"
+  ],
+  "credential_scope": "project_private_overlay_only",
+  "audit_path": "harness/events/events.jsonl",
+  "smoke_evidence_path": "UNKNOWN",
+  "disable_path": "remove private connector overlay and keep this example UNVERIFIED",
+  "notes": "Reference approval connector only. It is not enabled, not a progress feed, and not a publication adapter."
+}

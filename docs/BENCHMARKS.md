@@ -21,11 +21,12 @@ python3 scripts/validate_kit.py
 
 | Benchmark | Command | Result | Boundary |
 | --- | --- | --- | --- |
-| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | 143/143 checks | scaffold coverage, not live model quality |
+| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | 166/166 checks | scaffold coverage, not live model quality |
 | spec gate | `python3 benchmarks/spec_gate/score.py --check-summary` | 12/12 checks | planning surfaces, not artifact quality |
 | static visualization | `python3 benchmarks/static_viz/score.py --check-summary` | 12/12 checks | local export, not hosted dashboard UX |
 | replay recovery | `python3 benchmarks/replay_recovery/score.py --check-summary` | generated harness 1.000 | restart surface, not runtime graph reload |
 | bilingual README parity | `python3 benchmarks/bilingual_readme_parity/score.py --check-summary` | 14/14 checks | structural parity, not native fluency |
+| budget governance | `python3 scripts/validate_kit.py` | generated validator checks budget files and budget-check surface | structure and local kill signal, not provider meter capture |
 | agentic governance | `python3 benchmarks/agentic_governance/score.py --check-summary` | generated harness 0.958 | repo-state assay, not product ranking |
 | operational resilience | `python3 benchmarks/operational_resilience/score.py --check-summary` | generated policy 1.000 | policy simulation, not live outage handling |
 | cloud runner policy | `python3 benchmarks/cloud_runner_policy/score.py --check-summary` | descriptor 1.000, docs 1.000 | disabled descriptors, not real cloud jobs |
@@ -38,7 +39,7 @@ requirements are reflected in public-safe files.
 
 | categories | checks | failed | score |
 | ---: | ---: | ---: | ---: |
-| 12 | 143 | 0 | 1.000 |
+| 13 | 166 | 0 | 1.000 |
 
 Covered areas include implementer bootstrap, fixed operators, worker teams,
 part ownership, context pressure controls, hook lifecycle, spec gates, local
@@ -121,11 +122,27 @@ surfaces, not full product implementations.
 | CrewAI flow surface | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
 | OpenAI Agents session surface | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
 | Claude Code project surface | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
-| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 151 |
+| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 156 |
 
 The useful reading is narrow: runtime frameworks are strong at runtime state
 and graph behavior. The generated harness adds repo-local governance, audit,
 handoff, policy, and restart evidence around those tools.
+
+## Budget Governance
+
+Generated harnesses include task budgets, runner budget fields, and a local
+budget threshold command:
+
+```sh
+python3 scripts/harnessctl.py budget-check \
+  --task-id F0-PLANNING-RUNWAY \
+  --time-elapsed-minutes 120
+```
+
+The command writes `budget.ok`, `budget.warning`, `budget.kill_required`, and
+`budget.escalation_required` events as thresholds are crossed. The public kit
+does not claim provider token-meter capture by itself. Runner adapters must
+pass observed token, time, and cost counters into the command.
 
 Additional policy tracks:
 

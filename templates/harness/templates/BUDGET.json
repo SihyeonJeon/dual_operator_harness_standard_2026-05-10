@@ -6,6 +6,19 @@
   "warning_threshold_percent": 80,
   "kill_threshold_percent": 100,
   "kill_procedure": "Use the runner kill procedure and record operator escalation in harness/events/events.jsonl.",
+  "usage_event_fields": [
+    "token_used",
+    "time_elapsed_minutes",
+    "cost_used_usd",
+    "budget_percent",
+    "budget_status"
+  ],
+  "enforcement": {
+    "local_command": "python3 scripts/harnessctl.py budget-check --task-id UNKNOWN",
+    "warning_event_type": "budget.warning",
+    "kill_event_type": "budget.kill_required",
+    "runner_must_stop_on_kill": true
+  },
   "escalation": {
     "operator_required": true,
     "human_required_for_budget_increase": true,

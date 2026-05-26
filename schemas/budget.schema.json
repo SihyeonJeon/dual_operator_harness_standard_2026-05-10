@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/budget.schema.json",
+  "title": "Task Budget",
+  "type": "object",
+  "required": [
+    "task_id",
+    "token_cap",
+    "time_cap_minutes",
+    "cost_cap_usd",
+    "warning_threshold_percent",
+    "kill_threshold_percent",
+    "kill_procedure",
+    "escalation"
+  ],
+  "properties": {
+    "task_id": {"type": "string"},
+    "token_cap": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+    "time_cap_minutes": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+    "cost_cap_usd": {"oneOf": [{"type": "number"}, {"type": "string"}]},
+    "warning_threshold_percent": {"type": "number", "minimum": 1, "maximum": 100},
+    "kill_threshold_percent": {"type": "number", "minimum": 1, "maximum": 100},
+    "kill_procedure": {"type": "string", "minLength": 1},
+    "escalation": {
+      "type": "object",
+      "required": [
+        "operator_required",
+        "human_required_for_budget_increase",
+        "event_type"
+      ],
+      "properties": {
+        "operator_required": {"type": "boolean"},
+        "human_required_for_budget_increase": {"type": "boolean"},
+        "event_type": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "usage_event_fields": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "enforcement": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -97,6 +97,26 @@ Workers can use cheaper models for routine packets. Operators should use the
 strongest model and effort setting available for review, routing, and closure.
 The kit does not force one vendor or runtime.
 
+## How It Differs From Runtime Frameworks
+
+Easy Orchestration Harness is not a graph runtime. It is the operating layer
+around agent tools and runtimes.
+
+| Dimension | Runtime frameworks | Easy Orchestration Harness |
+| --- | --- | --- |
+| execution | graph, flow, session, checkpoint | repo-local project operating system |
+| adoption | application code integration | scaffold into any project directory |
+| operators | usually app-defined | fixed dual-operator protocol with dissent preservation |
+| worker routing | usually runtime or app policy | part ownership, worker reuse, model and effort tiering |
+| restart | runtime state or chat history | files, events, status report, handoff, eval output |
+| governance | app-specific | generated policies, hooks, validators, and task packets |
+| evidence | traces or logs | event log, local HTML report, benchmark fixtures |
+| safety boundary | provider or app guardrails | MCP trust, permission policy, credential lifecycle, budget caps |
+
+Use LangGraph, CrewAI, OpenAI Agents SDK, Claude Code, Codex, or custom loops
+for execution when they fit. Use this kit when the project needs durable
+operating state across sessions, tools, and agent roles.
+
 ## Use It For
 
 - work that is larger than one answer
@@ -119,11 +139,12 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 143/143 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 166/166 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
 | bilingual README parity | Korean and English generated-project operating sections | 14/14 checks |
+| budget governance | task caps, runner kill procedures, local budget-check event surface | covered in traceability and generated validator |
 | cloud runner policy | disabled-by-default remote descriptors and policy docs | 10/10 descriptor, 10/10 policy |
 | date normalization loop | failed cases captured into the next regression pass | 83.3% direct, 72.2% first pass, 100.0% after feedback |
 
@@ -194,6 +215,7 @@ use.
 - runtime frameworks remain useful for checkpointing, graph execution, tracing,
   and provider integrations
 - public benchmarks are deterministic fixtures with stated boundaries
+- live token, cost, latency, and model-variance benchmarks are Phase 2 work
 - account-specific publishing, hosted dashboards, cloud jobs, credentials, and
   private memory backends belong in project overlays
 
@@ -203,6 +225,7 @@ use.
 - [Harness implementer manual](docs/HARNESS_IMPLEMENTER_MANUAL.md)
 - [Operator manual](docs/OPERATOR_MANUAL.md)
 - [Benchmarks](docs/BENCHMARKS.md)
+- [Phase 2 benchmark roadmap](docs/PHASE2_BENCHMARK_ROADMAP.md)
 - [Requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md)
 - [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
 - [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)

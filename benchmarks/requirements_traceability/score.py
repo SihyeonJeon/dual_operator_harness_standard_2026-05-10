@@ -161,6 +161,26 @@ CATEGORIES: tuple[Category, ...] = (
         ),
     ),
     Category(
+        id="budget_governance",
+        claim_level="implemented_as_policy_and_local_kill_surface",
+        files=(
+            "harness/shared/BUDGET_GOVERNANCE.md",
+            "harness/templates/BUDGET.json",
+            "harness/tasks/H0-LOCAL-SMOKE/BUDGET.json",
+            "harness/tasks/H1-BOOTSTRAP-SMOKE/BUDGET.json",
+            "harness/tasks/F0-PLANNING-RUNWAY/BUDGET.json",
+            "harness/runtime/RUNNERS/local_runner.json",
+            "harness/runtime/RUNNERS/codex_runner.json",
+            "harness/runtime/RUNNERS/claude_code_runner.json",
+            "scripts/harnessctl.py",
+        ),
+        text=(
+            TextCheck("harness/shared/BUDGET_GOVERNANCE.md", ("budget-check", "budget.warning", "budget.kill_required")),
+            TextCheck("harness/templates/BUDGET.json", ("token_used", "cost_used_usd", "budget.escalation_required")),
+            TextCheck("scripts/harnessctl.py", ("budget-check", "budget.kill_required", "budget.escalation_required")),
+        ),
+    ),
+    Category(
         id="visibility_and_static_reports",
         claim_level="implemented_local_only",
         files=(
@@ -191,11 +211,14 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/runtime/RUNNERS/cloud_runner.example.json",
             "harness/shared/CREDENTIAL_LIFECYCLE.md",
             "harness/shared/PERMISSION_POLICY.json",
+            "harness/runtime/CONNECTORS/README.md",
+            "harness/runtime/CONNECTORS/discord_approval.example.json",
         ),
         text=(
             TextCheck(".gitignore", (".env", "harness_private/", "private_overlays/", "active_cloud_credentials.json")),
             TextCheck("harness/shared/PERMISSION_POLICY.json", ("fail_closed", "network_write", "explicit_human")),
             TextCheck("harness/runtime/REMOTE_OPERATION_POLICY.md", ("UNVERIFIED", "smoke evidence")),
+            TextCheck("harness/runtime/CONNECTORS/discord_approval.example.json", ("UNVERIFIED", "automatic_public_posting", "project_private_overlay_only")),
         ),
     ),
     Category(
@@ -253,6 +276,7 @@ KNOWN_NON_GOALS = (
     "No live provider outage benchmark in the public suite.",
     "No live human approval latency benchmark in the public suite.",
     "No live native-review bilingual quality benchmark in the public suite.",
+    "No live token or cost variance benchmark in the public suite.",
     "No hosted dashboard or cloud runner enabled by default.",
     "No account-specific publishing workflow in the public kit.",
 )

@@ -31,6 +31,11 @@
     },
     "decision_id": {"type": "string"},
     "redaction": {"type": "string"},
-    "summary": {"type": "string"}
+    "summary": {"type": "string"},
+    "token_used": {"type": "number"},
+    "time_elapsed_minutes": {"type": "number"},
+    "cost_used_usd": {"type": "number"},
+    "budget_percent": {"type": "number"},
+    "budget_status": {"type": "string"}
   }
 }

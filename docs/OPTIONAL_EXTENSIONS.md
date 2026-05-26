@@ -19,6 +19,7 @@ Public kit rule
 | cloud runner | disabled runner descriptor, bounded policy checklist | actual cloud job, remote terminal bridge, mobile approval connector |
 | visualization | local file export, static report, backend selection policy | live dashboard, SaaS telemetry, websocket stream, hosted viewer |
 | memory backend | file-backed search, vector index example, graph index example | selected vector database, graph database, private RAG service |
+| chat approval connector | disabled Discord approval example with denied publication payloads | real bot, webhook, mobile approval bridge, private credential overlay |
 
 ## Adapter Contract
 

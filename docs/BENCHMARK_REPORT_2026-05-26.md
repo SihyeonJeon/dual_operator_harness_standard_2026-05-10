@@ -42,8 +42,8 @@ python3 benchmarks/requirements_traceability/score.py --check-summary
 Scope:
 
 - generated harness scaffold and `./init.sh`
-- 12 public operating categories
-- 143 file, text, and absence checks
+- 13 public operating categories
+- 166 file, text, and absence checks
 - no model calls
 - private account-specific surfaces must be absent
 
@@ -51,14 +51,14 @@ Result:
 
 | categories | passed categories | checks | failed checks | score |
 | ---: | ---: | ---: | ---: | ---: |
-| 12 | 12 | 143 | 0 | 1.000 |
+| 13 | 13 | 166 | 0 | 1.000 |
 
 Interpretation:
 
 - the harness requirements are reflected in the public-safe scaffold for
   implementer bootstrap, dual operators, worker teams, context controls, hooks,
-  spec gates, eval loops, local visibility, bounded remote descriptors, and
-  read-only MCP export
+  spec gates, eval loops, budget governance, local visibility, bounded remote
+  descriptors, and read-only MCP export
 - hosted dashboards, enabled cloud runners, live provider outage tests, live
   human approval latency, native-review bilingual quality scoring, and
   account-specific private workflows are not claimed by this public kit
@@ -274,6 +274,45 @@ Interpretation:
 - the generated harness preserves non-coercion, separate positions, peer
   critique, disagreement records, human escalation, and rule-change paths
 - this tests protocol surface availability, not model judgment quality
+
+### Budget Governance Surface
+
+Command:
+
+```sh
+python3 scripts/validate_kit.py
+```
+
+Scope:
+
+- generated harness scaffold and `./init.sh`
+- task-level `BUDGET.json` files
+- runner budget fields and kill procedures
+- `scripts/harnessctl.py budget-check`
+- budget event fields in the observability schema
+- no provider token-meter capture
+- no live cost benchmark
+
+Smoke command for a generated harness:
+
+```sh
+python3 scripts/harnessctl.py budget-check \
+  --task-id F0-PLANNING-RUNWAY \
+  --time-elapsed-minutes 181
+```
+
+Expected behavior:
+
+- writes `budget.kill_required`
+- writes `budget.escalation_required`
+- exits non-zero so the runner can stop dispatch
+
+Interpretation:
+
+- the generated harness now has a local kill surface for task budget overruns
+- runner adapters still need to pass observed token, time, and cost counters
+- this is governance enforcement surface evidence, not live token-cost variance
+  evidence
 
 ### Operational Resilience Policy Assay
 

@@ -64,9 +64,12 @@ ROOT_REQUIRED = [
     "benchmarks/requirements_traceability/expected_summary.json",
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
+    "schemas/budget.schema.json",
+    "schemas/connector-config.schema.json",
     "schemas/observability-event.schema.json",
     "docs/BENCHMARK_REPORT_2026-05-26.md",
     "docs/BENCHMARKS.md",
+    "docs/PHASE2_BENCHMARK_ROADMAP.md",
     "docs/README.md",
     "docs/REQUIREMENT_TRACEABILITY_2026-05-26.md",
     "templates/root/init.sh",
@@ -79,8 +82,11 @@ ROOT_REQUIRED = [
     "templates/harness/shared/DUAL_OPERATOR_PROTOCOL.md",
     "templates/harness/shared/SESSION_CONTINUITY.md",
     "templates/harness/shared/REGULATION_EVOLUTION.md",
+    "templates/harness/shared/BUDGET_GOVERNANCE.md",
     "templates/harness/shared/RECORDS_POLICY.md",
     "templates/harness/shared/MCP_TRUST.json",
+    "templates/harness/runtime/CONNECTORS/README.md",
+    "templates/harness/runtime/CONNECTORS/discord_approval.example.json",
     "templates/harness/templates/BUDGET.json",
 ]
 
@@ -184,6 +190,28 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     )
     run(["./init.sh"], target)
     run([sys.executable, "harness/mcp_server/server.py", "--root", ".", "list-tools"], target)
+    budget_result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "budget-check",
+            "--task-id",
+            "F0-PLANNING-RUNWAY",
+            "--time-elapsed-minutes",
+            "181",
+        ],
+        cwd=str(target),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if budget_result.returncode != 3:
+        print(budget_result.stdout, end="")
+        print(budget_result.stderr, end="", file=sys.stderr)
+        raise SystemExit("budget-check smoke did not return kill-required exit code")
+    events_text = (target / "harness" / "events" / "events.jsonl").read_text(encoding="utf-8")
+    if "budget.kill_required" not in events_text or "budget.escalation_required" not in events_text:
+        raise SystemExit("budget-check smoke did not write kill and escalation events")
 
     latest = load_json(target / "harness" / "evals" / "results" / "latest.json")
     public = load_json(target / "harness" / "evals" / "results" / "public_release.json")
@@ -216,6 +244,11 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "status": viz.get("status"),
             "event_count": viz.get("event_count"),
             "external_network_write": viz.get("external_network_write"),
+        },
+        "budget": {
+            "kill_exit_code": budget_result.returncode,
+            "kill_event": "budget.kill_required",
+            "escalation_event": "budget.escalation_required",
         },
     }
     if not args.keep and not args.target:

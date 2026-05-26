@@ -23,14 +23,15 @@ Result:
 | hook lifecycle | implemented |
 | spec before execution | policy and templates implemented |
 | evaluation feedback loop | implemented |
+| budget governance | policy and local kill surface implemented |
 | visibility and static reports | local-only implemented |
 | remote and credential boundary | policy and descriptors implemented |
 | read-only MCP export | reference export implemented |
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 143 file,
-content, and absence conditions. Current result: 143 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 166 file,
+content, and absence conditions. Current result: 166 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -40,6 +41,7 @@ content, and absence conditions. Current result: 143 passed, 0 failed.
 | recovery after interruption | `benchmarks/replay_recovery` plus generated status and event files | restart evidence, not hosted runtime recovery |
 | governance overhead | `benchmarks/agentic_governance` file count and governance score | overhead is explicit, not hidden |
 | planning before sharp/deep work | `benchmarks/spec_gate` | scaffold regression guard, not a neutral comparator |
+| budget caps and kill surface | `BUDGET.json`, `BUDGET_GOVERNANCE.md`, `harnessctl.py budget-check` | local structure and kill signal, not provider token-meter capture |
 | static visualization | `benchmarks/static_viz` | local export guard, not hosted dashboard quality |
 | MCP assurance | `benchmarks/agentic_governance` plus `MCP_TRUST.json` and read-only server | policy and local surface, not live red-team coverage |
 | dissent preservation | `benchmarks/agentic_governance` council surface | protocol preservation, not model judgment accuracy |
@@ -60,6 +62,7 @@ content, and absence conditions. Current result: 143 passed, 0 failed.
 | worker teams by planning/design/production/evaluation | yes | team files and team context files generated |
 | same part returns to same worker when safe | yes | part ownership and worker session registry |
 | lower-tier worker routing for routine work | yes | `MODEL_ROUTING.json` |
+| budget caps and escalation | yes | task budgets, runner kill procedures, local `budget-check` command |
 | context accumulation and shared memory | yes | root state, shared memory, team memory, event log |
 | context overload controls | yes | context pressure controls and context pack rule |
 | feedback loop into rules and evals | yes | failure ledger, rule-change log, eval suites |
@@ -88,7 +91,7 @@ private account workflows.
 
 The core harness architecture is reflected: implementer separation, dual
 operators, worker teams, fixed part ownership, hooks, context controls, eval
-loops, local visibility, and MCP export.
+loops, budget governance, local visibility, and MCP export.
 
 The public kit intentionally stops before private account automation, hosted
 execution, private storage, or real remote-control activation. Those are

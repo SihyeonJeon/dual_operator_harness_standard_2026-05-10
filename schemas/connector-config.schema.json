@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/easy-orchestration-harness/connector-config.schema.json",
+  "title": "Connector Config",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "surface",
+    "purpose",
+    "network_default",
+    "allowed_directions",
+    "allowed_payloads",
+    "denied_payloads",
+    "credential_scope",
+    "audit_path",
+    "smoke_evidence_path",
+    "disable_path"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "status": {"type": "string"},
+    "surface": {"type": "string"},
+    "purpose": {"type": "string"},
+    "network_default": {"type": "string"},
+    "allowed_directions": {"type": "array", "items": {"type": "string"}},
+    "allowed_payloads": {"type": "array", "items": {"type": "string"}},
+    "denied_payloads": {"type": "array", "items": {"type": "string"}},
+    "credential_scope": {"type": "string"},
+    "audit_path": {"type": "string"},
+    "smoke_evidence_path": {"type": "string"},
+    "disable_path": {"type": "string"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": true
+}

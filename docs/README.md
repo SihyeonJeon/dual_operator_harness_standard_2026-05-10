@@ -17,6 +17,7 @@ auditing a generated harness.
 | File | Use |
 | --- | --- |
 | [Benchmarks](BENCHMARKS.md) | stable benchmark overview and command map |
+| [Phase 2 benchmark roadmap](PHASE2_BENCHMARK_ROADMAP.md) | live variance and Korean-domain benchmark plan |
 | [Benchmark report 2026-05-26](BENCHMARK_REPORT_2026-05-26.md) | dated run report |
 | [Requirement traceability 2026-05-26](REQUIREMENT_TRACEABILITY_2026-05-26.md) | requirements reflected, partial, or excluded |
 | [Comparative survey 2026-05-24](COMPARATIVE_SURVEY_2026-05-24.md) | source survey for adjacent tools |
