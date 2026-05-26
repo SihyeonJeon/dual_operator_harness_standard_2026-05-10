@@ -43,7 +43,7 @@ Scope:
 
 - generated harness scaffold and `./init.sh`
 - 13 public operating categories
-- 174 file, text, and absence checks
+- 189 file, text, and absence checks
 - no model calls
 - private account-specific surfaces must be absent
 
@@ -51,7 +51,7 @@ Result:
 
 | categories | passed categories | checks | failed checks | score |
 | ---: | ---: | ---: | ---: | ---: |
-| 13 | 13 | 174 | 0 | 1.000 |
+| 13 | 13 | 189 | 0 | 1.000 |
 
 Interpretation:
 

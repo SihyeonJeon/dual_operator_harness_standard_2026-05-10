@@ -30,8 +30,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 174 file,
-content, and absence conditions. Current result: 174 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 189 file,
+content, and absence conditions. Current result: 189 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -63,8 +63,11 @@ content, and absence conditions. Current result: 174 passed, 0 failed.
 | same part returns to same worker when safe | yes | part ownership and worker session registry |
 | lower-tier worker routing for routine work | yes | `MODEL_ROUTING.json` |
 | sonnet/haiku/spark routine aliases | yes | `MODEL_ROUTING.json` names `sonnet`, `haiku`, and `gpt-5.3-codex-spark` as verified-environment aliases |
-| agent communication optimization | yes | `AGENT_COMMUNICATION.md` requires bounded packets, evidence paths, and no full transcript forwarding |
-| software feedback gates | yes | `SOFTWARE_FEEDBACK_POLICY.md` requires lint/static checks, runtime smoke, Playwright or equivalent, and UI/UX/layout review when applicable |
+| executable model routing | yes | `harnessctl.py model-route` applies `MODEL_ROUTING.json` without relying on prose memory |
+| executable context pack | yes | `harnessctl.py context-pack` compiles bounded source excerpts and recent events |
+| executable worker brief | yes | `harnessctl.py worker-brief` renders task-local brief JSON from the canonical template |
+| agent communication optimization | yes | `AGENT_COMMUNICATION.md` and `harnessctl.py task-packet` require bounded packets, evidence paths, and no full transcript forwarding |
+| software feedback gates | yes | `SOFTWARE_FEEDBACK_POLICY.md` and `harnessctl.py software-feedback` cover lint/static checks, runtime smoke, Playwright or equivalent, and UI/UX/layout review when applicable |
 | budget caps and escalation | yes | task budgets, runner kill procedures, local `budget-check` command |
 | context accumulation and shared memory | yes | root state, shared memory, team memory, event log |
 | context overload controls | yes | context pressure controls and context pack rule |

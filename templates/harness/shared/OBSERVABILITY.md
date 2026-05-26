@@ -19,9 +19,28 @@ python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py viz-export --backend local_file
 python3 scripts/harnessctl.py viz-spec-check
 python3 scripts/harnessctl.py eval-run
+python3 scripts/harnessctl.py context-pack --task-id TASK
+python3 scripts/harnessctl.py worker-brief --task-id TASK --owned-path PATH
+python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
+python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
 ```
 
 `harnessctl.py` is a thin file-backed helper, not an agent runtime.
+
+## Executable Governance Helpers
+
+The generated control surface code handles repeatable, domain-neutral work:
+
+- `context-pack` compiles bounded source excerpts and recent event references;
+- `worker-brief` renders a task-local worker brief from the canonical template;
+- `model-route` applies `MODEL_ROUTING.json` without relying on prose memory;
+- `task-packet` writes bounded agent-to-agent handoff JSON;
+- `software-feedback` executes lint/static, runtime smoke, optional test, and
+  optional Playwright commands and writes evidence packets.
+
+Agents may still make project-specific judgments, but these repeatable steps
+should be run by code when available.
 
 ## Visualization Export
 

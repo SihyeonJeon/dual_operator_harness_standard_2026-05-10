@@ -260,6 +260,49 @@ def event_rows(root: Path, limit: int = 80) -> list[dict[str, Any]]:
     return rows[-limit:]
 
 
+def bounded_text(value: Any, max_chars: int = 1400) -> str:
+    text = scrub_text(value)
+    if max_chars <= 0 or len(text) <= max_chars:
+        return text
+    return text[:max_chars].rstrip() + "\n[truncated]"
+
+
+def split_values(values: list[str] | None) -> list[str]:
+    result: list[str] = []
+    for value in values or []:
+        for part in value.split(","):
+            item = part.strip()
+            if item:
+                result.append(item)
+    return result
+
+
+def ensure_task_dir(root: Path, task_id: str) -> Path:
+    task_dir = root / "harness" / "tasks" / task_id
+    task_dir.mkdir(parents=True, exist_ok=True)
+    return task_dir
+
+
+def artifact_path(root: Path, output: str, task_id: str, filename: str) -> Path:
+    path = Path(output) if output else ensure_task_dir(root, task_id) / filename
+    if not path.is_absolute():
+        path = root / path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def project_goal(root: Path) -> str:
+    feature_goal = load_json(root / "feature_list.json", {}).get("project_goal")
+    if feature_goal:
+        return scrub_text(feature_goal)
+    profile_goal = load_json(root / "harness" / "shared" / "PROJECT_PROFILE.json", {}).get("primary_goal")
+    return scrub_text(profile_goal or "UNKNOWN")
+
+
+def json_artifact(path: Path, payload: dict[str, Any]) -> None:
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def status_badge(value: str) -> str:
     normalized = value or "UNKNOWN"
     safe = html.escape(normalized)
@@ -1175,6 +1218,520 @@ def run_eval_suite(args: argparse.Namespace, root: Path) -> int:
     return 1 if verdict == "FAIL" else 0
 
 
+def default_context_files(root: Path, task_id: str, software: bool) -> list[str]:
+    files = [
+        "feature_list.json",
+        "progress.md",
+        "session-handoff.md",
+        "harness/shared/ACTIVE_SNAPSHOT.md",
+        "harness/shared/CONTEXT.md",
+        "harness/shared/MEMORY.md",
+        "harness/shared/PART_OWNERSHIP.md",
+        "harness/shared/MODEL_ROUTING.json",
+        "harness/shared/AGENT_COMMUNICATION.md",
+        "harness/shared/QUALITY_GATES.md",
+        "harness/shared/CONTEXT_PRESSURE.md",
+        "harness/shared/SESSION_CONTINUITY.md",
+    ]
+    task_dir = root / "harness" / "tasks" / task_id
+    for name in ["BLUEPRINT.md", "BUDGET.json", "WORKER_BRIEF.json", "TASK_PACKET.json"]:
+        if task_dir.joinpath(name).exists():
+            files.append(f"harness/tasks/{task_id}/{name}")
+    if software:
+        files.append("harness/shared/SOFTWARE_FEEDBACK_POLICY.md")
+    return files
+
+
+def build_context_pack(args: argparse.Namespace, root: Path) -> int:
+    include_files = default_context_files(root, args.task_id, args.software)
+    include_files.extend(split_values(args.include_file))
+    seen: set[str] = set()
+    sources: list[dict[str, Any]] = []
+    for rel in include_files:
+        if rel in seen:
+            continue
+        seen.add(rel)
+        path = root / rel
+        meta = source_metadata(path, root)
+        source = {
+            **meta,
+            "excerpt": bounded_text(read_text(path), args.max_chars_per_file) if path.exists() else "",
+        }
+        sources.append(source)
+
+    events = [sanitize_event(row) for row in event_rows(root, args.include_events)]
+    payload = {
+        "artifact": "context_pack",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "part_id": args.part_id or "UNKNOWN",
+        "worker_id": args.worker_id or "UNKNOWN",
+        "project_goal": project_goal(root),
+        "token_saving_rules": [
+            "Use this bounded context pack before loading full files.",
+            "Open source paths only when the excerpt is insufficient.",
+            "Do not forward full transcripts to routine workers.",
+            "Keep durable lessons in TEAM_CONTEXT.md and cross-team decisions in harness/shared/CONTEXT.md.",
+        ],
+        "source_count": len(sources),
+        "sources": sources,
+        "recent_events": events,
+        "do_not_load_by_default": [
+            "private logs",
+            "full archives",
+            "generated reports unless the task needs a compiled view",
+            "unrelated part-owner session history",
+        ],
+    }
+    output = artifact_path(root, args.output, args.task_id, "CONTEXT_PACK.json")
+    json_artifact(output, payload)
+
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Context Pack",
+        "",
+        f"Task: `{args.task_id}`",
+        f"Part: `{args.part_id or 'UNKNOWN'}`",
+        f"Generated: {payload['generated_at']}",
+        "",
+        "## Token Rules",
+        "",
+        *[f"- {item}" for item in payload["token_saving_rules"]],
+        "",
+        "## Source Paths",
+        "",
+        "| path | status | sha256 |",
+        "| --- | --- | --- |",
+    ]
+    for source in sources:
+        lines.append(f"| `{source['path']}` | {source['status']} | `{source['sha256']}` |")
+    lines.extend(["", "## Recent Events", ""])
+    for row in events:
+        lines.append(
+            f"- `{row.get('event_type', 'UNKNOWN')}` {row.get('verdict', 'NONE')} "
+            f"`{row.get('evidence_path', '')}`"
+        )
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "hook",
+            "event_type": "context_pack.created",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": "PASS",
+            "summary": f"Context pack created with {len(sources)} bounded sources.",
+            "evidence_path": display_path(output, root),
+            "part_id": args.part_id or "",
+            "worker_id": args.worker_id or "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"context pack written: {display_path(output, root)}")
+    print(f"context pack markdown written: {display_path(markdown, root)}")
+    return 0
+
+
+def compute_model_route(
+    root: Path,
+    role: str,
+    task_difficulty: str,
+    simple: bool,
+    verified_alias: str = "",
+) -> dict[str, Any]:
+    routing = load_json(root / "harness" / "shared" / "MODEL_ROUTING.json", {})
+    policy = routing.get("policy", {}) if isinstance(routing, dict) else {}
+    tiers = routing.get("worker_tiers", {}) if isinstance(routing, dict) else {}
+    if role == "operator":
+        operator = policy.get("operators", {}) if isinstance(policy, dict) else {}
+        return {
+            "role": role,
+            "task_difficulty": task_difficulty,
+            "selected_model_class": operator.get("model_class", "highest_verified_available"),
+            "selected_reasoning_effort": operator.get("reasoning_effort", "highest_verified_available"),
+            "candidate_aliases": [],
+            "verification_status": "operator_uses_highest_verified_available",
+            "policy_path": "harness/shared/MODEL_ROUTING.json",
+        }
+
+    workers = policy.get("workers", {}) if isinstance(policy, dict) else {}
+    tier_key = "routine" if simple else task_difficulty
+    tier = tiers.get(tier_key, {}) if isinstance(tiers, dict) else {}
+    aliases = workers.get("routine_task_aliases", []) if isinstance(workers, dict) else []
+    if not isinstance(aliases, list):
+        aliases = []
+    selected_alias = verified_alias if verified_alias in aliases else ""
+    use_routine = simple or task_difficulty == "routine"
+    selected_model = selected_alias or workers.get("default_model_class", "lowest_verified_that_satisfies_gate")
+    verification = "verified_alias_selected" if selected_alias else "requires_local_alias_verification"
+    if not use_routine:
+        selected_model = tier.get("example_model_classes", ["strong_verified"])[0]
+        verification = "tier_policy_selected_requires_local_verification"
+    return {
+        "role": role,
+        "task_difficulty": task_difficulty,
+        "simple_task": use_routine,
+        "selected_model_class": selected_model,
+        "selected_reasoning_effort": tier.get(
+            "reasoning_effort",
+            workers.get("default_reasoning_effort", "lowest_verified_that_satisfies_gate"),
+        ),
+        "candidate_aliases": aliases if use_routine else tier.get("example_model_classes", []),
+        "verified_alias": selected_alias,
+        "verification_status": verification,
+        "part_owner_session_policy": workers.get("session_policy", "part_owner_resume_when_safe"),
+        "policy_path": "harness/shared/MODEL_ROUTING.json",
+    }
+
+
+def route_model(args: argparse.Namespace, root: Path) -> int:
+    payload = {
+        "artifact": "model_route",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        **compute_model_route(root, args.role, args.task_difficulty, args.simple, args.verified_alias),
+    }
+    output = Path(args.output) if args.output else None
+    if output:
+        if not output.is_absolute():
+            output = root / output
+        output.parent.mkdir(parents=True, exist_ok=True)
+        json_artifact(output, payload)
+        evidence_path = display_path(output, root)
+        print(f"model route written: {evidence_path}")
+    else:
+        evidence_path = ""
+    print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+    if args.task_id:
+        write_event(
+            root,
+            {
+                "event_id": f"evt_{uuid.uuid4().hex}",
+                "trace_id": args.trace_id,
+                "task_id": args.task_id,
+                "actor": "harnessctl",
+                "actor_type": "hook",
+                "event_type": "model_route.selected",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "verdict": "PASS",
+                "summary": f"Model route selected for {args.role}/{args.task_difficulty}.",
+                "evidence_path": evidence_path,
+                "part_id": "",
+                "worker_id": "",
+                "model": str(payload.get("selected_model_class", "")),
+                "effort": str(payload.get("selected_reasoning_effort", "")),
+            },
+        )
+    return 0
+
+
+def generate_worker_brief(args: argparse.Namespace, root: Path) -> int:
+    template = load_json(root / "harness" / "templates" / "WORKER_BRIEF.json", {})
+    if not isinstance(template, dict):
+        print("ERROR: invalid harness/templates/WORKER_BRIEF.json", file=sys.stderr)
+        return 1
+    brief = dict(template)
+    owned_paths = split_values(args.owned_path) or ["UNKNOWN"]
+    no_touch_paths = split_values(args.no_touch_path) or ["UNKNOWN"]
+    success_criteria = split_values(args.success_criterion) or ["UNKNOWN"]
+    evidence_required = split_values(args.evidence_command) or ["UNKNOWN"]
+    part_id = args.part_id or args.task_id
+    route = compute_model_route(root, "worker", args.task_difficulty, args.simple, args.verified_alias)
+
+    brief.update(
+        {
+            "task_id": args.task_id,
+            "feature_id": args.feature_id or "UNKNOWN",
+            "slice_id": args.slice_id or "UNKNOWN",
+            "part_id": part_id,
+            "part_scope": args.part_scope or "UNKNOWN",
+            "goal": args.goal or project_goal(root),
+            "owned_paths": owned_paths,
+            "no_touch_paths": no_touch_paths,
+            "context_pack_path": args.context_pack or f"harness/tasks/{args.task_id}/CONTEXT_PACK.json",
+            "success_criteria": success_criteria,
+            "commands_or_evidence_required": evidence_required,
+            "checkpoint_eta": args.checkpoint_eta or "UNKNOWN",
+        }
+    )
+    model_routing = dict(brief.get("model_routing", {}))
+    model_routing.update(
+        {
+            "model_class": route["selected_model_class"],
+            "reasoning_effort": route["selected_reasoning_effort"],
+            "task_difficulty": args.task_difficulty,
+            "candidate_aliases": route.get("candidate_aliases", []),
+            "verification_status": route.get("verification_status", "UNKNOWN"),
+        }
+    )
+    brief["model_routing"] = model_routing
+
+    output = artifact_path(root, args.output, args.task_id, "WORKER_BRIEF.json")
+    json_artifact(output, brief)
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "operator",
+            "event_type": "worker_brief.created",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": "PASS",
+            "summary": f"Worker brief created for part {part_id}.",
+            "evidence_path": display_path(output, root),
+            "part_id": part_id,
+            "worker_id": args.worker_id or "",
+            "model": str(route.get("selected_model_class", "")),
+            "effort": str(route.get("selected_reasoning_effort", "")),
+        },
+    )
+    print(f"worker brief written: {display_path(output, root)}")
+    return 0
+
+
+def create_task_packet(args: argparse.Namespace, root: Path) -> int:
+    evidence_paths = split_values(args.evidence_path)
+    missing = []
+    for value in evidence_paths:
+        if value == "UNKNOWN":
+            continue
+        path = Path(value)
+        candidate = path if path.is_absolute() else root / path
+        if not candidate.exists():
+            missing.append(value)
+    payload = {
+        "artifact": "task_packet",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "part_id": args.part_id or "UNKNOWN",
+        "sender": args.sender,
+        "receiver": args.receiver,
+        "intent": args.intent,
+        "summary": bounded_text(args.summary, args.max_summary_chars),
+        "evidence_paths": evidence_paths,
+        "requested_action": args.requested_action or "UNKNOWN",
+        "stop_if_unanswered": args.stop_if_unanswered,
+        "missing_evidence_paths": missing,
+        "communication_policy": "harness/shared/AGENT_COMMUNICATION.md",
+    }
+    output = artifact_path(root, args.output, args.task_id, "TASK_PACKET.json")
+    json_artifact(output, payload)
+    verdict = "WARN" if missing else "PASS"
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "hook",
+            "event_type": "task_packet.created",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": f"Task packet created for {args.receiver}.",
+            "evidence_path": display_path(output, root),
+            "part_id": args.part_id or "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"task packet written: {display_path(output, root)}")
+    if missing and not args.allow_missing_evidence:
+        print("ERROR: task packet has missing evidence paths: " + ", ".join(missing), file=sys.stderr)
+        return 1
+    return 0
+
+
+def run_feedback_command(root: Path, task_dir: Path, axis: str, command: str, required: bool, timeout: int) -> dict[str, Any]:
+    if not command:
+        return {
+            "axis": axis,
+            "required": required,
+            "result": "NOT-RUN",
+            "command": "",
+            "returncode": None,
+            "notes": "No command supplied.",
+            "log_path": "",
+        }
+    log_path = task_dir / "software_feedback" / f"{axis}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    started_at = datetime.now(timezone.utc).isoformat()
+    try:
+        result = subprocess.run(
+            command,
+            cwd=str(root),
+            shell=True,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+        output = [
+            f"$ {command}",
+            f"started_at: {started_at}",
+            f"returncode: {result.returncode}",
+            "",
+            "## stdout",
+            result.stdout,
+            "",
+            "## stderr",
+            result.stderr,
+        ]
+        log_path.write_text("\n".join(output), encoding="utf-8")
+        return {
+            "axis": axis,
+            "required": required,
+            "result": "PASS" if result.returncode == 0 else "FAIL",
+            "command": command,
+            "returncode": result.returncode,
+            "notes": "command completed",
+            "log_path": display_path(log_path, root),
+            "stdout_tail": bounded_text(result.stdout[-1200:], 1200),
+            "stderr_tail": bounded_text(result.stderr[-1200:], 1200),
+        }
+    except subprocess.TimeoutExpired as exc:
+        log_path.write_text(f"$ {command}\nTIMEOUT after {timeout}s\n{exc}\n", encoding="utf-8")
+        return {
+            "axis": axis,
+            "required": required,
+            "result": "FAIL",
+            "command": command,
+            "returncode": None,
+            "notes": f"timeout after {timeout}s",
+            "log_path": display_path(log_path, root),
+        }
+
+
+def run_software_feedback(args: argparse.Namespace, root: Path) -> int:
+    task_dir = ensure_task_dir(root, args.task_id)
+    axes = [
+        run_feedback_command(root, task_dir, "lint_static", args.lint_command, True, args.timeout_seconds),
+        run_feedback_command(root, task_dir, "runtime_smoke", args.smoke_command, True, args.timeout_seconds),
+        run_feedback_command(root, task_dir, "tests", args.test_command, args.require_tests, args.timeout_seconds),
+        run_feedback_command(
+            root,
+            task_dir,
+            "browser_playwright",
+            args.playwright_command,
+            args.require_playwright,
+            args.timeout_seconds,
+        ),
+    ]
+    context_files = [
+        root / "harness" / "spec" / "PRD_DRAFT.md",
+        root / "harness" / "spec" / "ANTI_PRD.md",
+        task_dir / "WORKER_BRIEF.json",
+    ]
+    if not context_files[-1].exists():
+        context_files[-1] = root / "harness" / "templates" / "WORKER_BRIEF.json"
+    missing_context = [display_path(path, root) for path in context_files if not path.exists()]
+    axes.append(
+        {
+            "axis": "context_chain",
+            "required": True,
+            "result": "PASS" if not missing_context else "FAIL",
+            "command": "file existence check",
+            "returncode": 0 if not missing_context else 1,
+            "notes": "PRD, anti-PRD, and worker brief references exist." if not missing_context else "missing: " + ", ".join(missing_context),
+            "log_path": "",
+        }
+    )
+    ui_required = args.require_ui_review
+    ui_result = "PASS" if args.ui_review_note else ("NOT-RUN" if ui_required else "NOT-RUN")
+    axes.append(
+        {
+            "axis": "ui_ux_layout_review",
+            "required": ui_required,
+            "result": ui_result,
+            "command": "",
+            "returncode": None,
+            "notes": bounded_text(args.ui_review_note or "No UI/UX/layout review note supplied.", 1600),
+            "log_path": "",
+        }
+    )
+
+    required_axes = [axis for axis in axes if axis.get("required") is True]
+    if any(axis.get("result") == "FAIL" for axis in required_axes):
+        verdict = "FAIL"
+    elif any(axis.get("result") == "NOT-RUN" for axis in required_axes):
+        verdict = "WARN"
+    else:
+        verdict = "PASS"
+
+    output = artifact_path(root, args.output, args.task_id, "SOFTWARE_FEEDBACK.json")
+    payload = {
+        "artifact": "software_feedback",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "policy": "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
+        "verdict": verdict,
+        "allow_not_run": args.allow_not_run,
+        "axes": axes,
+        "external_network_write": "not_requested_by_harnessctl",
+    }
+    json_artifact(output, payload)
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Software Feedback",
+        "",
+        f"Task: `{args.task_id}`",
+        f"Verdict: {verdict}",
+        f"Generated: {payload['generated_at']}",
+        "",
+        "| axis | required | result | command | evidence | notes |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for axis in axes:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    str(axis.get("axis", "UNKNOWN")).replace("|", "\\|"),
+                    str(axis.get("required", False)).replace("|", "\\|"),
+                    str(axis.get("result", "UNKNOWN")).replace("|", "\\|"),
+                    "`" + scrub_text(axis.get("command", "")).replace("|", "\\|") + "`",
+                    "`" + scrub_text(axis.get("log_path", "")).replace("|", "\\|") + "`",
+                    scrub_text(axis.get("notes", "")).replace("|", "\\|").replace("\n", " "),
+                ]
+            )
+            + " |"
+        )
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "evaluator",
+            "event_type": "software_feedback.completed",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": f"Software feedback completed with {verdict}.",
+            "evidence_path": display_path(output, root),
+            "part_id": "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"software feedback written: {display_path(output, root)}")
+    print(f"software feedback markdown written: {display_path(markdown, root)}")
+    if verdict == "PASS" or (args.allow_not_run and verdict == "WARN"):
+        return 0
+    return 1
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1238,6 +1795,76 @@ def main(argv: list[str]) -> int:
     archive.add_argument("--reason", default="")
     archive.add_argument("--force", action="store_true")
 
+    context_pack = sub.add_parser("context-pack", help="Compile a bounded context pack for a task")
+    context_pack.add_argument("--task-id", required=True)
+    context_pack.add_argument("--part-id", default="")
+    context_pack.add_argument("--worker-id", default="")
+    context_pack.add_argument("--include-file", action="append", default=[])
+    context_pack.add_argument("--include-events", type=int, default=12)
+    context_pack.add_argument("--max-chars-per-file", type=int, default=1400)
+    context_pack.add_argument("--software", action="store_true")
+    context_pack.add_argument("--output", default="")
+    context_pack.add_argument("--trace-id", default="trace_context_pack")
+
+    model_route = sub.add_parser("model-route", help="Select a model route from MODEL_ROUTING.json")
+    model_route.add_argument("--role", choices=["operator", "worker", "evaluator"], default="worker")
+    model_route.add_argument("--task-difficulty", choices=["routine", "standard", "complex", "independent_evaluation"], default="routine")
+    model_route.add_argument("--simple", action="store_true")
+    model_route.add_argument("--verified-alias", default="")
+    model_route.add_argument("--task-id", default="")
+    model_route.add_argument("--trace-id", default="trace_model_route")
+    model_route.add_argument("--output", default="")
+
+    worker_brief = sub.add_parser("worker-brief", help="Generate a task-local worker brief from the canonical template")
+    worker_brief.add_argument("--task-id", required=True)
+    worker_brief.add_argument("--feature-id", default="")
+    worker_brief.add_argument("--slice-id", default="")
+    worker_brief.add_argument("--part-id", default="")
+    worker_brief.add_argument("--part-scope", default="")
+    worker_brief.add_argument("--goal", default="")
+    worker_brief.add_argument("--owned-path", action="append", default=[])
+    worker_brief.add_argument("--no-touch-path", action="append", default=[])
+    worker_brief.add_argument("--success-criterion", action="append", default=[])
+    worker_brief.add_argument("--evidence-command", action="append", default=[])
+    worker_brief.add_argument("--context-pack", default="")
+    worker_brief.add_argument("--task-difficulty", choices=["routine", "standard", "complex", "independent_evaluation"], default="routine")
+    worker_brief.add_argument("--simple", action="store_true")
+    worker_brief.add_argument("--verified-alias", default="")
+    worker_brief.add_argument("--worker-id", default="")
+    worker_brief.add_argument("--checkpoint-eta", default="")
+    worker_brief.add_argument("--trace-id", default="trace_worker_brief")
+    worker_brief.add_argument("--output", default="")
+
+    task_packet = sub.add_parser("task-packet", help="Write a bounded agent-to-agent task packet")
+    task_packet.add_argument("--task-id", required=True)
+    task_packet.add_argument("--part-id", default="")
+    task_packet.add_argument("--sender", required=True)
+    task_packet.add_argument("--receiver", required=True)
+    task_packet.add_argument("--intent", choices=["status", "question", "feedback", "handoff", "decision"], required=True)
+    task_packet.add_argument("--summary", required=True)
+    task_packet.add_argument("--evidence-path", action="append", default=[])
+    task_packet.add_argument("--requested-action", default="")
+    task_packet.add_argument("--stop-if-unanswered", action="store_true")
+    task_packet.add_argument("--allow-missing-evidence", action="store_true")
+    task_packet.add_argument("--max-summary-chars", type=int, default=900)
+    task_packet.add_argument("--trace-id", default="trace_task_packet")
+    task_packet.add_argument("--output", default="")
+
+    software_feedback = sub.add_parser("software-feedback", help="Run and record software feedback evidence")
+    software_feedback.add_argument("--task-id", required=True)
+    software_feedback.add_argument("--trace-id", default="trace_software_feedback")
+    software_feedback.add_argument("--lint-command", default="")
+    software_feedback.add_argument("--test-command", default="")
+    software_feedback.add_argument("--smoke-command", default="")
+    software_feedback.add_argument("--playwright-command", default="")
+    software_feedback.add_argument("--require-tests", action="store_true")
+    software_feedback.add_argument("--require-playwright", action="store_true")
+    software_feedback.add_argument("--require-ui-review", action="store_true")
+    software_feedback.add_argument("--ui-review-note", default="")
+    software_feedback.add_argument("--timeout-seconds", type=int, default=120)
+    software_feedback.add_argument("--allow-not-run", action="store_true")
+    software_feedback.add_argument("--output", default="")
+
     args = parser.parse_args(argv[1:])
     root = project_root()
     if args.command == "validate":
@@ -1256,6 +1883,16 @@ def main(argv: list[str]) -> int:
         return run_eval_suite(args, root)
     if args.command == "archive":
         return archive_task(args, root)
+    if args.command == "context-pack":
+        return build_context_pack(args, root)
+    if args.command == "model-route":
+        return route_model(args, root)
+    if args.command == "worker-brief":
+        return generate_worker_brief(args, root)
+    if args.command == "task-packet":
+        return create_task_packet(args, root)
+    if args.command == "software-feedback":
+        return run_software_feedback(args, root)
     return 2
 
 

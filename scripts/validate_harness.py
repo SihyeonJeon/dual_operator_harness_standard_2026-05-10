@@ -425,6 +425,8 @@ def check_model_routing(model_routing: dict[str, Any], errors: list[str]) -> Non
         errors.append("MODEL_ROUTING.json operators.model_class must be highest_verified_available")
     if op_policy.get("reasoning_effort") != "highest_verified_available":
         errors.append("MODEL_ROUTING.json operators.reasoning_effort must be highest_verified_available")
+    if model_routing.get("executable_helper") != "python3 scripts/harnessctl.py model-route":
+        errors.append("MODEL_ROUTING.json must name the model-route executable helper")
     worker_policy = model_routing.get("policy", {}).get("workers", {})
     if worker_policy.get("session_policy") != "part_owner_resume_when_safe":
         errors.append("MODEL_ROUTING.json workers.session_policy must be part_owner_resume_when_safe")
@@ -768,7 +770,21 @@ def check_external_interfaces(harness: Path, errors: list[str]) -> None:
 def check_harnessctl(project_root: Path, errors: list[str]) -> None:
     path = project_root / "scripts" / "harnessctl.py"
     text = path.read_text(encoding="utf-8")
-    for phrase in ["event", "report", "budget-check", "viz-export", "viz-spec-check", "eval-run", "archive", "compiled view"]:
+    for phrase in [
+        "event",
+        "report",
+        "budget-check",
+        "viz-export",
+        "viz-spec-check",
+        "eval-run",
+        "archive",
+        "context-pack",
+        "worker-brief",
+        "model-route",
+        "task-packet",
+        "software-feedback",
+        "compiled view",
+    ]:
         if phrase not in text:
             errors.append(f"scripts/harnessctl.py lacks {phrase}")
     forbidden_public_commands = [
@@ -846,6 +862,7 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "routine_worker_aliases",
         "agent_communication_packets",
         "software_feedback_policy",
+        "harnessctl_executable_governance_commands",
     }:
         if required_id not in public_ids:
             errors.append(f"public_release_suite.json missing required eval case: {required_id}")
@@ -941,6 +958,11 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "gpt-5.3-codex-spark",
         "SOFTWARE_FEEDBACK_POLICY.md",
         "AGENT_COMMUNICATION.md",
+        "context-pack",
+        "worker-brief",
+        "model-route",
+        "task-packet",
+        "software-feedback",
     ]:
         if phrase not in readme_text:
             errors.append(f"README.md lacks required bilingual/operation phrase: {phrase}")
@@ -995,11 +1017,11 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         if phrase not in quality_text:
             errors.append(f"QUALITY_GATES.md lacks required held-out eval phrase: {phrase}")
     software_feedback = (harness / "shared" / "SOFTWARE_FEEDBACK_POLICY.md").read_text(encoding="utf-8")
-    for phrase in ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN"]:
+    for phrase in ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN", "harnessctl.py software-feedback"]:
         if phrase not in software_feedback:
             errors.append(f"SOFTWARE_FEEDBACK_POLICY.md lacks {phrase}")
     agent_communication = (harness / "shared" / "AGENT_COMMUNICATION.md").read_text(encoding="utf-8")
-    for phrase in ["task packets", "evidence_paths", "do not forward a full operator conversation", "Part-Owner Rule"]:
+    for phrase in ["task packets", "evidence_paths", "do not forward a full operator conversation", "Part-Owner Rule", "harnessctl.py task-packet"]:
         if phrase not in agent_communication:
             errors.append(f"AGENT_COMMUNICATION.md lacks {phrase}")
     hooks_text = (harness / "IMPLEMENTER_HOOKS.md").read_text(encoding="utf-8")

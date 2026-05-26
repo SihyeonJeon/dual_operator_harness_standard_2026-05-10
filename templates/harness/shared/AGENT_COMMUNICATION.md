@@ -24,6 +24,14 @@ handoff notes:
 }
 ```
 
+When available, generate this packet with:
+
+```sh
+python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+```
+
+This keeps the packet shape stable and records an event in `events.jsonl`.
+
 ## Token Rules
 
 - send paths and verdicts before prose

@@ -384,6 +384,164 @@
       "audit_event": "tool.mcp_read_harness_context"
     },
     {
+      "id": "compile_context_pack",
+      "owner": "harness",
+      "description": "Compile a bounded task-local context pack from canonical harness files.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "part_id": {"type": "string"},
+          "include_file": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "context_pack_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "context_pack_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_artifact_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.compile_context_pack"
+    },
+    {
+      "id": "generate_worker_brief",
+      "owner": "harness",
+      "description": "Generate a task-local worker brief from the canonical template and model routing policy.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "owned_paths"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "owned_paths": {"type": "array", "items": {"type": "string"}},
+          "no_touch_paths": {"type": "array", "items": {"type": "string"}},
+          "task_difficulty": {"type": "string"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "worker_brief_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "worker_brief_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "operator_task_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.generate_worker_brief"
+    },
+    {
+      "id": "select_model_route",
+      "owner": "harness",
+      "description": "Select a model and effort route from MODEL_ROUTING.json without relying on prose memory.",
+      "input_schema": {
+        "type": "object",
+        "required": ["role", "task_difficulty"],
+        "properties": {
+          "role": {"type": "string"},
+          "task_difficulty": {"type": "string"},
+          "simple": {"type": "boolean"},
+          "verified_alias": {"type": "string"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["selected_model_class", "selected_reasoning_effort", "verification_status"],
+        "properties": {
+          "selected_model_class": {"type": "string"},
+          "selected_reasoning_effort": {"type": "string"},
+          "verification_status": {"type": "string"}
+        }
+      },
+      "side_effect_class": "none",
+      "approval": "not_required_scoped",
+      "timeout_seconds": 30,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent",
+      "auth_scopes": ["read_fs:harness_shared"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.select_model_route"
+    },
+    {
+      "id": "write_task_packet",
+      "owner": "harness",
+      "description": "Write a bounded agent-to-agent task packet instead of forwarding a full transcript.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "sender", "receiver", "intent", "summary"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "sender": {"type": "string"},
+          "receiver": {"type": "string"},
+          "intent": {"type": "string"},
+          "summary": {"type": "string"},
+          "evidence_paths": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "task_packet_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "task_packet_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_artifact_scope_required",
+      "timeout_seconds": 30,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.write_task_packet"
+    },
+    {
+      "id": "run_software_feedback",
+      "owner": "harness",
+      "description": "Run configured lint/static, runtime smoke, test, and browser evidence commands for software tasks.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "lint_command": {"type": "string"},
+          "smoke_command": {"type": "string"},
+          "test_command": {"type": "string"},
+          "playwright_command": {"type": "string"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "software_feedback_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "software_feedback_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "shell_mutating",
+      "approval": "operator_or_task_scope_required",
+      "timeout_seconds": 600,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["shell:scoped", "write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.run_software_feedback"
+    },
+    {
       "id": "archive_task_workspace",
       "owner": "harness",
       "description": "Move a non-active task directory to harness/tasks/archive according to WORKSPACE_LAYOUT.md.",

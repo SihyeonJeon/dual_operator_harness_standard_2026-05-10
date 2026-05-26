@@ -5,6 +5,13 @@ Status: generated policy for development and coding workstreams
 Use this file when the project goal or task slice includes software, web, app,
 API, game, UI, automation, data pipeline, or other code-producing work.
 
+When available, run the executable evidence collector instead of relying on a
+freeform evaluator note:
+
+```sh
+python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
+```
+
 ## Required Feedback Axes
 
 Development feedback is not limited to reading code output.

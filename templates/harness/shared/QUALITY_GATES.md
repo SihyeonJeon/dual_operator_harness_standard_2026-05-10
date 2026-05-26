@@ -23,6 +23,8 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
 ## Software And App Gates
 
 - Load `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.
+- Prefer `python3 scripts/harnessctl.py software-feedback` when project
+  commands are known.
 - Code or artifact inspection.
 - Static checks, lint, type checks, tests, or equivalent project commands.
 - Runtime smoke for the smallest reproducible path.

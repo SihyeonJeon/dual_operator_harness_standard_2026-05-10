@@ -65,12 +65,18 @@ operator memory. The pack must include owned paths, no-touch paths, success
 criteria, stop conditions, part-owner status, model/effort routing, plugin
 routing, and relevant source paths.
 
+Use `python3 scripts/harnessctl.py context-pack --task-id TASK` when available
+instead of asking an agent to manually copy long context into a prompt.
+
 ## Agent Communication Rule
 
 Use `harness/shared/AGENT_COMMUNICATION.md` for worker updates, evaluator
 feedback, operator routing, and handoff notes. Prefer compact evidence-path
 packets over chat transcripts. A lower-tier worker should receive the smallest
 packet that can complete the assigned task safely.
+
+Use `python3 scripts/harnessctl.py task-packet --task-id TASK ...` when the
+handoff can be represented as a stable packet rather than freeform chat.
 
 ## Plugin Rule
 

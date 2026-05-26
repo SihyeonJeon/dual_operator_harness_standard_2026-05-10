@@ -89,6 +89,7 @@ project/
 | worker teams | handle planning, design, production, and evaluation lanes |
 | part ownership | sends the same part back to the same worker session when safe |
 | hooks and validators | enforce lifecycle checks beyond markdown instructions |
+| executable helpers | generate context packs, worker briefs, task packets, model routes, and software feedback evidence |
 | event log | records task, gate, and eval evidence as append-only state |
 | status report | renders canonical state into local HTML and JSON |
 | MCP export | exposes read-only local project state for compatible tools |
@@ -106,6 +107,12 @@ Token saving is handled through bounded context packs, part-owner session
 reuse, a four-plugin cap with a `caveman` compression slot, and compact
 agent-to-agent packets that cite evidence paths instead of forwarding full
 transcripts.
+
+Repeatable domain-neutral steps are executable through `scripts/harnessctl.py`:
+`context-pack`, `worker-brief`, `model-route`, `task-packet`, and
+`software-feedback`. The remaining markdown files describe judgment boundaries
+and project-specific reasoning rather than asking agents to manually repeat
+stable mechanics.
 
 ## How It Differs From Runtime Frameworks
 
@@ -150,13 +157,13 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 174/174 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 189/189 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
 | bilingual README parity | Korean and English generated-project operating sections | 14/14 checks |
 | budget governance | task caps, runner kill procedures, local budget-check event surface | covered in traceability and generated validator |
-| software feedback | coding work requires lint/runtime/browser evidence policy | generated policy and validator surface |
+| software feedback | coding work requires lint/runtime/browser evidence policy and executable evidence packet | generated policy, runner, and validator surface |
 | cloud runner policy | disabled-by-default remote descriptors and policy docs | 10/10 descriptor, 10/10 policy |
 | date normalization loop | failed cases captured into the next regression pass | 83.3% direct, 72.2% first pass, 100.0% after feedback |
 

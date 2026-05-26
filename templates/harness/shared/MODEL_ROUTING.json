@@ -1,5 +1,6 @@
 {
   "simple_task_aliases": ["sonnet", "haiku", "gpt-5.3-codex-spark"],
+  "executable_helper": "python3 scripts/harnessctl.py model-route",
   "policy": {
     "operators": {
       "model_class": "highest_verified_available",

@@ -37,6 +37,10 @@ For software, web, app, API, or UI work, load
 lint/static checks, runtime smoke, and Playwright or equivalent browser/device
 evidence for interactive surfaces when available.
 
+For repeatable mechanics, prefer the executable helpers over manual prose:
+`python3 scripts/harnessctl.py context-pack`, `worker-brief`, `model-route`,
+`task-packet`, and `software-feedback`.
+
 The public kit keeps account-specific posting, outreach, connector logs, and
 private review workflows outside the scaffold. Private overlays own those
 adapters when a project needs them.

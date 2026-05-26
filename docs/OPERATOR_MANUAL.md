@@ -146,6 +146,17 @@ evidence for scaffold and governance invariants. It does not replace
 project-specific tests, expert review, browser evidence, source review, or
 specialized LLM/RAG/agent eval frameworks.
 
+For repeatable mechanics, prefer executable helpers over asking an agent to
+manually follow prose:
+
+```sh
+python3 scripts/harnessctl.py context-pack --task-id TASK
+python3 scripts/harnessctl.py worker-brief --task-id TASK --owned-path PATH
+python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
+python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
+```
+
 For deterministic parsers, classifiers, extractors, ranking or scoring systems,
 data transforms, eval frameworks, and benchmark-style quality claims, a visible
 golden set alone is not enough for a clean `PASS`. The task needs held-out or

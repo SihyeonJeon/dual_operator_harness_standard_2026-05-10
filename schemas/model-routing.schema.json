@@ -36,6 +36,9 @@
     "simple_task_aliases": {
       "type": "array",
       "items": {"type": "string"}
+    },
+    "executable_helper": {
+      "type": "string"
     }
   }
 }

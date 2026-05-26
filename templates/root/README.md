@@ -16,6 +16,11 @@ python3 scripts/validate_harness.py .
 python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py eval-run
 python3 scripts/harnessctl.py budget-check --task-id F0-PLANNING-RUNWAY --time-elapsed-minutes 1
+python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
+python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
+python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
+python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
 
 ### operator 진입
@@ -32,10 +37,12 @@ you are operator
 - sharp deep slice 승인 후 production
 - worker model effort task difficulty routing
 - simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
+- executable model-route helper applies routing policy
 - BUDGET.json token time cost cap and budget-check kill surface
 - routine worker configured low cost model 가능
 - part owner session same part reuse
 - token saving agent communication via bounded task packets
+- context-pack worker-brief task-packet helpers reduce repeated prompt context
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md 승인 전 dashboard timeline graph live status UI 금지
@@ -45,6 +52,7 @@ you are operator
 - status html compiled view
 - harness eval run local regression
 - software feedback policy lint runtime Playwright UI UX layout
+- software-feedback helper writes evidence packet
 - RECORDS_POLICY.md local canonical record policy
 - public kit no external posting scaffold
 - MCP read only context export
@@ -90,6 +98,11 @@ python3 scripts/validate_harness.py .
 python3 scripts/harnessctl.py report
 python3 scripts/harnessctl.py eval-run
 python3 scripts/harnessctl.py budget-check --task-id F0-PLANNING-RUNWAY --time-elapsed-minutes 1
+python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
+python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
+python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
+python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
 
 ### Operator Entry
@@ -106,10 +119,12 @@ you are operator
 - production after approved sharp deep slice
 - worker model effort task difficulty routing
 - simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
+- executable model-route helper applies routing policy
 - BUDGET.json token time cost caps and budget-check kill surface
 - routine worker configured low cost model when verified
 - part owner session same part reuse
 - token-saving agent communication through bounded task packets
+- context-pack worker-brief task-packet helpers reduce repeated prompt context
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md before dashboard timeline graph live status UI
@@ -119,6 +134,7 @@ you are operator
 - status html compiled view
 - harness eval run local regression
 - software feedback policy lint runtime Playwright UI UX layout
+- software-feedback helper writes evidence packet
 - RECORDS_POLICY.md local canonical record policy
 - public kit no external posting scaffold
 - MCP read only context export

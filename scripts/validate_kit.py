@@ -211,13 +211,112 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         print(budget_result.stdout, end="")
         print(budget_result.stderr, end="", file=sys.stderr)
         raise SystemExit("budget-check smoke did not return kill-required exit code")
+
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "context-pack",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--software",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "model-route",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--role",
+            "worker",
+            "--task-difficulty",
+            "routine",
+            "--simple",
+            "--output",
+            "harness/tasks/H0-LOCAL-SMOKE/MODEL_ROUTE.json",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "worker-brief",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--part-id",
+            "local-control-surface",
+            "--owned-path",
+            "scripts/harnessctl.py",
+            "--no-touch-path",
+            ".env",
+            "--success-criterion",
+            "local control surface smoke passes",
+            "--evidence-command",
+            "python3 scripts/harnessctl.py validate",
+            "--simple",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "task-packet",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--part-id",
+            "local-control-surface",
+            "--sender",
+            "harnessctl",
+            "--receiver",
+            "operator",
+            "--intent",
+            "handoff",
+            "--summary",
+            "Executable governance smoke artifacts are ready.",
+            "--evidence-path",
+            "harness/tasks/H0-LOCAL-SMOKE/CONTEXT_PACK.json",
+            "--evidence-path",
+            "harness/tasks/H0-LOCAL-SMOKE/WORKER_BRIEF.json",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "software-feedback",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--lint-command",
+            "python3 -m py_compile scripts/harnessctl.py",
+            "--smoke-command",
+            "python3 scripts/harnessctl.py validate",
+        ],
+        target,
+    )
     events_text = (target / "harness" / "events" / "events.jsonl").read_text(encoding="utf-8")
     if "budget.kill_required" not in events_text or "budget.escalation_required" not in events_text:
         raise SystemExit("budget-check smoke did not write kill and escalation events")
+    for event_name in [
+        "context_pack.created",
+        "model_route.selected",
+        "worker_brief.created",
+        "task_packet.created",
+        "software_feedback.completed",
+    ]:
+        if event_name not in events_text:
+            raise SystemExit(f"{event_name} smoke event was not written")
 
     latest = load_json(target / "harness" / "evals" / "results" / "latest.json")
     public = load_json(target / "harness" / "evals" / "results" / "public_release.json")
     viz = load_json(target / "harness" / "reports" / "viz" / "summary.json")
+    context_pack = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONTEXT_PACK.json")
+    software_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "SOFTWARE_FEEDBACK.json")
     file_count = sum(1 for path in target.rglob("*") if path.is_file())
     if latest.get("verdict") != "PASS":
         raise SystemExit("golden suite did not pass")
@@ -225,6 +324,10 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("public release suite did not pass")
     if viz.get("external_network_write") is not False:
         raise SystemExit("viz smoke performed or reported an external network write")
+    if context_pack.get("artifact") != "context_pack":
+        raise SystemExit("context-pack smoke did not write the expected artifact")
+    if software_feedback.get("verdict") != "PASS":
+        raise SystemExit("software-feedback smoke did not pass")
 
     summary = {
         "target": str(target),
@@ -251,6 +354,12 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "kill_exit_code": budget_result.returncode,
             "kill_event": "budget.kill_required",
             "escalation_event": "budget.escalation_required",
+        },
+        "executable_governance": {
+            "context_pack_sources": context_pack.get("source_count"),
+            "software_feedback_verdict": software_feedback.get("verdict"),
+            "task_packet": "harness/tasks/H0-LOCAL-SMOKE/TASK_PACKET.json",
+            "worker_brief": "harness/tasks/H0-LOCAL-SMOKE/WORKER_BRIEF.json",
         },
     }
     if not args.keep and not args.target:

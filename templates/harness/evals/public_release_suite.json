@@ -194,6 +194,14 @@
       "terms": ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN"]
     },
     {
+      "id": "harnessctl_executable_governance_commands",
+      "name": "Harness control surface includes executable context routing and feedback helpers",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "scripts/harnessctl.py",
+      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "software-feedback"]
+    },
+    {
       "id": "recovery_restart_path",
       "name": "Failure recovery uses checkpoints and restart files",
       "type": "text_contains",

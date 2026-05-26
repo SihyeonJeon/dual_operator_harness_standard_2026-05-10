@@ -71,8 +71,13 @@ become the fixed operator for the current agent surface:
   delegating to worker sessions, especially lower-tier or part-owner sessions.
 - Use `harness/shared/AGENT_COMMUNICATION.md` to pass concise task packets and
   evidence paths instead of forwarding long transcripts between agents.
+- Prefer `python3 scripts/harnessctl.py context-pack`, `worker-brief`,
+  `model-route`, and `task-packet` for repeatable routing and handoff mechanics
+  when the generated command surface is available.
 - For software, web, app, API, game, automation, or UI work, require the
   evaluation packet to follow `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.
+  Prefer `python3 scripts/harnessctl.py software-feedback` when project
+  commands are known.
 - Do not mark any feature or task complete without executable evidence or an
   explicit `NOT-RUN` entry with risk.
 - Do not start production work until H0 and H1 bootstrap smoke are resolved or
