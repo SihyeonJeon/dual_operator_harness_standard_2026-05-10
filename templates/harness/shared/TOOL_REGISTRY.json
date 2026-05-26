@@ -510,6 +510,37 @@
       "audit_event": "tool.write_task_packet"
     },
     {
+      "id": "run_concept_check",
+      "owner": "harness",
+      "description": "Check user-facing artifacts for literal prompt phrase, task label, or meta-copy leakage.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "artifact_paths"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "artifact_paths": {"type": "array", "items": {"type": "string"}},
+          "forbidden_phrases": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "concept_check_path", "finding_count"],
+        "properties": {
+          "status": {"type": "string"},
+          "concept_check_path": {"type": "string"},
+          "finding_count": {"type": "integer"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_artifact_scope_required",
+      "timeout_seconds": 30,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["read_fs:scoped", "write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.run_concept_check"
+    },
+    {
       "id": "run_software_feedback",
       "owner": "harness",
       "description": "Run configured lint/static, runtime smoke, test, and browser evidence commands for software tasks.",

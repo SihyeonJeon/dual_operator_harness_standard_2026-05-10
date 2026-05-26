@@ -194,12 +194,20 @@
       "terms": ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN"]
     },
     {
+      "id": "concept_translation_policy",
+      "name": "User-facing output treats the request as concept not copy",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
+      "terms": ["Treat the user's request as intent", "Do not treat the request text as copy", "satisfy the concept without announcing", "concept-check"]
+    },
+    {
       "id": "harnessctl_executable_governance_commands",
       "name": "Harness control surface includes executable context routing and feedback helpers",
       "type": "text_contains",
       "severity": "required",
       "path": "scripts/harnessctl.py",
-      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "software-feedback"]
+      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "concept-check", "software-feedback"]
     },
     {
       "id": "recovery_restart_path",

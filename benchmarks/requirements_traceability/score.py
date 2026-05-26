@@ -104,6 +104,7 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/shared/MEMORY.md",
             "harness/shared/CONTEXT_PRESSURE.md",
             "harness/shared/AGENT_COMMUNICATION.md",
+            "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
             "harness/shared/SESSION_CONTINUITY.md",
             "harness/shared/FAILURE_LEDGER.md",
             "harness/shared/RULE_CHANGE_LOG.md",
@@ -114,6 +115,7 @@ CATEGORIES: tuple[Category, ...] = (
         text=(
             TextCheck("harness/shared/CONTEXT_PRESSURE.md", ("Context Pack Rule", "Part-Owner Isolation", "harnessctl.py context-pack")),
             TextCheck("harness/shared/AGENT_COMMUNICATION.md", ("task packets", "evidence_paths", "Part-Owner Rule", "harnessctl.py task-packet")),
+            TextCheck("harness/shared/CONCEPT_TRANSLATION_POLICY.md", ("request as intent", "request text as copy", "concept-check")),
             TextCheck("scripts/harnessctl.py", ("context-pack", "task-packet")),
             TextCheck("harness/shared/RECORDS_POLICY.md", ("Canonical Project Records", "Out Of Scope In Public Kit")),
         ),
@@ -159,6 +161,7 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/evals/public_release_suite.json",
             "harness/shared/QUALITY_GATES.md",
             "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
+            "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
             "harness/templates/EVALUATION_REPORT.md",
             "scripts/harnessctl.py",
             "harness/evals/results/latest.json",
@@ -167,7 +170,8 @@ CATEGORIES: tuple[Category, ...] = (
         text=(
             TextCheck("harness/shared/QUALITY_GATES.md", ("evidence", "NOT-RUN")),
             TextCheck("harness/shared/SOFTWARE_FEEDBACK_POLICY.md", ("lint", "Playwright", "UI/UX/layout", "harnessctl.py software-feedback")),
-            TextCheck("scripts/harnessctl.py", ("software-feedback", "SOFTWARE_FEEDBACK.json")),
+            TextCheck("harness/shared/CONCEPT_TRANSLATION_POLICY.md", ("satisfy the concept without announcing", "exact prompt phrases")),
+            TextCheck("scripts/harnessctl.py", ("software-feedback", "SOFTWARE_FEEDBACK.json", "concept-check", "CONCEPT_CHECK.json")),
             TextCheck("harness/evals/results/latest.json", ("PASS",)),
         ),
     ),

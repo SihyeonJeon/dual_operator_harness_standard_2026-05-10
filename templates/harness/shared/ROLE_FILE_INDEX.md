@@ -23,6 +23,7 @@ Root always-load for any operator invocation:
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
@@ -40,6 +41,7 @@ Claude Code operator always-load:
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
@@ -55,6 +57,7 @@ Codex operator always-load:
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
@@ -71,6 +74,7 @@ Planning worker always-load:
 - `harness/shared/MODEL_ROUTING.json`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/spec/SPEC_AUTOMATION_POLICY.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md` when cloud/viz/backend choices are in scope
@@ -85,6 +89,7 @@ Design worker always-load:
 - `harness/shared/MODEL_ROUTING.json`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
 - assigned worker brief
@@ -98,6 +103,7 @@ Coding or production worker always-load:
 - `harness/shared/MODEL_ROUTING.json`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when coding or software work is in scope
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
@@ -113,6 +119,7 @@ Evaluation worker always-load:
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when coding or software work is in scope
 - `harness/shared/VISUALIZATION_SPEC_POLICY.md`
 - `harness/evals/README.md`

@@ -23,7 +23,8 @@ the supplied project profile without relying on unverified capabilities.
 - root `scripts/harnessctl.py` exists and exposes validation, event logging,
   static HTML report generation, visualization spec checks, eval-run,
   bounded context pack generation, worker brief generation, model routing,
-  task packet generation, and software feedback evidence;
+  task packet generation, concept leakage checks, and software feedback
+  evidence;
 - `harness/evals/golden_suite.json` exists and can check scaffold invariants
   without network writes or arbitrary command execution;
 - root `.claude/settings.json`, `.claude/agents/`, `.claude/hooks/`, and

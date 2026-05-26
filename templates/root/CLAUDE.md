@@ -22,6 +22,8 @@ Local record policy and context-pressure control are defined in
 `harness/shared/RECORDS_POLICY.md` and `harness/shared/CONTEXT_PRESSURE.md`.
 Agent-to-agent communication and token-saving context packets are defined in
 `harness/shared/AGENT_COMMUNICATION.md`.
+Concept-to-artifact copy rules are defined in
+`harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
 
 Before building dashboards, timelines, graphs, status HTML views, manager
 views, live status UI, or state visualizations, load
@@ -39,7 +41,7 @@ evidence for interactive surfaces when available.
 
 For repeatable mechanics, prefer the executable helpers over manual prose:
 `python3 scripts/harnessctl.py context-pack`, `worker-brief`, `model-route`,
-`task-packet`, and `software-feedback`.
+`task-packet`, `concept-check`, and `software-feedback`.
 
 The public kit keeps account-specific posting, outreach, connector logs, and
 private review workflows outside the scaffold. Private overlays own those

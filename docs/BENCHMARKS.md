@@ -21,13 +21,13 @@ python3 scripts/validate_kit.py
 
 | Benchmark | Command | Result | Boundary |
 | --- | --- | --- | --- |
-| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | 189/189 checks | scaffold coverage, not live model quality |
+| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | 198/198 checks | scaffold coverage, not live model quality |
 | spec gate | `python3 benchmarks/spec_gate/score.py --check-summary` | 12/12 checks | planning surfaces, not artifact quality |
 | static visualization | `python3 benchmarks/static_viz/score.py --check-summary` | 12/12 checks | local export, not hosted dashboard UX |
 | replay recovery | `python3 benchmarks/replay_recovery/score.py --check-summary` | generated harness 1.000 | restart surface, not runtime graph reload |
 | bilingual README parity | `python3 benchmarks/bilingual_readme_parity/score.py --check-summary` | 14/14 checks | structural parity, not native fluency |
 | budget governance | `python3 scripts/validate_kit.py` | generated validator checks budget files and budget-check surface | structure and local kill signal, not provider meter capture |
-| software feedback and communication | `python3 scripts/validate_kit.py` | generated validator checks model aliases, agent communication, context-pack, worker-brief, task-packet, model-route, and software-feedback helpers | local executable surface, not live browser quality benchmark |
+| software feedback and communication | `python3 scripts/validate_kit.py` | generated validator checks model aliases, agent communication, context-pack, worker-brief, task-packet, concept-check, model-route, and software-feedback helpers | local executable surface, not live browser quality benchmark |
 | agentic governance | `python3 benchmarks/agentic_governance/score.py --check-summary` | generated harness 0.958 | repo-state assay, not product ranking |
 | operational resilience | `python3 benchmarks/operational_resilience/score.py --check-summary` | generated policy 1.000 | policy simulation, not live outage handling |
 | cloud runner policy | `python3 benchmarks/cloud_runner_policy/score.py --check-summary` | descriptor 1.000, docs 1.000 | disabled descriptors, not real cloud jobs |
@@ -40,7 +40,7 @@ requirements are reflected in public-safe files.
 
 | categories | checks | failed | score |
 | ---: | ---: | ---: | ---: |
-| 13 | 189 | 0 | 1.000 |
+| 13 | 198 | 0 | 1.000 |
 
 Covered areas include implementer bootstrap, fixed operators, worker teams,
 part ownership, context pressure controls, hook lifecycle, spec gates, local
@@ -123,7 +123,7 @@ surfaces, not full product implementations.
 | CrewAI flow surface | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
 | OpenAI Agents session surface | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
 | Claude Code project surface | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
-| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 158 |
+| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 159 |
 
 The useful reading is narrow: runtime frameworks are strong at runtime state
 and graph behavior. The generated harness adds repo-local governance, audit,

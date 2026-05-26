@@ -30,8 +30,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 189 file,
-content, and absence conditions. Current result: 189 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 198 file,
+content, and absence conditions. Current result: 198 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -67,6 +67,7 @@ content, and absence conditions. Current result: 189 passed, 0 failed.
 | executable context pack | yes | `harnessctl.py context-pack` compiles bounded source excerpts and recent events |
 | executable worker brief | yes | `harnessctl.py worker-brief` renders task-local brief JSON from the canonical template |
 | agent communication optimization | yes | `AGENT_COMMUNICATION.md` and `harnessctl.py task-packet` require bounded packets, evidence paths, and no full transcript forwarding |
+| concept translation | yes | `CONCEPT_TRANSLATION_POLICY.md` and `harnessctl.py concept-check` guard user-facing output from prompt wording and self-descriptive task labels |
 | software feedback gates | yes | `SOFTWARE_FEEDBACK_POLICY.md` and `harnessctl.py software-feedback` cover lint/static checks, runtime smoke, Playwright or equivalent, and UI/UX/layout review when applicable |
 | budget caps and escalation | yes | task budgets, runner kill procedures, local `budget-check` command |
 | context accumulation and shared memory | yes | root state, shared memory, team memory, event log |

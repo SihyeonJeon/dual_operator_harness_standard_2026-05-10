@@ -17,6 +17,7 @@
     "ownership_contract",
     "read_only_context",
     "communication_protocol",
+    "concept_translation_gate",
     "relevant_governance",
     "success_criteria",
     "commands_or_evidence_required",

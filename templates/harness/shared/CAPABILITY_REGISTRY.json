@@ -118,7 +118,7 @@
       "evidence_path": "",
       "verified_at": "",
       "reviewer": "",
-      "notes": "Generated at scripts/harnessctl.py. It appends events, validates, checks visualization specs, runs local eval suites, archives tasks, compiles context packs, worker briefs, task packets, software feedback evidence, model routes, and static HTML reports as views over canonical files."
+      "notes": "Generated at scripts/harnessctl.py. It appends events, validates, checks visualization specs, runs local eval suites, archives tasks, compiles context packs, worker briefs, task packets, concept checks, software feedback evidence, model routes, and static HTML reports as views over canonical files."
     },
     {
       "id": "harness_mcp_server",

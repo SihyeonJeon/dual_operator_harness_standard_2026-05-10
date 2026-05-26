@@ -46,6 +46,7 @@ P0_REQUIRED = [
     "shared/RECORDS_POLICY.md",
     "shared/CONTEXT_PRESSURE.md",
     "shared/AGENT_COMMUNICATION.md",
+    "shared/CONCEPT_TRANSLATION_POLICY.md",
     "shared/SOFTWARE_FEEDBACK_POLICY.md",
     "shared/BUDGET_GOVERNANCE.md",
     "shared/TEAM_TOPOLOGY.md",
@@ -782,6 +783,7 @@ def check_harnessctl(project_root: Path, errors: list[str]) -> None:
         "worker-brief",
         "model-route",
         "task-packet",
+        "concept-check",
         "software-feedback",
         "compiled view",
     ]:
@@ -862,6 +864,7 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "routine_worker_aliases",
         "agent_communication_packets",
         "software_feedback_policy",
+        "concept_translation_policy",
         "harnessctl_executable_governance_commands",
     }:
         if required_id not in public_ids:
@@ -958,10 +961,12 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "gpt-5.3-codex-spark",
         "SOFTWARE_FEEDBACK_POLICY.md",
         "AGENT_COMMUNICATION.md",
+        "CONCEPT_TRANSLATION_POLICY.md",
         "context-pack",
         "worker-brief",
         "model-route",
         "task-packet",
+        "concept-check",
         "software-feedback",
     ]:
         if phrase not in readme_text:
@@ -1024,6 +1029,16 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
     for phrase in ["task packets", "evidence_paths", "do not forward a full operator conversation", "Part-Owner Rule", "harnessctl.py task-packet"]:
         if phrase not in agent_communication:
             errors.append(f"AGENT_COMMUNICATION.md lacks {phrase}")
+    concept_translation = (harness / "shared" / "CONCEPT_TRANSLATION_POLICY.md").read_text(encoding="utf-8")
+    for phrase in [
+        "Treat the user's request as intent",
+        "Do not treat the request text as copy",
+        "satisfy the concept without announcing",
+        "exact prompt phrases",
+        "harnessctl.py concept-check",
+    ]:
+        if phrase not in concept_translation:
+            errors.append(f"CONCEPT_TRANSLATION_POLICY.md lacks {phrase}")
     hooks_text = (harness / "IMPLEMENTER_HOOKS.md").read_text(encoding="utf-8")
     for phrase in [
         "PreScaffoldGoalIntake",
@@ -1163,6 +1178,7 @@ def main(argv: list[str]) -> int:
                 "model_routing",
                 "plugin_routing",
                 "communication_protocol",
+                "concept_translation_gate",
                 "context_pressure",
                 "records_policy",
                 "software_feedback_gate",

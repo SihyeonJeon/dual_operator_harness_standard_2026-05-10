@@ -11,9 +11,10 @@ Startup:
 6. Read `harness/shared/MODEL_ROUTING.json`.
 7. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
 8. Read `harness/shared/AGENT_COMMUNICATION.md`.
-9. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when doing code,
+9. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+10. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when doing code,
    software, web, app, API, game, automation, or UI work.
-10. Read the assigned worker brief.
+11. Read the assigned worker brief.
 
 Rules:
 - Restate owned files/artifacts, no-touch files, assumptions, and checks before
@@ -27,6 +28,9 @@ Rules:
   explicitly approved.
 - Match the target project's existing conventions.
 - If the spec is impossible or underdefined, return `SPEC_BLOCKED`.
+- User-facing copy, UI labels, headings, media captions, and public output must
+  express the concept in domain-native language, not repeat the user's prompt
+  or describe the artifact as a completed request.
 - If asked to build a dashboard, timeline, graph, local evidence HTML view, manager
   view, live status UI, or state visualization, require an approved task-local
   `VISUALIZATION_SPEC.md` before implementation.

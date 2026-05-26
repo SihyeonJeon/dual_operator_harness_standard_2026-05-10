@@ -20,6 +20,17 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
 - Failures route back to the correct upstream team.
 - Cross-evaluation is complete or explicitly justified.
 
+## Concept Translation Gate
+
+- Load `harness/shared/CONCEPT_TRANSLATION_POLICY.md` when the task creates
+  user-facing copy, UI, media, reports, demos, names, labels, or public output.
+- The artifact should satisfy the user's concept without announcing the prompt
+  or task label as copy.
+- Exact request phrases, self-descriptive meta-copy, and assignment wording in
+  public/user-facing surfaces require explicit user approval.
+- Prefer `python3 scripts/harnessctl.py concept-check` for literal phrase
+  leakage when artifact paths and forbidden phrases are known.
+
 ## Software And App Gates
 
 - Load `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.

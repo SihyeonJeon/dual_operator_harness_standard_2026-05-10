@@ -83,6 +83,7 @@ ROOT_REQUIRED = [
     "templates/harness/shared/SESSION_CONTINUITY.md",
     "templates/harness/shared/REGULATION_EVOLUTION.md",
     "templates/harness/shared/AGENT_COMMUNICATION.md",
+    "templates/harness/shared/CONCEPT_TRANSLATION_POLICY.md",
     "templates/harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
     "templates/harness/shared/BUDGET_GOVERNANCE.md",
     "templates/harness/shared/RECORDS_POLICY.md",
@@ -285,6 +286,45 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         ],
         target,
     )
+    concept_sample = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "USER_FACING_SAMPLE.txt"
+    concept_sample.write_text(
+        "Noon Archive\nPolarized frames for clear streets, long drives, and bright weekends.\n",
+        encoding="utf-8",
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "concept-check",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--artifact-path",
+            "harness/tasks/H0-LOCAL-SMOKE/USER_FACING_SAMPLE.txt",
+            "--forbidden-phrase",
+            "선글라스 파는 웹사이트",
+        ],
+        target,
+    )
+    concept_bad_sample = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "USER_FACING_BAD_SAMPLE.txt"
+    concept_bad_sample.write_text(
+        "이것은 선글라스 파는 웹사이트입니다.\n",
+        encoding="utf-8",
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "concept-check",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--artifact-path",
+            "harness/tasks/H0-LOCAL-SMOKE/USER_FACING_BAD_SAMPLE.txt",
+            "--allow-findings",
+            "--output",
+            "harness/tasks/H0-LOCAL-SMOKE/CONCEPT_CHECK_BAD.json",
+        ],
+        target,
+    )
     run(
         [
             sys.executable,
@@ -307,6 +347,7 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "model_route.selected",
         "worker_brief.created",
         "task_packet.created",
+        "concept_check.completed",
         "software_feedback.completed",
     ]:
         if event_name not in events_text:
@@ -316,6 +357,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     public = load_json(target / "harness" / "evals" / "results" / "public_release.json")
     viz = load_json(target / "harness" / "reports" / "viz" / "summary.json")
     context_pack = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONTEXT_PACK.json")
+    concept_check = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK.json")
+    concept_check_bad = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_BAD.json")
     software_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "SOFTWARE_FEEDBACK.json")
     file_count = sum(1 for path in target.rglob("*") if path.is_file())
     if latest.get("verdict") != "PASS":
@@ -326,6 +369,10 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("viz smoke performed or reported an external network write")
     if context_pack.get("artifact") != "context_pack":
         raise SystemExit("context-pack smoke did not write the expected artifact")
+    if concept_check.get("verdict") != "PASS":
+        raise SystemExit("concept-check smoke did not pass")
+    if concept_check_bad.get("verdict") != "FAIL" or concept_check_bad.get("finding_count", 0) < 1:
+        raise SystemExit("concept-check negative smoke did not catch prompt wording leakage")
     if software_feedback.get("verdict") != "PASS":
         raise SystemExit("software-feedback smoke did not pass")
 
@@ -357,6 +404,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         },
         "executable_governance": {
             "context_pack_sources": context_pack.get("source_count"),
+            "concept_check_verdict": concept_check.get("verdict"),
+            "concept_check_negative_verdict": concept_check_bad.get("verdict"),
             "software_feedback_verdict": software_feedback.get("verdict"),
             "task_packet": "harness/tasks/H0-LOCAL-SMOKE/TASK_PACKET.json",
             "worker_brief": "harness/tasks/H0-LOCAL-SMOKE/WORKER_BRIEF.json",

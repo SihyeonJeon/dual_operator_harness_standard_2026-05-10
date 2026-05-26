@@ -23,6 +23,7 @@ python3 scripts/harnessctl.py context-pack --task-id TASK
 python3 scripts/harnessctl.py worker-brief --task-id TASK --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+python3 scripts/harnessctl.py concept-check --task-id TASK --artifact-path PATH --forbidden-phrase "..."
 python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
 ```
 
@@ -36,6 +37,8 @@ The generated control surface code handles repeatable, domain-neutral work:
 - `worker-brief` renders a task-local worker brief from the canonical template;
 - `model-route` applies `MODEL_ROUTING.json` without relying on prose memory;
 - `task-packet` writes bounded agent-to-agent handoff JSON;
+- `concept-check` catches literal prompt phrase and self-descriptive meta-copy
+  leakage in user-facing artifacts;
 - `software-feedback` executes lint/static, runtime smoke, optional test, and
   optional Playwright commands and writes evidence packets.
 

@@ -22,7 +22,7 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] Claude Code adapters point to `harness/shared/` and team `TEAM_CONTEXT.md` rather than private memory.
 - [ ] Root `init.sh` exists and runs local harness checks.
 - [ ] Root `scripts/implementer_hooks.py` exists.
-- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `eval-run`, `viz-export`, `archive`, `context-pack`, `worker-brief`, `model-route`, `task-packet`, and `software-feedback`.
+- [ ] Root `scripts/harnessctl.py` exists and exposes `validate`, `event`, `report`, `viz-spec-check`, `eval-run`, `viz-export`, `archive`, `context-pack`, `worker-brief`, `model-route`, `task-packet`, `concept-check`, and `software-feedback`.
 - [ ] Root `feature_list.json` exists and has behavior, verification, state, and evidence fields.
 - [ ] Root `progress.md` and `session-handoff.md` exist.
 - [ ] `ACTIVE_SNAPSHOT.md` includes open questions.

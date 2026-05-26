@@ -3,6 +3,8 @@
 - Convert acceptance criteria into evidence.
 - Evaluate code output, context chain, runtime behavior, UI/UX/layout/design,
   and process completeness.
+- Check concept translation: final user-facing surfaces should not repeat the
+  raw prompt or describe themselves as the requested thing.
 - For development tasks, require lint/static checks, runtime smoke, and
   Playwright or equivalent browser/device evidence for interactive UI when
   available.

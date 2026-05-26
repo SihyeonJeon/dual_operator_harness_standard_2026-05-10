@@ -154,8 +154,13 @@ python3 scripts/harnessctl.py context-pack --task-id TASK
 python3 scripts/harnessctl.py worker-brief --task-id TASK --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id TASK --sender A --receiver B --intent handoff --summary "..."
+python3 scripts/harnessctl.py concept-check --task-id TASK --artifact-path PATH --forbidden-phrase "..."
 python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
 ```
+
+For user-facing output, treat the user's wording as concept and constraint, not
+as artifact copy. Ask for explicit approval before using prompt phrases,
+assignment labels, or self-descriptive fulfillment text in final surfaces.
 
 For deterministic parsers, classifiers, extractors, ranking or scoring systems,
 data transforms, eval frameworks, and benchmark-style quality claims, a visible

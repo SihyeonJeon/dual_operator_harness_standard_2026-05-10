@@ -20,6 +20,7 @@ python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
 python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
 
@@ -43,6 +44,8 @@ you are operator
 - part owner session same part reuse
 - token saving agent communication via bounded task packets
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
+- concept-check catches prompt wording leakage in user-facing artifacts
+- CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md 승인 전 dashboard timeline graph live status UI 금지
@@ -78,6 +81,7 @@ you are operator
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`
@@ -102,6 +106,7 @@ python3 scripts/harnessctl.py context-pack --task-id H0-LOCAL-SMOKE
 python3 scripts/harnessctl.py worker-brief --task-id H0-LOCAL-SMOKE --owned-path PATH
 python3 scripts/harnessctl.py model-route --role worker --task-difficulty routine --simple
 python3 scripts/harnessctl.py task-packet --task-id H0-LOCAL-SMOKE --sender A --receiver B --intent handoff --summary "summary"
+python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
 ```
 
@@ -125,6 +130,8 @@ you are operator
 - part owner session same part reuse
 - token-saving agent communication through bounded task packets
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
+- concept-check catches prompt wording leakage in user-facing artifacts
+- CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md before dashboard timeline graph live status UI
@@ -160,6 +167,7 @@ you are operator
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/CONCEPT_TRANSLATION_POLICY.md`
 - `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`

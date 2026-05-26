@@ -1229,6 +1229,7 @@ def default_context_files(root: Path, task_id: str, software: bool) -> list[str]
         "harness/shared/PART_OWNERSHIP.md",
         "harness/shared/MODEL_ROUTING.json",
         "harness/shared/AGENT_COMMUNICATION.md",
+        "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
         "harness/shared/QUALITY_GATES.md",
         "harness/shared/CONTEXT_PRESSURE.md",
         "harness/shared/SESSION_CONTINUITY.md",
@@ -1550,6 +1551,155 @@ def create_task_packet(args: argparse.Namespace, root: Path) -> int:
     return 0
 
 
+DEFAULT_CONCEPT_META_PHRASES = [
+    "as requested",
+    "as you requested",
+    "here is",
+    "this is",
+    "this is a",
+    "this is a website for",
+    "this website was created",
+    "this page was created",
+    "created for your request",
+    "requested by the user",
+    "the user asked for",
+    "이것은",
+    "요청하신",
+    "요청에 따라",
+    "사용자가 요청한",
+    "사용자의 요청",
+    "요청한 것을",
+    "라는 요청",
+    "인 것입니다",
+    "만든 것입니다",
+    "만들어줘",
+]
+
+
+def normalized_text(value: str) -> str:
+    return re.sub(r"\s+", " ", value.casefold()).strip()
+
+
+def derived_goal_phrases(goal: str) -> list[str]:
+    normalized = normalized_text(goal)
+    if not normalized or normalized == "unknown":
+        return []
+    phrases = {normalized}
+    replacements = [
+        (r"^(please\s+)?(make|create|build|generate|design)\s+(me\s+)?(a|an|the)?\s*", ""),
+        (r"\s+(for me|please)$", ""),
+        (r"(를|을)?\s*(만들어\s*줘|만들어줘|만들어\s*주세요|제작해\s*줘|제작해줘|생성해\s*줘|생성해줘|구현해\s*줘|구현해줘)$", ""),
+        (r"^\s*(나는|제가|나에게)\s*", ""),
+        (r"\s*(원한다|하고\s*싶다|싶어)$", ""),
+    ]
+    candidate = normalized
+    changed = True
+    while changed:
+        changed = False
+        for pattern, replacement in replacements:
+            updated = re.sub(pattern, replacement, candidate).strip()
+            if updated and updated != candidate:
+                phrases.add(updated)
+                candidate = updated
+                changed = True
+    compact = re.sub(r"\b(a|an|the)\b", "", normalized).strip()
+    compact = re.sub(r"\s+", " ", compact)
+    if compact and compact != normalized:
+        phrases.add(compact)
+    return sorted(phrases, key=len, reverse=True)
+
+
+def concept_check(args: argparse.Namespace, root: Path) -> int:
+    policy = root / "harness" / "shared" / "CONCEPT_TRANSLATION_POLICY.md"
+    if not policy.exists():
+        print("ERROR: missing harness/shared/CONCEPT_TRANSLATION_POLICY.md", file=sys.stderr)
+        return 1
+    artifacts = split_values(args.artifact_path)
+    if not artifacts:
+        print("ERROR: concept-check requires at least one --artifact-path", file=sys.stderr)
+        return 2
+
+    forbidden = split_values(args.forbidden_phrase)
+    if not args.allow_project_goal:
+        goal = project_goal(root)
+        if goal and goal != "UNKNOWN":
+            forbidden.extend(derived_goal_phrases(goal))
+    if not args.disable_meta_phrases:
+        forbidden.extend(DEFAULT_CONCEPT_META_PHRASES)
+
+    min_length = max(1, args.min_phrase_length)
+    findings: list[dict[str, Any]] = []
+    checked: list[dict[str, str]] = []
+    for artifact in artifacts:
+        path = Path(artifact)
+        if not path.is_absolute():
+            path = root / path
+        checked.append(source_metadata(path, root))
+        text = read_text(path)
+        normalized = normalized_text(text)
+        for phrase in forbidden:
+            normalized_phrase = normalized_text(phrase)
+            if len(normalized_phrase) < min_length:
+                continue
+            if normalized_phrase and normalized_phrase in normalized:
+                findings.append(
+                    {
+                        "artifact_path": display_path(path, root),
+                        "phrase": scrub_text(phrase),
+                        "reason": "literal prompt or meta-copy leakage",
+                    }
+                )
+
+    verdict = "FAIL" if findings else "PASS"
+    output = artifact_path(root, args.output, args.task_id, "CONCEPT_CHECK.json")
+    payload = {
+        "artifact": "concept_check",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "policy": "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
+        "verdict": verdict,
+        "checked": checked,
+        "finding_count": len(findings),
+        "derived_goal_phrase_count": len(derived_goal_phrases(project_goal(root))) if not args.allow_project_goal else 0,
+        "findings": findings,
+        "claim_boundary": [
+            "literal leakage guard",
+            "not a complete writing or design quality judge",
+            "not semantic proof that the concept was translated well",
+        ],
+    }
+    json_artifact(output, payload)
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "evaluator",
+            "event_type": "concept_check.completed",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": f"Concept translation literal leakage check completed with {verdict}.",
+            "evidence_path": display_path(output, root),
+            "part_id": "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"concept check written: {display_path(output, root)}")
+    print(f"verdict: {verdict}")
+    if findings:
+        for finding in findings[:10]:
+            print(
+                f"finding: {finding['artifact_path']} contains {finding['phrase']}",
+                file=sys.stderr,
+            )
+    return 1 if verdict == "FAIL" and not args.allow_findings else 0
+
+
 def run_feedback_command(root: Path, task_dir: Path, axis: str, command: str, required: bool, timeout: int) -> dict[str, Any]:
     if not command:
         return {
@@ -1850,6 +2000,17 @@ def main(argv: list[str]) -> int:
     task_packet.add_argument("--trace-id", default="trace_task_packet")
     task_packet.add_argument("--output", default="")
 
+    concept = sub.add_parser("concept-check", help="Check user-facing artifacts for literal prompt or task-label leakage")
+    concept.add_argument("--task-id", required=True)
+    concept.add_argument("--trace-id", default="trace_concept_check")
+    concept.add_argument("--artifact-path", action="append", default=[])
+    concept.add_argument("--forbidden-phrase", action="append", default=[])
+    concept.add_argument("--allow-project-goal", action="store_true")
+    concept.add_argument("--disable-meta-phrases", action="store_true")
+    concept.add_argument("--allow-findings", action="store_true")
+    concept.add_argument("--min-phrase-length", type=int, default=3)
+    concept.add_argument("--output", default="")
+
     software_feedback = sub.add_parser("software-feedback", help="Run and record software feedback evidence")
     software_feedback.add_argument("--task-id", required=True)
     software_feedback.add_argument("--trace-id", default="trace_software_feedback")
@@ -1891,6 +2052,8 @@ def main(argv: list[str]) -> int:
         return generate_worker_brief(args, root)
     if args.command == "task-packet":
         return create_task_packet(args, root)
+    if args.command == "concept-check":
+        return concept_check(args, root)
     if args.command == "software-feedback":
         return run_software_feedback(args, root)
     return 2

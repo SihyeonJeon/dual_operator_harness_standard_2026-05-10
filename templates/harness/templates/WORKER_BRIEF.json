@@ -43,6 +43,14 @@
     "operator_receives_completed_work_packet_not_raw_chatter": true,
     "upstream_questions_go_through_task_artifact": true
   },
+  "concept_translation_gate": {
+    "required_for_user_facing_output": true,
+    "policy": "harness/shared/CONCEPT_TRANSLATION_POLICY.md",
+    "treat_user_request_as_concept_not_copy": true,
+    "forbid_prompt_phrase_as_artifact_copy_unless_explicitly_requested": true,
+    "literal_leakage_helper": "python3 scripts/harnessctl.py concept-check",
+    "not_run_requires_reason_and_risk": true
+  },
   "relevant_governance": [
     "UNKNOWN"
   ],

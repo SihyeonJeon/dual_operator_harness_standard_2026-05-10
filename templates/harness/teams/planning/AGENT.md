@@ -12,7 +12,8 @@ Startup:
 7. Read `harness/shared/CONTEXT_PRESSURE.md`.
 8. Read `harness/spec/SPEC_AUTOMATION_POLICY.md`.
 9. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-10. Read the assigned worker brief.
+10. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+11. Read the assigned worker brief.
 
 Rules:
 - First build enough planning runway to avoid approving the wrong slice.
@@ -27,6 +28,8 @@ Rules:
 - Convert vague goals into acceptance criteria.
 - Convert vague goals through PRD draft, anti-PRD, evaluator critique,
   candidate slices, and worker brief before production.
+- Treat the user's wording as concept, not final artifact copy. Acceptance
+  criteria should require domain-native output instead of prompt restatement.
 - For software work, define code convention, lint/spec governance, and
   verification surfaces before production. User-facing or interactive software
   slices must include Playwright or equivalent functional and UI/UX/layout

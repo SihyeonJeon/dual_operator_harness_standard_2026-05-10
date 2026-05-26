@@ -154,6 +154,8 @@ The implementer must leave:
   `gpt-5.3-codex-spark` aliases when verified locally;
 - token-efficient agent communication through bounded task packets and evidence
   paths;
+- concept translation policy so user-facing outputs treat the request as
+  concept, not copied artifact text;
 - quality gates for artifact, context-chain, runtime, UI/UX/layout/design, and
   feedback routing;
 - software feedback policy for lint/static checks, runtime smoke, Playwright or
@@ -162,7 +164,7 @@ The implementer must leave:
   `scripts/harnessctl.py` command surface for event logging, static HTML status
   reports, local viz export, visualization spec checks, dependency-free eval
   suites, task archive, bounded context packs, worker briefs, model routes,
-  task packets, and software feedback evidence;
+  task packets, concept checks, and software feedback evidence;
 - `harness/evals/` golden scaffold suite and `schemas/eval-suite.schema.json`
   so operators can run local invariant checks before adding specialized
   domain evals;

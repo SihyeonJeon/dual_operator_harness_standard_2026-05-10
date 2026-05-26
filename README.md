@@ -110,9 +110,13 @@ transcripts.
 
 Repeatable domain-neutral steps are executable through `scripts/harnessctl.py`:
 `context-pack`, `worker-brief`, `model-route`, `task-packet`, and
-`software-feedback`. The remaining markdown files describe judgment boundaries
-and project-specific reasoning rather than asking agents to manually repeat
-stable mechanics.
+`concept-check`, and `software-feedback`. The remaining markdown files describe
+judgment boundaries and project-specific reasoning rather than asking agents to
+manually repeat stable mechanics.
+
+User-facing artifacts treat the user's request as a concept, not as copy.
+Generated harnesses include a concept translation policy and a literal leakage
+check so final outputs do not read like "this is the thing the prompt asked for."
 
 ## How It Differs From Runtime Frameworks
 
@@ -157,13 +161,14 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 189/189 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 198/198 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
 | bilingual README parity | Korean and English generated-project operating sections | 14/14 checks |
 | budget governance | task caps, runner kill procedures, local budget-check event surface | covered in traceability and generated validator |
 | software feedback | coding work requires lint/runtime/browser evidence policy and executable evidence packet | generated policy, runner, and validator surface |
+| concept translation | user-facing output avoids prompt wording and self-description | generated policy, concept-check, and validator surface |
 | cloud runner policy | disabled-by-default remote descriptors and policy docs | 10/10 descriptor, 10/10 policy |
 | date normalization loop | failed cases captured into the next regression pass | 83.3% direct, 72.2% first pass, 100.0% after feedback |
 

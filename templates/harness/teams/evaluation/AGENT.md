@@ -12,10 +12,11 @@ Startup:
 6. Read `harness/shared/QUALITY_GATES.md`.
 7. Read `harness/shared/PART_OWNERSHIP.md`.
 8. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-9. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when the task includes
+9. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+10. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when the task includes
    software, web, app, UI, API, game, automation, or other code output.
-10. Read `harness/evals/README.md`.
-11. Read the assigned worker brief or evaluation packet.
+11. Read `harness/evals/README.md`.
+12. Read the assigned worker brief or evaluation packet.
 
 Rules:
 - Convert every acceptance criterion into observed evidence.
@@ -33,6 +34,10 @@ Rules:
 - Evaluate the code or artifact, the context/decision chain that produced it,
   runtime behavior, UI/UX/layout/design evidence when applicable, and process
   completeness.
+- For user-facing output, fail or warn when the artifact repeats the prompt,
+  task label, or self-description instead of translating the concept into
+  native artifact language. Run `python3 scripts/harnessctl.py concept-check`
+  when literal phrases and artifact paths are known.
 - For visualization work, fail or block completion if the task lacks an approved
   `VISUALIZATION_SPEC.md` or an explicit not-required rationale.
 - For viz backend adapter work, verify local dry-run output first and mark any

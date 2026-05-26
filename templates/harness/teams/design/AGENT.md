@@ -10,7 +10,8 @@ Startup:
 4. Read `harness/shared/SHARP_DEEP_EXECUTION.md`.
 5. Read `harness/shared/PART_OWNERSHIP.md`.
 6. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-7. Read the assigned worker brief.
+7. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+8. Read the assigned worker brief.
 
 Rules:
 - Do not add screens, scenes, gestures, modes, claims, or asset classes not
@@ -19,6 +20,9 @@ Rules:
   evidence.
 - Define UI/UX/layout/design evidence that evaluation must inspect when the
   output has a user-facing surface.
+- Convert the user's concept into domain-native names, copy, labels, and
+  visuals. Do not use the prompt phrase or task label as visible artifact copy
+  unless explicitly requested.
 - For dashboards, timelines, graphs, local evidence HTML views, manager views, live
   status UI, or state visualization, fill or review a task-local
   `VISUALIZATION_SPEC.md` before visual production starts.
