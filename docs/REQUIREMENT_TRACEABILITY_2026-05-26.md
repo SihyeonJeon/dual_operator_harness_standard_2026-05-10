@@ -36,7 +36,7 @@ content, and absence conditions. Current result: 136 passed, 0 failed.
 
 | requested topic | current public implementation | claim boundary |
 | --- | --- | --- |
-| replayability under repeated runs | `benchmarks/replay_recovery` | deterministic repo-state assay, not live model variance |
+| replayability across task shapes | `benchmarks/replay_recovery` 10 deterministic task-shape cases | deterministic repo-state assay, not live model variance |
 | recovery after interruption | `benchmarks/replay_recovery` plus generated status and event files | restart evidence, not hosted runtime recovery |
 | governance overhead | `benchmarks/agentic_governance` file count and governance score | overhead is explicit, not hidden |
 | planning before sharp/deep work | `benchmarks/spec_gate` | scaffold regression guard, not a neutral comparator |

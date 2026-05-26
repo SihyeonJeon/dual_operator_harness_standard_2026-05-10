@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BENCHMARK_DIR = Path(__file__).resolve().parent
 DEFAULT_TASKS = BENCHMARK_DIR / "tasks.json"
 DEFAULT_SUMMARY = BENCHMARK_DIR / "expected_summary.json"
-DEFAULT_RUNS = 3
+DEFAULT_RUNS = 1
 
 RECOVERY_ARTIFACTS = [
     "goal_record",
@@ -42,6 +42,13 @@ RECOVERABLE_FACTS = [
     "event_count",
     "report_path",
     "canonical_memory_path",
+]
+
+HARNESS_POLICY_FACTS = [
+    "unknown_decision_boundary",
+    "operator_entrypoint",
+    "part_ownership_policy",
+    "context_pressure_policy",
 ]
 
 HARNESS_ARTIFACT_PATHS = {
@@ -74,6 +81,12 @@ def run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def read_text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8")
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -174,13 +187,18 @@ def summarize(
     artifact_hits: dict[str, bool],
     fact_hits: dict[str, bool],
     event_count: int,
+    policy_hits: dict[str, bool] | None = None,
 ) -> dict[str, Any]:
+    policy_hits = policy_hits or {name: False for name in HARNESS_POLICY_FACTS}
     artifact_present = sum(1 for value in artifact_hits.values() if value)
     fact_present = sum(1 for value in fact_hits.values() if value)
+    policy_present = sum(1 for value in policy_hits.values() if value)
     artifact_total = len(artifact_hits)
     fact_total = len(fact_hits)
+    policy_total = len(policy_hits)
     artifact_coverage = artifact_present / artifact_total
     fact_coverage = fact_present / fact_total
+    policy_coverage = policy_present / policy_total
     score = round(artifact_coverage * 0.6 + fact_coverage * 0.4, 3)
     return {
         "mode": mode,
@@ -192,12 +210,16 @@ def summarize(
         "recoverable_facts_present": fact_present,
         "recoverable_facts_total": fact_total,
         "recoverable_fact_coverage": round(fact_coverage, 3),
+        "harness_policy_facts_present": policy_present,
+        "harness_policy_facts_total": policy_total,
+        "harness_policy_coverage": round(policy_coverage, 3),
         "event_count": event_count,
         "status_report_present": bool(artifact_hits.get("status_report")),
         "portable_recovery_command_present": bool(artifact_hits.get("portable_recovery_command")),
         "recovery_readiness_score": score,
         "missing_artifacts": [key for key, value in artifact_hits.items() if not value],
         "missing_facts": [key for key, value in fact_hits.items() if not value],
+        "missing_harness_policy_facts": [key for key, value in policy_hits.items() if not value],
     }
 
 
@@ -242,18 +264,42 @@ def score_harness(path: Path, task: dict[str, str], run_index: int) -> dict[str,
     feature_list = load_json(path / "feature_list.json")
     latest = load_json(path / "harness" / "evals" / "results" / "latest.json")
     events = count_events(path / "harness" / "events" / "events.jsonl")
-    session_handoff = (path / "session-handoff.md").read_text(encoding="utf-8")
+    session_handoff = read_text(path / "session-handoff.md")
+    progress = read_text(path / "progress.md")
+    active_snapshot = read_text(path / "harness" / "shared" / "ACTIVE_SNAPSHOT.md")
+    agents_entry = read_text(path / "AGENTS.md")
+    worker_registry = read_text(path / "harness" / "shared" / "WORKER_SESSION_REGISTRY.json")
+    context_pressure = read_text(path / "harness" / "shared" / "CONTEXT_PRESSURE.md")
     fact_hits = {
-        "project_goal": bool(feature_list.get("project_goal")),
-        "current_feature": bool(feature_list.get("features")),
-        "current_task": (path / "harness" / "shared" / "ACTIVE_SNAPSHOT.md").exists(),
-        "next_action": "you are operator" in session_handoff,
+        "project_goal": feature_list.get("project_goal") == task["goal"],
+        "current_feature": bool(feature_list.get("features"))
+        and ("F0 - Planning runway" in progress or "F0-PLANNING-RUNWAY" in active_snapshot),
+        "current_task": "Current task id:" in active_snapshot,
+        "next_action": ("Next Session" in progress and "you are operator" in progress)
+        or "Open Work" in session_handoff,
         "verification_status": latest.get("verdict") == "PASS",
         "event_count": events > 0,
         "report_path": (path / "harness" / "reports" / "status.html").exists(),
         "canonical_memory_path": (path / "harness" / "shared" / "RECORDS_POLICY.md").exists(),
     }
-    return summarize("generated_harness", task, run_index, artifact_hits, fact_hits, event_count=events)
+    policy_hits = {
+        "unknown_decision_boundary": "UNKNOWN" in active_snapshot and "Human Decisions" in active_snapshot,
+        "operator_entrypoint": "you are operator" in agents_entry and "fixed operator" in agents_entry,
+        "part_ownership_policy": "part_id" in worker_registry
+        and "owned_paths" in worker_registry
+        and "do_not_reuse_part_owner_for_unrelated_parts" in worker_registry,
+        "context_pressure_policy": "Context Pack Rule" in context_pressure
+        and "Part-Owner Isolation" in context_pressure,
+    }
+    return summarize(
+        "generated_harness",
+        task,
+        run_index,
+        artifact_hits,
+        fact_hits,
+        event_count=events,
+        policy_hits=policy_hits,
+    )
 
 
 def run_once(root: Path, task: dict[str, str], run_index: int) -> list[dict[str, Any]]:
@@ -282,6 +328,10 @@ def aggregate(results: list[dict[str, Any]], task_count: int, runs_per_task: int
             "mean_recoverable_fact_coverage": round(statistics.mean(result["recoverable_fact_coverage"] for result in subset), 3),
             "mean_recovery_readiness_score": round(statistics.mean(result["recovery_readiness_score"] for result in subset), 3),
             "mean_event_count": round(statistics.mean(result["event_count"] for result in subset), 3),
+            "mean_harness_policy_coverage": round(
+                statistics.mean(result["harness_policy_coverage"] for result in subset),
+                3,
+            ),
             "status_report_rate": round(statistics.mean(1 if result["status_report_present"] else 0 for result in subset), 3),
             "portable_recovery_command_rate": round(
                 statistics.mean(1 if result["portable_recovery_command_present"] else 0 for result in subset),

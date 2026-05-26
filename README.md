@@ -154,29 +154,35 @@ hosted backend reliability, or real-time collaboration.
 
 ### Replay Recovery Benchmark
 
-Deterministic repo-state assay: 5 task shapes x 3 runs. The generated harness
-is scaffolded from this public kit and initialized with `./init.sh` on every
-run.
+Deterministic repo-state assay: 10 task shapes x 1 scaffold generation per
+mode. All rows are local fixtures. The generated harness row is the real public
+scaffold output plus `./init.sh`, not a captured live agent session.
 
-Measured scope: restart readiness after interruption. Not measured here: model
-intelligence, hosted runtime latency, or final artifact quality.
+Measured scope: file-only restart surface after a session stops. Not measured
+here: model intelligence, hosted runtime latency, final artifact quality, or
+statistical variance across model runs. This is a restart-surface check, not a
+degraded-state recovery test.
 
-The non-harness modes are reproducible baseline fixtures, not captured vendor
-sessions. Score formula: `0.6 * artifact coverage + 0.4 * fact coverage`.
+Score formula: `0.6 * artifact coverage + 0.4 * generic recoverable fact
+coverage`. Harness-specific policy coverage is reported separately and is not
+included in the recovery score.
 
 ```sh
 python3 benchmarks/replay_recovery/score.py --check-summary
 ```
 
-| mode | runs | artifact coverage | fact coverage | status report | event count | score |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| direct transcript | 15 | 0.100 | 0.125 | 0.000 | 0 | 0.110 |
-| ad-hoc loop | 15 | 0.500 | 0.500 | 0.000 | 0 | 0.500 |
-| generated harness | 15 | 1.000 | 0.875 | 1.000 | 7 | 0.950 |
+| mode | cases | artifact coverage | fact coverage | policy coverage | status report | event count | score |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| direct transcript | 10 | 0.100 | 0.125 | 0.000 | 0.000 | 0 | 0.110 |
+| ad-hoc loop | 10 | 0.500 | 0.500 | 0.000 | 0.000 | 0 | 0.500 |
+| generated harness | 10 | 1.000 | 1.000 | 1.000 | 1.000 | 7 | 1.000 |
 
 The generated harness is slower and heavier. The gain is durable project state:
 root state, team ownership, evaluator output, append-only events, status HTML,
 and a restart path that survives the original session.
+The direct transcript and ad-hoc loop rows are authored controls, so this table
+is illustrative evidence for the generated scaffold rather than an independent
+competitive ranking.
 
 ### Agentic Governance Benchmark
 

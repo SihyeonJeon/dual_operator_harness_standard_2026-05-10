@@ -28,5 +28,35 @@
     "goal": "Produce a market research packet comparing agent project restartability claims with evidence table and caveats",
     "feature": "restartability_research_packet",
     "next_action": "resume source validation and claim hygiene review"
+  },
+  {
+    "id": "mcp_security_assay",
+    "goal": "Create an MCP security assurance assay with tool allowlists, credential boundary checks, and audit evidence",
+    "feature": "mcp_security_assay",
+    "next_action": "resume from tool-boundary criteria and redaction checks"
+  },
+  {
+    "id": "bilingual_policy_brief",
+    "goal": "Draft a Korean and English policy brief with source-linked claims, terminology consistency checks, and reviewer notes",
+    "feature": "bilingual_policy_brief",
+    "next_action": "continue terminology alignment and source claim review"
+  },
+  {
+    "id": "data_pipeline_audit",
+    "goal": "Design a CSV ingestion and validation pipeline with schema drift detection, failure samples, and operator handoff",
+    "feature": "data_pipeline_audit",
+    "next_action": "resume schema drift checks and failure sample triage"
+  },
+  {
+    "id": "hardware_procurement_matrix",
+    "goal": "Build a procurement decision matrix for laptops with weighted criteria, source evidence, and tradeoff review",
+    "feature": "hardware_procurement_matrix",
+    "next_action": "resume weighting review and missing source checks"
+  },
+  {
+    "id": "regulated_release_gate",
+    "goal": "Create a regulated release readiness gate with approval policy, rollback evidence, and post-release monitoring tasks",
+    "feature": "regulated_release_gate",
+    "next_action": "resume approval boundary review and monitoring evidence checks"
   }
 ]

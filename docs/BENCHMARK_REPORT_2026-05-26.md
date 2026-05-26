@@ -145,19 +145,24 @@ python3 benchmarks/replay_recovery/score.py --check-summary
 
 Scope:
 
-- 5 task shapes
-- 3 deterministic runs per mode
+- 10 task shapes
+- 1 deterministic scaffold generation per mode
 - direct transcript baseline
 - ad-hoc loop baseline
 - generated harness from this public kit
+- all modes are deterministic local fixtures, not captured live agent sessions
+- harness-specific policy coverage is reported separately from generic recovery
+  score
+- this is a restart-surface check, not a degraded-state recovery test or an
+  independent competitive ranking
 
 Result:
 
-| mode | score |
-| --- | ---: |
-| direct transcript | 0.110 |
-| ad-hoc loop | 0.500 |
-| generated harness | 0.950 |
+| mode | cases | recovery score | policy coverage |
+| --- | ---: | ---: | ---: |
+| direct transcript | 10 | 0.110 | 0.000 |
+| ad-hoc loop | 10 | 0.500 | 0.000 |
+| generated harness | 10 | 1.000 | 1.000 |
 
 Interpretation:
 
