@@ -170,6 +170,30 @@
       "key": "kill_procedure"
     },
     {
+      "id": "routine_worker_aliases",
+      "name": "Routine worker aliases include sonnet haiku and codex spark",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/MODEL_ROUTING.json",
+      "terms": ["sonnet", "haiku", "gpt-5.3-codex-spark", "routine_task_rule"]
+    },
+    {
+      "id": "agent_communication_packets",
+      "name": "Agent communication uses bounded task packets",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/AGENT_COMMUNICATION.md",
+      "terms": ["task packets", "evidence_paths", "do not forward a full operator conversation", "Part-Owner Rule"]
+    },
+    {
+      "id": "software_feedback_policy",
+      "name": "Software feedback checks lint runtime browser and UI layout evidence",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
+      "terms": ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN"]
+    },
+    {
       "id": "recovery_restart_path",
       "name": "Failure recovery uses checkpoints and restart files",
       "type": "text_contains",

@@ -19,7 +19,7 @@ Result:
 | implementer bootstrap | implemented |
 | dual operator and council | implemented |
 | worker team and part ownership | implemented |
-| context memory and pressure | implemented |
+| context memory pressure and agent communication | implemented |
 | hook lifecycle | implemented |
 | spec before execution | policy and templates implemented |
 | evaluation feedback loop | implemented |
@@ -30,8 +30,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 166 file,
-content, and absence conditions. Current result: 166 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 174 file,
+content, and absence conditions. Current result: 174 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -62,6 +62,9 @@ content, and absence conditions. Current result: 166 passed, 0 failed.
 | worker teams by planning/design/production/evaluation | yes | team files and team context files generated |
 | same part returns to same worker when safe | yes | part ownership and worker session registry |
 | lower-tier worker routing for routine work | yes | `MODEL_ROUTING.json` |
+| sonnet/haiku/spark routine aliases | yes | `MODEL_ROUTING.json` names `sonnet`, `haiku`, and `gpt-5.3-codex-spark` as verified-environment aliases |
+| agent communication optimization | yes | `AGENT_COMMUNICATION.md` requires bounded packets, evidence paths, and no full transcript forwarding |
+| software feedback gates | yes | `SOFTWARE_FEEDBACK_POLICY.md` requires lint/static checks, runtime smoke, Playwright or equivalent, and UI/UX/layout review when applicable |
 | budget caps and escalation | yes | task budgets, runner kill procedures, local `budget-check` command |
 | context accumulation and shared memory | yes | root state, shared memory, team memory, event log |
 | context overload controls | yes | context pressure controls and context pack rule |

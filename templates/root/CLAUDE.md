@@ -5,6 +5,10 @@ Claude Code project adapters live under `.claude/`, but they are generated
 views over the same file-backed harness. They do not make Claude Code the lead
 operator over Codex.
 
+Root `CLAUDE.md` is intentional. Claude Code reads project-level guidance from
+the repository root, while `.claude/` contains settings, hooks, agents, and
+skills.
+
 If the user says "you are operator" or asks you to operate the project, load
 `AGENTS.md`, run the startup workflow there, then load
 `harness/operators/claude-code/AGENT.md`.
@@ -16,6 +20,8 @@ Dual-operator parity and non-forced consensus are defined in
 `harness/shared/DUAL_OPERATOR_PROTOCOL.md`.
 Local record policy and context-pressure control are defined in
 `harness/shared/RECORDS_POLICY.md` and `harness/shared/CONTEXT_PRESSURE.md`.
+Agent-to-agent communication and token-saving context packets are defined in
+`harness/shared/AGENT_COMMUNICATION.md`.
 
 Before building dashboards, timelines, graphs, status HTML views, manager
 views, live status UI, or state visualizations, load
@@ -25,6 +31,11 @@ views, live status UI, or state visualizations, load
 Use `python3 scripts/harnessctl.py eval-run` for local scaffold/governance
 regression checks when relevant. It is a safe local evaluator, not a replacement
 for task-specific evidence.
+
+For software, web, app, API, or UI work, load
+`harness/shared/SOFTWARE_FEEDBACK_POLICY.md`. Final feedback should cover
+lint/static checks, runtime smoke, and Playwright or equivalent browser/device
+evidence for interactive surfaces when available.
 
 The public kit keeps account-specific posting, outreach, connector logs, and
 private review workflows outside the scaffold. Private overlays own those

@@ -20,6 +20,7 @@ Public kit rule
 | visualization | local file export, static report, backend selection policy | live dashboard, SaaS telemetry, websocket stream, hosted viewer |
 | memory backend | file-backed search, vector index example, graph index example | selected vector database, graph database, private RAG service |
 | chat approval connector | disabled Discord approval example with denied publication payloads | real bot, webhook, mobile approval bridge, private credential overlay |
+| browser/device validation | policy requires Playwright or equivalent evidence for interactive UI | real Playwright project, device farm, visual regression service |
 
 ## Adapter Contract
 

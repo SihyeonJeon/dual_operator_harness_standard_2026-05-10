@@ -36,6 +36,13 @@
     "compaction_required_before_resume_or_lower_tier_dispatch": true,
     "private_overlay_records_are_not_canonical_context": true
   },
+  "communication_protocol": {
+    "policy": "harness/shared/AGENT_COMMUNICATION.md",
+    "use_task_packet_not_full_transcript": true,
+    "send_evidence_paths_before_prose": true,
+    "operator_receives_completed_work_packet_not_raw_chatter": true,
+    "upstream_questions_go_through_task_artifact": true
+  },
   "relevant_governance": [
     "UNKNOWN"
   ],
@@ -99,7 +106,17 @@
     "reasoning_effort": "lowest_verified_that_satisfies_gate",
     "task_difficulty": "UNKNOWN",
     "allow_routine_tier_for_simple_work": true,
-    "preferred_simple_task_session": "configured_routine_worker_session"
+    "preferred_simple_task_session": "configured_routine_worker_session",
+    "routine_aliases": ["sonnet", "haiku", "gpt-5.3-codex-spark"]
+  },
+  "software_feedback_gate": {
+    "required_when_project_includes_code": true,
+    "policy": "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
+    "lint_or_static_check_required": true,
+    "runtime_smoke_required": true,
+    "playwright_or_equivalent_required_for_interactive_ui": true,
+    "ui_ux_layout_review_required_for_user_facing_work": true,
+    "not_run_requires_reason_and_risk": true
   },
   "plugin_routing": {
     "max_active_context_plugins": 4,

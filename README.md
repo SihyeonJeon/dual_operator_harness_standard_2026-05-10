@@ -97,6 +97,16 @@ Workers can use cheaper models for routine packets. Operators should use the
 strongest model and effort setting available for review, routing, and closure.
 The kit does not force one vendor or runtime.
 
+Generated routing policy names `sonnet`, `haiku`, and
+`gpt-5.3-codex-spark` as routine-task aliases when they are available and
+verified in the local environment. Operators still keep the strongest verified
+model and effort for routing, review, and closure.
+
+Token saving is handled through bounded context packs, part-owner session
+reuse, a four-plugin cap with a `caveman` compression slot, and compact
+agent-to-agent packets that cite evidence paths instead of forwarding full
+transcripts.
+
 ## How It Differs From Runtime Frameworks
 
 Easy Orchestration Harness is not a graph runtime. It is the operating layer
@@ -112,6 +122,7 @@ around agent tools and runtimes.
 | governance | app-specific | generated policies, hooks, validators, and task packets |
 | evidence | traces or logs | event log, local HTML report, benchmark fixtures |
 | safety boundary | provider or app guardrails | MCP trust, permission policy, credential lifecycle, budget caps |
+| software feedback | usually project-defined | lint/static checks, runtime smoke, Playwright or equivalent browser/device evidence, UI/UX/layout review |
 
 Use LangGraph, CrewAI, OpenAI Agents SDK, Claude Code, Codex, or custom loops
 for execution when they fit. Use this kit when the project needs durable
@@ -139,12 +150,13 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 166/166 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 174/174 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
 | bilingual README parity | Korean and English generated-project operating sections | 14/14 checks |
 | budget governance | task caps, runner kill procedures, local budget-check event surface | covered in traceability and generated validator |
+| software feedback | coding work requires lint/runtime/browser evidence policy | generated policy and validator surface |
 | cloud runner policy | disabled-by-default remote descriptors and policy docs | 10/10 descriptor, 10/10 policy |
 | date normalization loop | failed cases captured into the next regression pass | 83.3% direct, 72.2% first pass, 100.0% after feedback |
 

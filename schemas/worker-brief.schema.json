@@ -16,6 +16,7 @@
     "no_touch_paths",
     "ownership_contract",
     "read_only_context",
+    "communication_protocol",
     "relevant_governance",
     "success_criteria",
     "commands_or_evidence_required",
@@ -28,6 +29,7 @@
     "checkpoint_eta",
     "worker_session",
     "model_routing",
+    "software_feedback_gate",
     "plugin_routing",
     "internal_subagents_allowed",
     "independent_verification"

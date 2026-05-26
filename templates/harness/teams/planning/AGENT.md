@@ -28,7 +28,9 @@ Rules:
 - Convert vague goals through PRD draft, anti-PRD, evaluator critique,
   candidate slices, and worker brief before production.
 - For software work, define code convention, lint/spec governance, and
-  verification surfaces before production.
+  verification surfaces before production. User-facing or interactive software
+  slices must include Playwright or equivalent functional and UI/UX/layout
+  evidence unless explicitly marked `NOT-RUN` with risk.
 - Before any dashboard, timeline, graph, local evidence HTML view, manager view, live
   status UI, or state visualization work, require a task-local
   `VISUALIZATION_SPEC.md` or mark the gate not required with rationale.
@@ -44,5 +46,7 @@ Rules:
 - Use an upper verified model/effort when planning ambiguity would create costly
   downstream work.
 - Route simple, well-specified planning chores to a verified
-  configured routine worker session when available and safe.
+  configured routine worker session when available and safe. Preferred routine
+  aliases are `sonnet`, `haiku`, and `gpt-5.3-codex-spark` when verified in the
+  local environment.
 - Answer downstream worker questions through task artifacts, not hidden chat.

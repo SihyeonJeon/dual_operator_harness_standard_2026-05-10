@@ -31,9 +31,11 @@ you are operator
 - planning runway 우선
 - sharp deep slice 승인 후 production
 - worker model effort task difficulty routing
+- simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
 - BUDGET.json token time cost cap and budget-check kill surface
 - routine worker configured low cost model 가능
 - part owner session same part reuse
+- token saving agent communication via bounded task packets
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md 승인 전 dashboard timeline graph live status UI 금지
@@ -42,6 +44,7 @@ you are operator
 - 외부 viz backend human approval policy credential smoke evidence 필요
 - status html compiled view
 - harness eval run local regression
+- software feedback policy lint runtime Playwright UI UX layout
 - RECORDS_POLICY.md local canonical record policy
 - public kit no external posting scaffold
 - MCP read only context export
@@ -66,6 +69,8 @@ you are operator
 - `harness/mcp_server`
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
+- `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`
 
@@ -100,9 +105,11 @@ you are operator
 - planning runway first
 - production after approved sharp deep slice
 - worker model effort task difficulty routing
+- simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
 - BUDGET.json token time cost caps and budget-check kill surface
 - routine worker configured low cost model when verified
 - part owner session same part reuse
+- token-saving agent communication through bounded task packets
 - shared context canonical
 - team context memory
 - VISUALIZATION_SPEC.md before dashboard timeline graph live status UI
@@ -111,6 +118,7 @@ you are operator
 - external viz backend human approval policy credential smoke evidence required
 - status html compiled view
 - harness eval run local regression
+- software feedback policy lint runtime Playwright UI UX layout
 - RECORDS_POLICY.md local canonical record policy
 - public kit no external posting scaffold
 - MCP read only context export
@@ -135,5 +143,7 @@ you are operator
 - `harness/mcp_server`
 - `harness/runtime`
 - `harness/shared/BUDGET_GOVERNANCE.md`
+- `harness/shared/AGENT_COMMUNICATION.md`
+- `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`
 - `harness/events/events.jsonl`
 - `harness/reports/status.html`

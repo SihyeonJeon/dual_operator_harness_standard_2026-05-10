@@ -10,7 +10,10 @@ Startup:
 5. Read `harness/shared/PART_OWNERSHIP.md`.
 6. Read `harness/shared/MODEL_ROUTING.json`.
 7. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-8. Read the assigned worker brief.
+8. Read `harness/shared/AGENT_COMMUNICATION.md`.
+9. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when doing code,
+   software, web, app, API, game, automation, or UI work.
+10. Read the assigned worker brief.
 
 Rules:
 - Restate owned files/artifacts, no-touch files, assumptions, and checks before
@@ -38,7 +41,9 @@ Rules:
   feature `passing`.
 - Simple implementation may use a lighter verified model/effort.
 - Simple, well-specified implementation should prefer a verified
-  configured routine worker session when available and safe.
+  configured routine worker session when available and safe. Preferred routine
+  aliases are `sonnet`, `haiku`, and `gpt-5.3-codex-spark` when verified in the
+  local environment.
 - Complex implementation, state/debug work, and risky changes require stronger
   verified model/effort.
 - Ask planning or design through task artifacts when the spec is missing or
@@ -48,3 +53,5 @@ Rules:
 - Record part id, part scope, owned paths, no-touch paths, and checkpoint when
   this worker owns a part.
 - Keep implementation inside the active sharp/deep slice.
+- Communicate through concise task packets and evidence paths, not long
+  transcript forwarding.

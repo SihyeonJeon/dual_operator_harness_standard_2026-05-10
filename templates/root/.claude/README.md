@@ -3,6 +3,10 @@
 This directory is generated glue for Claude Code. It is not the canonical
 harness memory.
 
+The root `CLAUDE.md` file is intentional. Claude Code reads project-level
+instructions from the repository root. This `.claude/` directory carries the
+adapter layer: settings, hooks, agents, and skills.
+
 Canonical state remains:
 
 - `feature_list.json`

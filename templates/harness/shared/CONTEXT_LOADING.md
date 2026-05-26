@@ -22,6 +22,7 @@ starts crowding out the current task, compact `progress.md`,
 - `harness/shared/OBSERVABILITY.md`
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
+- `harness/shared/AGENT_COMMUNICATION.md`
 - current task blueprint
 
 ## Operator On-Demand
@@ -38,6 +39,7 @@ starts crowding out the current task, compact `progress.md`,
 - `OBSERVABILITY.md`
 - `RECORDS_POLICY.md`
 - `CONTEXT_PRESSURE.md`
+- `AGENT_COMMUNICATION.md`
 - `mcp_server/README.md` when read-only context export is being verified
 - `VISUALIZATION_SPEC_POLICY.md`
 - `CLEAN_STATE.md`
@@ -115,3 +117,4 @@ On demand:
   evidence chain and have been summarized into task artifacts
 - visualization spec and generated HTML report when visualization is in scope
 - cross-vendor verification policy
+- software feedback policy when evaluating development or coding work

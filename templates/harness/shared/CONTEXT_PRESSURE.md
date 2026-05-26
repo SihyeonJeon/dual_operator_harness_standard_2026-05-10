@@ -65,6 +65,13 @@ operator memory. The pack must include owned paths, no-touch paths, success
 criteria, stop conditions, part-owner status, model/effort routing, plugin
 routing, and relevant source paths.
 
+## Agent Communication Rule
+
+Use `harness/shared/AGENT_COMMUNICATION.md` for worker updates, evaluator
+feedback, operator routing, and handoff notes. Prefer compact evidence-path
+packets over chat transcripts. A lower-tier worker should receive the smallest
+packet that can complete the assigned task safely.
+
 ## Plugin Rule
 
 At most four active context-saving plugins may be used per task. `caveman` is

@@ -3,6 +3,9 @@
 - Convert acceptance criteria into evidence.
 - Evaluate code output, context chain, runtime behavior, UI/UX/layout/design,
   and process completeness.
+- For development tasks, require lint/static checks, runtime smoke, and
+  Playwright or equivalent browser/device evidence for interactive UI when
+  available.
 - Check Playwright/browser/device evidence when applicable.
 - Compare user-facing quality against current human expectations and comparable
   services when the task shape calls for it.

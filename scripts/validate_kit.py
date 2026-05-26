@@ -82,6 +82,8 @@ ROOT_REQUIRED = [
     "templates/harness/shared/DUAL_OPERATOR_PROTOCOL.md",
     "templates/harness/shared/SESSION_CONTINUITY.md",
     "templates/harness/shared/REGULATION_EVOLUTION.md",
+    "templates/harness/shared/AGENT_COMMUNICATION.md",
+    "templates/harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
     "templates/harness/shared/BUDGET_GOVERNANCE.md",
     "templates/harness/shared/RECORDS_POLICY.md",
     "templates/harness/shared/MCP_TRUST.json",

@@ -25,7 +25,8 @@ Before doing project work:
    `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
 10. Read `harness/shared/RECORDS_POLICY.md` and
    `harness/shared/CONTEXT_PRESSURE.md`.
-11. Read the role file that matches the user's instruction or the current agent
+11. Read `harness/shared/AGENT_COMMUNICATION.md`.
+12. Read the role file that matches the user's instruction or the current agent
    surface.
 
 If the user says only "you are operator", "act as operator", or equivalent,
@@ -68,6 +69,10 @@ become the fixed operator for the current agent surface:
   perform network writes.
 - Use bounded context packs and `harness/shared/CONTEXT_PRESSURE.md` before
   delegating to worker sessions, especially lower-tier or part-owner sessions.
+- Use `harness/shared/AGENT_COMMUNICATION.md` to pass concise task packets and
+  evidence paths instead of forwarding long transcripts between agents.
+- For software, web, app, API, game, automation, or UI work, require the
+  evaluation packet to follow `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.
 - Do not mark any feature or task complete without executable evidence or an
   explicit `NOT-RUN` entry with risk.
 - Do not start production work until H0 and H1 bootstrap smoke are resolved or

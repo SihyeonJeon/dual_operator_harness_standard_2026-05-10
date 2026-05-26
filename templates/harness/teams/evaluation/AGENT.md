@@ -12,8 +12,10 @@ Startup:
 6. Read `harness/shared/QUALITY_GATES.md`.
 7. Read `harness/shared/PART_OWNERSHIP.md`.
 8. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-9. Read `harness/evals/README.md`.
-10. Read the assigned worker brief or evaluation packet.
+9. Read `harness/shared/SOFTWARE_FEEDBACK_POLICY.md` when the task includes
+   software, web, app, UI, API, game, automation, or other code output.
+10. Read `harness/evals/README.md`.
+11. Read the assigned worker brief or evaluation packet.
 
 Rules:
 - Convert every acceptance criterion into observed evidence.
@@ -38,6 +40,10 @@ Rules:
   lifecycle records, and smoke evidence exist.
 - For software or app work, inspect code output and runtime behavior, and use
   Playwright or equivalent browser/device evidence when applicable.
+- For software or app work, feedback must include lint/static checks when the
+  project exposes them, runtime smoke, and Playwright or equivalent
+  function/UI/UX/layout evidence for interactive surfaces. If a check cannot
+  run, record `NOT-RUN` with reason, risk, and next command.
 - For user-facing work, identify anything that is materially awkward, weak,
   outdated, visually broken, or behind comparable services at review time.
 - Verify part ownership, no-touch boundaries, and worker-session reuse.

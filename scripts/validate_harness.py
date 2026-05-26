@@ -45,6 +45,8 @@ P0_REQUIRED = [
     "shared/VISUALIZATION_SPEC_POLICY.md",
     "shared/RECORDS_POLICY.md",
     "shared/CONTEXT_PRESSURE.md",
+    "shared/AGENT_COMMUNICATION.md",
+    "shared/SOFTWARE_FEEDBACK_POLICY.md",
     "shared/BUDGET_GOVERNANCE.md",
     "shared/TEAM_TOPOLOGY.md",
     "shared/WORKSTREAM_PROFILE.json",
@@ -428,6 +430,10 @@ def check_model_routing(model_routing: dict[str, Any], errors: list[str]) -> Non
         errors.append("MODEL_ROUTING.json workers.session_policy must be part_owner_resume_when_safe")
     if worker_policy.get("do_not_use_part_owner_for_unrelated_parts") is not True:
         errors.append("MODEL_ROUTING.json must isolate part-owner worker sessions")
+    aliases = worker_policy.get("routine_task_aliases", [])
+    for alias in ["sonnet", "haiku", "gpt-5.3-codex-spark"]:
+        if alias not in aliases:
+            errors.append(f"MODEL_ROUTING.json routine_task_aliases missing {alias}")
     tiers = model_routing.get("worker_tiers", {})
     for tier in ["routine", "standard", "complex", "independent_evaluation"]:
         if tier not in tiers:
@@ -437,6 +443,9 @@ def check_model_routing(model_routing: dict[str, Any], errors: list[str]) -> Non
     preferred = routine.get("preferred_session_for_simple_tasks") if isinstance(routine, dict) else None
     if not isinstance(examples, list) or not examples:
         errors.append("MODEL_ROUTING.json routine tier must include example model classes")
+    for alias in ["sonnet", "haiku", "gpt-5.3-codex-spark"]:
+        if alias not in examples:
+            errors.append(f"MODEL_ROUTING.json routine examples missing {alias}")
     if not isinstance(preferred, str) or preferred in {"", "UNKNOWN"}:
         errors.append("MODEL_ROUTING.json routine tier must define preferred_session_for_simple_tasks")
 
@@ -834,6 +843,9 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "events_schema_valid",
         "verified_evidence_integrity",
         "budget_caps_defined",
+        "routine_worker_aliases",
+        "agent_communication_packets",
+        "software_feedback_policy",
     }:
         if required_id not in public_ids:
             errors.append(f"public_release_suite.json missing required eval case: {required_id}")
@@ -920,9 +932,22 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
             errors.append(f".gitignore lacks private overlay protection phrase: {phrase}")
     readme = project_root / "README.md"
     readme_text = readme.read_text(encoding="utf-8")
-    for phrase in ["## 한국어", "## English", "you are operator", "VISUALIZATION_SPEC.md", "RECORDS_POLICY.md"]:
+    for phrase in [
+        "## 한국어",
+        "## English",
+        "you are operator",
+        "VISUALIZATION_SPEC.md",
+        "RECORDS_POLICY.md",
+        "gpt-5.3-codex-spark",
+        "SOFTWARE_FEEDBACK_POLICY.md",
+        "AGENT_COMMUNICATION.md",
+    ]:
         if phrase not in readme_text:
             errors.append(f"README.md lacks required bilingual/operation phrase: {phrase}")
+    claude_text = (project_root / "CLAUDE.md").read_text(encoding="utf-8")
+    for phrase in ["Root `CLAUDE.md` is intentional", ".claude/", "SOFTWARE_FEEDBACK_POLICY.md"]:
+        if phrase not in claude_text:
+            errors.append(f"CLAUDE.md lacks required Claude adapter phrase: {phrase}")
     report = harness / "SCAFFOLDING_REPORT.md"
     report_text = report.read_text(encoding="utf-8")
     if "Project goal" not in report_text:
@@ -964,9 +989,19 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "A local golden set proves regression coverage, not generalization",
         "feedback slice",
         "future regression fixtures",
+        "SOFTWARE_FEEDBACK_POLICY.md",
+        "Playwright or equivalent evidence",
     ]:
         if phrase not in quality_text:
             errors.append(f"QUALITY_GATES.md lacks required held-out eval phrase: {phrase}")
+    software_feedback = (harness / "shared" / "SOFTWARE_FEEDBACK_POLICY.md").read_text(encoding="utf-8")
+    for phrase in ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN"]:
+        if phrase not in software_feedback:
+            errors.append(f"SOFTWARE_FEEDBACK_POLICY.md lacks {phrase}")
+    agent_communication = (harness / "shared" / "AGENT_COMMUNICATION.md").read_text(encoding="utf-8")
+    for phrase in ["task packets", "evidence_paths", "do not forward a full operator conversation", "Part-Owner Rule"]:
+        if phrase not in agent_communication:
+            errors.append(f"AGENT_COMMUNICATION.md lacks {phrase}")
     hooks_text = (harness / "IMPLEMENTER_HOOKS.md").read_text(encoding="utf-8")
     for phrase in [
         "PreScaffoldGoalIntake",
@@ -1105,8 +1140,10 @@ def main(argv: list[str]) -> int:
                 "runner_config",
                 "model_routing",
                 "plugin_routing",
+                "communication_protocol",
                 "context_pressure",
                 "records_policy",
+                "software_feedback_gate",
                 "visualization_spec_gate",
                 "independent_verification",
             ],

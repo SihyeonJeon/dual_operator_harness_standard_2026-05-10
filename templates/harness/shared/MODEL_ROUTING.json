@@ -1,4 +1,5 @@
 {
+  "simple_task_aliases": ["sonnet", "haiku", "gpt-5.3-codex-spark"],
   "policy": {
     "operators": {
       "model_class": "highest_verified_available",
@@ -8,6 +9,8 @@
     "workers": {
       "default_model_class": "lowest_verified_that_satisfies_gate",
       "default_reasoning_effort": "lowest_verified_that_satisfies_gate",
+      "routine_task_aliases": ["sonnet", "haiku", "gpt-5.3-codex-spark"],
+      "routine_task_rule": "Use one of the configured routine aliases for simple, reversible, low-risk, well-specified work when the alias is available and verified in this environment.",
       "session_policy": "part_owner_resume_when_safe",
       "do_not_use_part_owner_for_unrelated_parts": true
     }
@@ -16,7 +19,7 @@
     "routine": {
       "use_when": "mechanical, low-risk, well-specified work",
       "preferred_session_for_simple_tasks": "configured_routine_worker_session",
-      "example_model_classes": ["sonnet_or_equivalent", "codex_spark_or_equivalent", "lowest_cost_verified_worker_model"],
+      "example_model_classes": ["sonnet", "haiku", "gpt-5.3-codex-spark", "lowest_cost_verified_worker_model"],
       "reasoning_effort": "low_or_medium"
     },
     "standard": {

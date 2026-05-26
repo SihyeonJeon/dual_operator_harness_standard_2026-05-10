@@ -32,6 +32,10 @@
           "required": ["use_when", "preferred_session_for_simple_tasks", "example_model_classes", "reasoning_effort"]
         }
       }
+    },
+    "simple_task_aliases": {
+      "type": "array",
+      "items": {"type": "string"}
     }
   }
 }

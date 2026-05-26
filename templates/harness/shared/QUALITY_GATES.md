@@ -22,6 +22,7 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
 
 ## Software And App Gates
 
+- Load `harness/shared/SOFTWARE_FEEDBACK_POLICY.md`.
 - Code or artifact inspection.
 - Static checks, lint, type checks, tests, or equivalent project commands.
 - Runtime smoke for the smallest reproducible path.

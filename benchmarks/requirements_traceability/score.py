@@ -99,6 +99,7 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/shared/CONTEXT.md",
             "harness/shared/MEMORY.md",
             "harness/shared/CONTEXT_PRESSURE.md",
+            "harness/shared/AGENT_COMMUNICATION.md",
             "harness/shared/SESSION_CONTINUITY.md",
             "harness/shared/FAILURE_LEDGER.md",
             "harness/shared/RULE_CHANGE_LOG.md",
@@ -107,6 +108,7 @@ CATEGORIES: tuple[Category, ...] = (
         ),
         text=(
             TextCheck("harness/shared/CONTEXT_PRESSURE.md", ("Context Pack Rule", "Part-Owner Isolation")),
+            TextCheck("harness/shared/AGENT_COMMUNICATION.md", ("task packets", "evidence_paths", "Part-Owner Rule")),
             TextCheck("harness/shared/RECORDS_POLICY.md", ("Canonical Project Records", "Out Of Scope In Public Kit")),
         ),
     ),
@@ -150,6 +152,7 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/evals/golden_suite.json",
             "harness/evals/public_release_suite.json",
             "harness/shared/QUALITY_GATES.md",
+            "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
             "harness/templates/EVALUATION_REPORT.md",
             "scripts/harnessctl.py",
             "harness/evals/results/latest.json",
@@ -157,6 +160,7 @@ CATEGORIES: tuple[Category, ...] = (
         ),
         text=(
             TextCheck("harness/shared/QUALITY_GATES.md", ("evidence", "NOT-RUN")),
+            TextCheck("harness/shared/SOFTWARE_FEEDBACK_POLICY.md", ("lint", "Playwright", "UI/UX/layout")),
             TextCheck("harness/evals/results/latest.json", ("PASS",)),
         ),
     ),
