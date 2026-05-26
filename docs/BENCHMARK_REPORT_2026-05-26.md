@@ -134,6 +134,48 @@ Interpretation:
   critique, disagreement records, human escalation, and rule-change paths
 - this tests protocol surface availability, not model judgment quality
 
+### Operational Resilience Policy Assay
+
+Command:
+
+```sh
+python3 benchmarks/operational_resilience/score.py --check-summary
+```
+
+Scope:
+
+- deterministic provider failover policy scenarios
+- deterministic human approval gate scenarios
+- generated harness scaffold and `./init.sh`
+- no model provider calls
+- no external approval channel or mobile latency measurement
+- synthetic control baselines authored in this repo
+
+This is a policy-surface unit test, not an independent product ranking and not
+a live outage benchmark.
+
+Provider failover policy surface:
+
+| surface | score | completion policy | independent check policy |
+| --- | ---: | ---: | ---: |
+| single_vendor | 0.300 | 0.500 | 0.000 |
+| retry_same_vendor | 0.350 | 0.625 | 0.000 |
+| generated_harness_policy | 1.000 | 1.000 | 1.000 |
+
+Approval gate policy surface:
+
+| surface | score | false allow | false block | approval precision |
+| --- | ---: | ---: | ---: | ---: |
+| allow_all | 0.450 | 0.700 | 0.000 | 0.000 |
+| block_all | 0.850 | 0.000 | 0.300 | 0.700 |
+| generated_harness_policy | 1.000 | 0.000 | 0.000 | 1.000 |
+
+Interpretation:
+
+- generated harness policy files include model routing and permission gates for
+  these fixed scenarios
+- this is a policy-surface simulation, not a live outage or latency benchmark
+
 ### Runtime Persistence Smoke
 
 Command:
@@ -213,8 +255,8 @@ Interpretation:
 | runtime persistence smoke | implemented with live dependencies and no LLM calls |
 | date normalization feedback loop | implemented and validated |
 | website visual comparison | implemented with screenshots |
-| multi-vendor resilience | specified but not live-run in public kit |
-| HITL latency | specified but not live-run in public kit |
+| multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
+| HITL latency | approval policy assay implemented, live latency not claimed |
 | bilingual quality | specified but not live-run in public kit |
 | live framework throughput | not claimed |
 

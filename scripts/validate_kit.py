@@ -35,6 +35,9 @@ ROOT_REQUIRED = [
     "benchmarks/agentic_governance/score.py",
     "benchmarks/agentic_governance/sources.json",
     "benchmarks/agentic_governance/expected_summary.json",
+    "benchmarks/operational_resilience/README.md",
+    "benchmarks/operational_resilience/score.py",
+    "benchmarks/operational_resilience/expected_summary.json",
     "benchmarks/replay_recovery/README.md",
     "benchmarks/replay_recovery/score.py",
     "benchmarks/replay_recovery/tasks.json",
@@ -122,7 +125,7 @@ def parse_json_files(root: Path) -> int:
 def scan_public_markers(root: Path) -> list[str]:
     findings: list[str] = []
     ignored_parts = {".git", "__pycache__", "node_modules"}
-    ignored_files = {"harness_evaluation_checklist.md", "check.md", "conv_log.md", "conversation_log.md"}
+    ignored_files = {"harness_evaluation_checklist.md", "check.md", "conv_log.md", "convlog.md", "conversation_log.md"}
     for path in sorted(root.rglob("*")):
         if not path.is_file() or path.name in ignored_files or any(part in ignored_parts for part in path.parts):
             continue
@@ -246,6 +249,7 @@ def main(argv: list[str]) -> int:
             "scripts/implementer_hooks.py",
             "benchmarks/date_normalization/score.py",
             "benchmarks/agentic_governance/score.py",
+            "benchmarks/operational_resilience/score.py",
             "benchmarks/replay_recovery/score.py",
             "benchmarks/runtime_persistence/score.py",
             "templates/root/scripts/harnessctl.py",
@@ -270,6 +274,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["agentic_governance_benchmark"] = json.loads(governance.stdout)["summary"]
+    resilience = run(
+        [
+            sys.executable,
+            "benchmarks/operational_resilience/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["operational_resilience_benchmark"] = json.loads(resilience.stdout)["summary"]
     recovery = run(
         [
             sys.executable,

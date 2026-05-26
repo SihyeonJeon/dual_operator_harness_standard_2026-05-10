@@ -157,6 +157,39 @@ that operating layer.
 | MCP assurance | 0.300 permissive client | 1.000 |
 | dissent preservation | 0.300 forced consensus fixture | 1.000 |
 
+### Operational Resilience Policy Assay
+
+Deterministic policy simulation for provider failover and human approval gates.
+It does not call model providers, cloud runners, or external approval channels.
+The baselines are synthetic controls authored in this repo, not competing
+framework implementations. This is a policy-surface unit test for generated
+harnesses.
+
+```sh
+python3 benchmarks/operational_resilience/score.py --check-summary
+```
+
+Provider failover policy surface:
+
+| surface | score | completion policy | independent check policy |
+| --- | ---: | ---: | ---: |
+| single_vendor | 0.300 | 0.500 | 0.000 |
+| retry_same_vendor | 0.350 | 0.625 | 0.000 |
+| generated_harness_policy | 1.000 | 1.000 | 1.000 |
+
+Approval gate policy surface:
+
+| surface | score | false allow | false block | approval precision |
+| --- | ---: | ---: | ---: | ---: |
+| allow_all | 0.450 | 0.700 | 0.000 | 0.000 |
+| block_all | 0.850 | 0.000 | 0.300 | 0.700 |
+| generated_harness_policy | 1.000 | 0.000 | 0.000 | 1.000 |
+
+The generated harness result is limited to these fixed scenarios. It does not
+prove live failover accuracy, provider outage handling, or approval latency. It
+verifies that generated projects contain model-routing and permission policies
+before adapters are added.
+
 ### Runtime Persistence Smoke
 
 Optional live dependency smoke. This one imports real packages through `uv` and

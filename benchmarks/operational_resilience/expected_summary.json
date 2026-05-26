@@ -1,0 +1,45 @@
+{
+  "approval_gates": {
+    "allow_all": {
+      "approval_precision": 0.0,
+      "false_allow_rate": 0.7,
+      "false_block_rate": 0.0,
+      "score": 0.45
+    },
+    "block_all": {
+      "approval_precision": 0.7,
+      "false_allow_rate": 0.0,
+      "false_block_rate": 0.3,
+      "score": 0.85
+    },
+    "generated_harness_policy": {
+      "approval_precision": 1.0,
+      "false_allow_rate": 0.0,
+      "false_block_rate": 0.0,
+      "score": 1.0
+    }
+  },
+  "provider_failover": {
+    "generated_harness_policy": {
+      "completion_rate": 1.0,
+      "fallback_rate": 1.0,
+      "independent_check_rate": 1.0,
+      "policy_evidence_rate": 1.0,
+      "score": 1.0
+    },
+    "retry_same_vendor": {
+      "completion_rate": 0.625,
+      "fallback_rate": 0.0,
+      "independent_check_rate": 0.0,
+      "policy_evidence_rate": 1.0,
+      "score": 0.35
+    },
+    "single_vendor": {
+      "completion_rate": 0.5,
+      "fallback_rate": 0.0,
+      "independent_check_rate": 0.0,
+      "policy_evidence_rate": 1.0,
+      "score": 0.3
+    }
+  }
+}

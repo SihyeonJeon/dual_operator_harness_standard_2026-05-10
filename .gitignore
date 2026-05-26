@@ -4,6 +4,7 @@
 !.env.example
 conversation_log.md
 conv_log.md
+convlog.md
 harness_evaluation_checklist.md
 check.md
 __pycache__/
