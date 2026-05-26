@@ -43,7 +43,7 @@ Scope:
 
 - generated harness scaffold and `./init.sh`
 - 12 public operating categories
-- 137 file, text, and absence checks
+- 143 file, text, and absence checks
 - no model calls
 - private account-specific surfaces must be absent
 
@@ -51,7 +51,7 @@ Result:
 
 | categories | passed categories | checks | failed checks | score |
 | ---: | ---: | ---: | ---: | ---: |
-| 12 | 12 | 137 | 0 | 1.000 |
+| 12 | 12 | 143 | 0 | 1.000 |
 
 Interpretation:
 
@@ -317,6 +317,43 @@ Interpretation:
   these fixed scenarios
 - this is a policy-surface simulation, not a live outage or latency benchmark
 
+### Cloud Runner Policy Smoke
+
+Command:
+
+```sh
+python3 benchmarks/cloud_runner_policy/score.py --check-summary
+```
+
+Scope:
+
+- generated cloud runner example descriptor
+- remote operation policy text
+- offline operation policy text
+- credential lifecycle boundary
+- no cloud execution
+- no credentials
+- no remote terminal control
+- authored descriptor controls
+
+Result:
+
+| surface | passed | failed | total | score |
+| --- | ---: | ---: | ---: | ---: |
+| unsafe active descriptor | 2 | 8 | 10 | 0.200 |
+| partial placeholder | 8 | 2 | 10 | 0.800 |
+| generated cloud example | 10 | 0 | 10 | 1.000 |
+| generated policy docs | 10 | 0 | 10 | 1.000 |
+
+Interpretation:
+
+- the public harness keeps cloud lanes disabled by default
+- activation requires a project-private adapter, scoped credentials, budget,
+  kill path, audit path, and smoke evidence
+- generated project `.gitignore` excludes private overlays and active cloud
+  credential descriptors
+- this is not hosted reliability evidence and not a remote execution test
+
 ### Runtime Persistence Smoke
 
 Command:
@@ -402,6 +439,7 @@ Interpretation:
 | multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
 | HITL latency | approval policy assay implemented, live latency not claimed |
 | bilingual quality | deterministic README parity guard implemented, native review not claimed |
+| cloud runner policy | descriptor and dry-run policy smoke implemented, real cloud execution not claimed |
 | live framework throughput | not claimed |
 
 ## Public Claim Boundary

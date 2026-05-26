@@ -107,6 +107,7 @@ P0_REQUIRED = [
 ]
 
 ROOT_REQUIRED = [
+    ".gitignore",
     "README.md",
     "AGENTS.md",
     "CLAUDE.md",
@@ -804,6 +805,11 @@ def check_portability(project_root: Path, errors: list[str]) -> None:
 
 
 def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> None:
+    gitignore = project_root / ".gitignore"
+    gitignore_text = gitignore.read_text(encoding="utf-8")
+    for phrase in [".env", "harness_private/", "private_overlays/", "active_cloud_credentials.json"]:
+        if phrase not in gitignore_text:
+            errors.append(f".gitignore lacks private overlay protection phrase: {phrase}")
     readme = project_root / "README.md"
     readme_text = readme.read_text(encoding="utf-8")
     for phrase in ["## 한국어", "## English", "you are operator", "VISUALIZATION_SPEC.md", "RECORDS_POLICY.md"]:

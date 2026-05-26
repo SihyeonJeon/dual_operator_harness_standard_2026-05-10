@@ -29,8 +29,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 137 file,
-content, and absence conditions. Current result: 137 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 143 file,
+content, and absence conditions. Current result: 143 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -47,6 +47,7 @@ content, and absence conditions. Current result: 137 passed, 0 failed.
 | human approval gates | `benchmarks/operational_resilience` | policy assay, not real approval latency |
 | runtime persistence | `benchmarks/runtime_persistence` optional package smoke | runtime frameworks are compared only on state reload smoke |
 | bilingual quality | `benchmarks/bilingual_readme_parity` | deterministic README parity guard, not native fluency scoring |
+| cloud runner policy | `benchmarks/cloud_runner_policy` | descriptor and dry-run policy smoke, not real cloud execution |
 
 ## Harness Requirements Coverage
 
@@ -79,7 +80,7 @@ private account workflows.
 
 1. Static visualization example built from `events.jsonl`
 2. Local spec-agent command that fills PRD and anti-PRD drafts without network
-3. Cloud runner smoke example that proves policy shape without credentials
+3. Real cloud runner adapter example with project-private credentials
 4. Larger live-model replay/recovery benchmark with real variance data
 5. Native bilingual review fixture with explicit public reference outputs
 

@@ -1,0 +1,21 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+node_modules/
+*.log
+
+# Private overlays and live connector state
+harness_private/
+private_overlays/
+harness/runtime/RUNNERS/active_cloud_credentials.json
+harness/runtime/RUNNERS/*.local.json
+harness/**/secrets/
+harness/**/*secret*

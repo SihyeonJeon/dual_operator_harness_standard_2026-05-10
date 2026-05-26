@@ -181,6 +181,7 @@ CATEGORIES: tuple[Category, ...] = (
         id="remote_and_credential_boundary",
         claim_level="implemented_as_policy_and_descriptors",
         files=(
+            ".gitignore",
             "harness/runtime/OFFLINE_OPERATION.md",
             "harness/runtime/REMOTE_OPERATION_POLICY.md",
             "harness/runtime/RUNNERS/local_runner.json",
@@ -192,6 +193,7 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/shared/PERMISSION_POLICY.json",
         ),
         text=(
+            TextCheck(".gitignore", (".env", "harness_private/", "private_overlays/", "active_cloud_credentials.json")),
             TextCheck("harness/shared/PERMISSION_POLICY.json", ("fail_closed", "network_write", "explicit_human")),
             TextCheck("harness/runtime/REMOTE_OPERATION_POLICY.md", ("UNVERIFIED", "smoke evidence")),
         ),
@@ -220,6 +222,7 @@ CATEGORIES: tuple[Category, ...] = (
             "benchmarks/runtime_persistence/score.py",
             "benchmarks/date_normalization/score.py",
             "benchmarks/bilingual_readme_parity/score.py",
+            "benchmarks/cloud_runner_policy/score.py",
             "docs/BENCHMARK_REPORT_2026-05-26.md",
         ),
     ),

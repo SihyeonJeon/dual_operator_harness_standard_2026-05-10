@@ -56,7 +56,7 @@ python3 benchmarks/agentic_governance/score.py --keep
 | crewai_flow_app | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
 | openai_agents_session_app | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
 | claude_code_project | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
-| generated_harness | 0.958 | 0.900 | 1.000 | 0.750 | 150 |
+| generated_harness | 0.958 | 0.900 | 1.000 | 0.750 | 151 |
 
 | MCP surface | assurance |
 | --- | ---: |

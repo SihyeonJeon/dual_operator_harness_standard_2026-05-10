@@ -109,7 +109,7 @@ python3 benchmarks/requirements_traceability/score.py --check-summary
 
 | checks | failed | score |
 | ---: | ---: | ---: |
-| 137 | 0 | 1.000 |
+| 143 | 0 | 1.000 |
 
 See [requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md) for
 the exact reflected, partial, excluded, and not-claimed areas.
@@ -231,7 +231,7 @@ python3 benchmarks/agentic_governance/score.py --check-summary
 | CrewAI flow surface | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
 | OpenAI Agents session surface | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
 | Claude Code project surface | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
-| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 150 |
+| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 151 |
 
 The result is narrow but useful: runtime frameworks score higher on runtime
 checkpoint semantics, while the generated harness scores higher on repo-local
@@ -275,6 +275,29 @@ The generated harness result is limited to these fixed scenarios. It does not
 prove live failover accuracy, provider outage handling, or approval latency. It
 verifies that generated projects contain model-routing and permission policies
 before adapters are added.
+
+### Cloud Runner Policy Smoke
+
+The public kit includes disabled-by-default remote and cloud runner descriptors.
+This smoke checks descriptor shape and policy documents without running cloud
+jobs, opening remote terminals, using credentials, calling providers, or testing
+hosted reliability.
+
+```sh
+python3 benchmarks/cloud_runner_policy/score.py --check-summary
+```
+
+| surface | passed | failed | total | score |
+| --- | ---: | ---: | ---: | ---: |
+| unsafe active descriptor | 2 | 8 | 10 | 0.200 |
+| partial placeholder | 8 | 2 | 10 | 0.800 |
+| generated cloud example | 10 | 0 | 10 | 1.000 |
+| generated policy docs | 10 | 0 | 10 | 1.000 |
+
+Real cloud lanes belong in project-private overlays with scoped credentials,
+budget, kill path, audit path, and smoke evidence. Generated projects include
+`.gitignore` protection for `.env`, private overlays, and active cloud
+credential descriptors.
 
 ### Runtime Persistence Smoke
 

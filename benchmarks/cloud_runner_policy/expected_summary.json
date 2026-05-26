@@ -1,0 +1,28 @@
+{
+  "descriptor_controls": {
+    "generated_cloud_example": {
+      "failed": 0,
+      "passed": 10,
+      "score": 1.0,
+      "total": 10
+    },
+    "partial_placeholder": {
+      "failed": 2,
+      "passed": 8,
+      "score": 0.8,
+      "total": 10
+    },
+    "unsafe_active": {
+      "failed": 8,
+      "passed": 2,
+      "score": 0.2,
+      "total": 10
+    }
+  },
+  "generated_policy_docs": {
+    "failed": 0,
+    "passed": 10,
+    "score": 1.0,
+    "total": 10
+  }
+}

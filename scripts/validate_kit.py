@@ -45,6 +45,9 @@ ROOT_REQUIRED = [
     "benchmarks/bilingual_readme_parity/README.md",
     "benchmarks/bilingual_readme_parity/score.py",
     "benchmarks/bilingual_readme_parity/expected_summary.json",
+    "benchmarks/cloud_runner_policy/README.md",
+    "benchmarks/cloud_runner_policy/score.py",
+    "benchmarks/cloud_runner_policy/expected_summary.json",
     "benchmarks/runtime_persistence/README.md",
     "benchmarks/runtime_persistence/score.py",
     "benchmarks/runtime_persistence/expected_summary.json",
@@ -63,6 +66,7 @@ ROOT_REQUIRED = [
     "docs/BENCHMARK_REPORT_2026-05-26.md",
     "docs/REQUIREMENT_TRACEABILITY_2026-05-26.md",
     "templates/root/init.sh",
+    "templates/root/.gitignore",
     "templates/root/scripts/harnessctl.py",
     "templates/root/.claude/settings.json",
     "templates/root/.claude/hooks/post_tool_use_index.py",
@@ -265,6 +269,7 @@ def main(argv: list[str]) -> int:
             "benchmarks/operational_resilience/score.py",
             "benchmarks/replay_recovery/score.py",
             "benchmarks/bilingual_readme_parity/score.py",
+            "benchmarks/cloud_runner_policy/score.py",
             "benchmarks/runtime_persistence/score.py",
             "benchmarks/spec_gate/score.py",
             "benchmarks/static_viz/score.py",
@@ -318,6 +323,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["bilingual_readme_parity_guard"] = json.loads(bilingual.stdout)["summary"]
+    cloud_runner = run(
+        [
+            sys.executable,
+            "benchmarks/cloud_runner_policy/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["cloud_runner_policy_smoke"] = json.loads(cloud_runner.stdout)["summary"]
     traceability = run(
         [
             sys.executable,
