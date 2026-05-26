@@ -14,6 +14,8 @@ from pathlib import Path
 
 ROOT_REQUIRED = [
     "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
     "AGENTS.md",
     "manifest.json",
     "IMPLEMENTER.md",
@@ -64,6 +66,8 @@ ROOT_REQUIRED = [
     "schemas/eval-suite.schema.json",
     "schemas/observability-event.schema.json",
     "docs/BENCHMARK_REPORT_2026-05-26.md",
+    "docs/BENCHMARKS.md",
+    "docs/README.md",
     "docs/REQUIREMENT_TRACEABILITY_2026-05-26.md",
     "templates/root/init.sh",
     "templates/root/.gitignore",

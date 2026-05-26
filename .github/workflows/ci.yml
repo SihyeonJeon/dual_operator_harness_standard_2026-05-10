@@ -22,8 +22,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate kit and generated harness smoke
+      - name: Run full public kit validation and harness smoke
         run: python3 scripts/validate_kit.py
 
-      - name: Reproduce date-normalization benchmark table
+      - name: Reproduce public date-normalization fixture
         run: python3 benchmarks/date_normalization/score.py --all --check-summary

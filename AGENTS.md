@@ -1,6 +1,6 @@
 # Agent Loader
 
-This repository is a standard kit for generating a dual-operator,
+Easy Orchestration Harness is a standard kit for generating a dual-operator,
 multi-agent orchestration harness for any project type.
 
 Always load order:
@@ -16,8 +16,9 @@ Always load order:
 Use `templates/`, `schemas/`, and `scripts/validate_harness.py` as the
 executable implementation layer.
 
-Do not load `dist/reassembled.md` by default. It is a bundle artifact for
-one-file distribution and integrity checks, not the normal operating context.
+If `dist/reassembled.md` exists, do not load it by default. It is a bundle
+artifact for one-file distribution and integrity checks, not the normal
+operating context.
 
 If the user supplies only two inputs, interpret them as:
 

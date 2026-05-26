@@ -1,5 +1,6 @@
 {
   "name": "easy-orchestration-harness",
+  "display_name": "Easy Orchestration Harness",
   "schema_version": "2026-05-24",
   "kind": "public_dual_operator_harness_generation_kit",
   "entrypoints": [

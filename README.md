@@ -1,36 +1,36 @@
 # Easy Orchestration Harness
 
 [![CI](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/SihyeonJeon/easy-orchestration-harness/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A file-backed harness generator for restartable agent projects
 
-It turns one project goal into a local harness with role files, shared state,
-event logs, eval fixtures, status reports, and restart instructions. The goal is
-not to replace LangGraph, CrewAI, OpenAI Agents SDK, Claude Code, or other agent
-runtimes. It gives those tools a project-level operating layer that survives
-after the chat window is gone.
+It turns one project goal into a repo-local operating layer for Claude Code,
+Codex, Cursor, LangGraph apps, CrewAI flows, OpenAI Agents SDK apps, or custom
+agent loops. The generated project has explicit operator and worker roles,
+shared state, event logs, evaluation fixtures, status reports, and a restart
+path that survives the original conversation.
 
-## Why
+## Why This Exists
 
-Direct agent sessions can produce strong output, but project state often stays
-inside conversation memory.
+Strong agent sessions still lose project state when the useful context lives
+only in chat memory.
 
-This kit writes the operating state into the repo:
+This kit writes the operating state into the project:
 
-- what the project is trying to do
-- which files are canonical state
-- which worker owns which part
-- what was tested
-- what failed
-- what changed because of the failure
-- how the next session should resume
+- goal, constraints, unknowns, and acceptance criteria
+- operator, evaluator, and worker responsibilities
+- owned paths and no-touch paths for each work packet
+- shared context, team context, and handoff notes
+- append-only event records and local HTML status reports
+- failed cases converted into rules and regression fixtures
+- restart instructions for the next session
 
 ## Quick Start
 
 ```sh
 git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
 cd easy-orchestration-harness
-python3 scripts/validate_kit.py
 
 python3 scripts/scaffold_harness.py \
   --target ../my-project \
@@ -41,11 +41,16 @@ cd ../my-project
 python3 scripts/harnessctl.py report
 ```
 
-Then open Claude Code, Codex, Cursor, or another agent session inside the
-generated project, let it read `AGENTS.md`, and send:
+Open the generated project in your agent tool and let it read `AGENTS.md`.
 
 ```text
 you are operator
+```
+
+To verify the public kit itself:
+
+```sh
+python3 scripts/validate_kit.py
 ```
 
 ## What It Generates
@@ -54,6 +59,7 @@ you are operator
 project/
   AGENTS.md
   CLAUDE.md
+  README.md
   feature_list.json
   progress.md
   session-handoff.md
@@ -69,269 +75,63 @@ project/
     events/events.jsonl
     evals/
     reports/status.html
-    viz/
+    reports/viz/
     runtime/
     mcp_server/
 ```
 
 ## Operating Model
 
-| Layer | Purpose |
+| Layer | What it gives the project |
 | --- | --- |
-| root state | fresh sessions can start from files, not hidden chat memory |
-| operators | fixed review and orchestration roles |
-| teams | planning, design, production, evaluation lanes |
-| task packets | owned paths, no-touch paths, evidence requirements |
-| events | append-only task and gate history |
-| evals | local invariant and regression checks |
-| reports | static HTML views over canonical files |
+| harness implementer | converts a goal into project-local operating files |
+| operator | routes work, reviews gates, decides closure |
+| worker teams | handle planning, design, production, and evaluation lanes |
+| part ownership | sends the same part back to the same worker session when safe |
+| hooks and validators | enforce lifecycle checks beyond markdown instructions |
+| event log | records task, gate, and eval evidence as append-only state |
+| status report | renders canonical state into local HTML and JSON |
+| MCP export | exposes read-only local project state for compatible tools |
 
-Workers can use lower-cost models when the task is routine. Operators should use
-the strongest model and effort settings you choose for review, routing, and
-closure. Large work is split into parts, and the same part can return to the
-same worker session when that is safe.
+Workers can use cheaper models for routine packets. Operators should use the
+strongest model and effort setting available for review, routing, and closure.
+The kit does not force one vendor or runtime.
+
+## Use It For
+
+- work that is larger than one answer
+- projects that need multiple agent sessions or tools
+- planning, production, evaluation, and handoff as separate phases
+- repeatable restart after an interrupted session
+- turning failures into rules, tests, and eval fixtures
+
+## Do Not Use It For
+
+- a one-file edit
+- a disposable prototype where traceability does not matter
+- replacing a runtime graph or checkpoint system
+- projects that cannot tolerate extra governance files
 
 ## Evidence
 
-### Requirements Traceability
+Public fixtures were last updated on 2026-05-26. They are small reproducible
+regression checks, not broad industry rankings.
 
-The public kit includes a generated-harness traceability assay. It is a
-regression guard that checks whether the scaffold still contains implementer
-bootstrap files, fixed operators, worker team memory, part ownership, context
-pressure controls, hook lifecycle, spec gates, local reports, bounded remote
-descriptors, read-only MCP export, and public benchmark evidence. It also
-checks that account-specific private surfaces are absent from the generated
-public harness.
+| Fixture | Scope | Current result |
+| --- | --- | --- |
+| requirements traceability | generated harness requirements reflected in public-safe files | 143/143 checks |
+| spec gate | planning surfaces before production work | 12/12 checks |
+| static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
+| replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
+| bilingual README parity | Korean and English generated-project operating sections | 14/14 checks |
+| cloud runner policy | disabled-by-default remote descriptors and policy docs | 10/10 descriptor, 10/10 policy |
+| date normalization loop | failed cases captured into the next regression pass | 83.3% direct, 72.2% first pass, 100.0% after feedback |
 
-```sh
-python3 benchmarks/requirements_traceability/score.py --check-summary
-```
+Detailed commands, scope boundaries, and comparison tables are in
+[Benchmarks](docs/BENCHMARKS.md) and the dated
+[benchmark report](docs/BENCHMARK_REPORT_2026-05-26.md).
 
-| checks | failed | score |
-| ---: | ---: | ---: |
-| 143 | 0 | 1.000 |
-
-See [requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md) for
-the exact reflected, partial, excluded, and not-claimed areas.
-
-### Spec Gate Regression Guard
-
-Deterministic self-check for generated harnesses. It verifies that the scaffold
-still emits the planning-gate surfaces needed before production work starts:
-goal intake, PRD, anti-PRD, slice approval, worker brief, part ownership,
-evaluator gate, local visibility, and operator closure.
-
-Measured scope: planning and governance surfaces before sharp/deep execution.
-Not measured here: model intelligence, product quality, or whether a human liked
-the final artifact. The script includes two authored controls for regression
-sanity checks, but this is not a neutral framework or tool comparison.
-
-```sh
-python3 benchmarks/spec_gate/score.py --check-summary
-```
-
-| generated scaffold checks | failed | conformance |
-| ---: | ---: | ---: |
-| 12 | 0 | 100% |
-
-### Static Visualization Guard
-
-The default public harness does not enable a hosted dashboard. It does generate
-local evidence views: `status.html`, `status.json`, and sanitized event payloads
-under `harness/reports/viz/`.
-
-```sh
-python3 benchmarks/static_viz/score.py --check-summary
-```
-
-| generated scaffold checks | failed | conformance |
-| ---: | ---: | ---: |
-| 12 | 0 | 100% |
-
-Measured scope: local file export, event schema allowlist, redaction smoke,
-source metadata, and no network writes. Not measured here: live dashboard UX,
-hosted backend reliability, or real-time collaboration.
-
-### Replay Recovery Benchmark
-
-Deterministic repo-state assay: 10 task shapes x 1 scaffold generation per
-mode. All rows are local fixtures. The generated harness row is the real public
-scaffold output plus `./init.sh`, not a captured live agent session.
-
-Measured scope: file-only restart surface after a session stops. Not measured
-here: model intelligence, hosted runtime latency, final artifact quality, or
-statistical variance across model runs. This is a restart-surface check, not a
-degraded-state recovery test.
-
-Score formula: `0.6 * artifact coverage + 0.4 * generic recoverable fact
-coverage`. Harness-specific policy coverage is reported separately and is not
-included in the recovery score.
-
-```sh
-python3 benchmarks/replay_recovery/score.py --check-summary
-```
-
-| mode | cases | artifact coverage | fact coverage | policy coverage | status report | event count | score |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| direct transcript | 10 | 0.100 | 0.125 | 0.000 | 0.000 | 0 | 0.110 |
-| ad-hoc loop | 10 | 0.500 | 0.500 | 0.000 | 0.000 | 0 | 0.500 |
-| generated harness | 10 | 1.000 | 1.000 | 1.000 | 1.000 | 7 | 1.000 |
-
-The generated harness is slower and heavier. The gain is durable project state:
-root state, team ownership, evaluator output, append-only events, status HTML,
-and a restart path that survives the original session.
-The direct transcript and ad-hoc loop rows are authored controls, so this table
-is illustrative evidence for the generated scaffold rather than an independent
-competitive ranking.
-
-### Bilingual README Parity Guard
-
-Generated project README files include Korean and English sections. This guard
-checks structural parity: goal, bootstrap commands, operator entry, worker role
-terms, planning policy, part-owner reuse, records policy, visualization
-boundary, MCP and remote boundaries, file inventory, and public/private
-boundary.
-
-It is not a native fluency benchmark, translation quality benchmark, or live LLM
-evaluation.
-
-```sh
-python3 benchmarks/bilingual_readme_parity/score.py --check-summary
-```
-
-| surface | passed | failed | total | score |
-| --- | ---: | ---: | ---: | ---: |
-| korean only control | 2 | 12 | 14 | 0.143 |
-| bilingual summary control | 5 | 9 | 14 | 0.357 |
-| generated harness | 14 | 0 | 14 | 1.000 |
-
-### Agentic Governance Benchmark
-
-Deterministic local comparison: reference project surfaces for LangGraph,
-CrewAI, OpenAI Agents SDK, Claude Code, a custom loop, and one generated harness.
-
-Measured scope: project-level restart evidence, governance evidence, MCP
-assurance, and dissent preservation. Not measured here: live model quality,
-vendor service latency, token cost, or production runtime throughput.
-
-The named framework rows are small reference surfaces written for this benchmark,
-not full LangGraph, CrewAI, OpenAI Agents SDK, or Claude Code applications. The
-rubric and baselines are authored in this repo. Treat this as a repo-state
-assay, not an independent product ranking. `overall` is passed criteria divided
-by 24.
-
-```sh
-python3 benchmarks/agentic_governance/score.py --check-summary
-```
-
-| surface | overall | restart | governance | runtime | files |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| custom Python loop surface | 0.208 | 0.500 | 0.000 | 0.500 | 5 |
-| LangGraph checkpoint surface | 0.417 | 0.800 | 0.133 | 1.000 | 9 |
-| CrewAI flow surface | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
-| OpenAI Agents session surface | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
-| Claude Code project surface | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
-| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 151 |
-
-The result is narrow but useful: runtime frameworks score higher on runtime
-checkpoint semantics, while the generated harness scores higher on repo-local
-governance, audit, and restart evidence. The larger file count is the cost of
-that operating layer.
-
-| track | baseline | generated harness |
-| --- | ---: | ---: |
-| MCP assurance | 0.300 permissive client | 1.000 |
-| dissent preservation | 0.300 forced consensus fixture | 1.000 |
-
-### Operational Resilience Policy Assay
-
-Deterministic policy simulation for provider failover and human approval gates.
-It does not call model providers, cloud runners, or external approval channels.
-The baselines are synthetic controls authored in this repo, not competing
-framework implementations. This is a policy-surface unit test for generated
-harnesses.
-
-```sh
-python3 benchmarks/operational_resilience/score.py --check-summary
-```
-
-Provider failover policy surface:
-
-| surface | score | completion policy | independent check policy |
-| --- | ---: | ---: | ---: |
-| single_vendor | 0.300 | 0.500 | 0.000 |
-| retry_same_vendor | 0.350 | 0.625 | 0.000 |
-| generated_harness_policy | 1.000 | 1.000 | 1.000 |
-
-Approval gate policy surface:
-
-| surface | score | false allow | false block | approval precision |
-| --- | ---: | ---: | ---: | ---: |
-| allow_all | 0.450 | 0.700 | 0.000 | 0.000 |
-| block_all | 0.850 | 0.000 | 0.300 | 0.700 |
-| generated_harness_policy | 1.000 | 0.000 | 0.000 | 1.000 |
-
-The generated harness result is limited to these fixed scenarios. It does not
-prove live failover accuracy, provider outage handling, or approval latency. It
-verifies that generated projects contain model-routing and permission policies
-before adapters are added.
-
-### Cloud Runner Policy Smoke
-
-The public kit includes disabled-by-default remote and cloud runner descriptors.
-This smoke checks descriptor shape and policy documents without running cloud
-jobs, opening remote terminals, using credentials, calling providers, or testing
-hosted reliability.
-
-```sh
-python3 benchmarks/cloud_runner_policy/score.py --check-summary
-```
-
-| surface | passed | failed | total | score |
-| --- | ---: | ---: | ---: | ---: |
-| unsafe active descriptor | 2 | 8 | 10 | 0.200 |
-| partial placeholder | 8 | 2 | 10 | 0.800 |
-| generated cloud example | 10 | 0 | 10 | 1.000 |
-| generated policy docs | 10 | 0 | 10 | 1.000 |
-
-Real cloud lanes belong in project-private overlays with scoped credentials,
-budget, kill path, audit path, and smoke evidence. Generated projects include
-`.gitignore` protection for `.env`, private overlays, and active cloud
-credential descriptors.
-
-### Runtime Persistence Smoke
-
-Optional live dependency smoke. This one imports real packages through `uv` and
-does not call LLM APIs.
-
-```sh
-uv run --python 3.12 \
-  --with langgraph \
-  --with crewai \
-  --with openai-agents \
-  python benchmarks/runtime_persistence/score.py --check-summary
-```
-
-Runtime package results:
-
-| surface | score |
-| --- | ---: |
-| LangGraph memory checkpointer | 1.000 |
-| CrewAI persisted flow | 0.900 |
-| OpenAI Agents SQLite session | 1.000 |
-
-Generated harness operating-layer smoke:
-
-| surface | score |
-| --- | ---: |
-| generated harness restart evidence | 0.900 |
-
-This confirms the intended boundary: runtime frameworks are strong at runtime
-state persistence. The harness score is project restart evidence, not a runtime
-reload primitive. The harness adds governance, cross-session handoff, policy,
-reports, and evaluation structure around those runtimes.
-
-### Website Example
+## Website Example
 
 Prompt:
 
@@ -350,7 +150,7 @@ I want to build a sunglasses boutique website
   </tr>
 </table>
 
-| generated artifacts | direct session | generated harness |
+| Process residue | Direct session | Generated harness |
 | --- | ---: | ---: |
 | site files | 3 | 8 |
 | generated bitmap assets | 0 | 5 |
@@ -358,10 +158,10 @@ I want to build a sunglasses boutique website
 | event records | 0 | 44 |
 | restart handoff | no | yes |
 
-These counts are process evidence. More files are not automatically better, and
-this is not a claim that every harness-produced site will be visually better.
-The screenshots show the artifact; the table shows the state left behind for
-review and restart.
+The screenshots show one artifact comparison. The counts show what state was
+left behind for review and restart. More files are not automatically better;
+the point is that the second run leaves an operating record another session can
+use.
 
 <details>
   <summary>Full page and mobile captures</summary>
@@ -387,80 +187,75 @@ review and restart.
   </table>
 </details>
 
-### Date Normalization Regression
-
-Challenge set: 36 public rows in
-`benchmarks/date_normalization/cases.jsonl`. Each row contains an input phrase,
-a reference date, locale assumptions, and the expected normalized date. This is
-a regression fixture, not a hidden generalization benchmark.
-
-```sh
-python3 benchmarks/date_normalization/score.py --all --check-summary
-```
-
-| run | public fixture rows | accuracy | errors |
-| --- | ---: | ---: | ---: |
-| direct session | 36 | 83.3% | 6 |
-| harness first pass | 36 | 72.2% | 10 |
-| harness after feedback | 36 | 100.0% | 0 |
-
-The first harness pass was worse. The useful behavior was the loop after
-failure: failed cases were routed back into the same 36-row fixture, converted
-into regression coverage, and reflected in the kit rules. This proves regression
-capture, not generalization.
-
-## Use When
-
-- the project is larger than one answer
-- multiple agents or sessions need shared state
-- work needs planning, production, evaluation, and handoff
-- failures should become reusable rules or eval cases
-- another session should be able to resume from the repo alone
-
-## Do Not Use When
-
-- a one-file edit is enough
-- speed matters more than traceability
-- you already have durable execution and only need a runtime graph
-- you cannot afford the extra governance files
-
 ## Limits
 
-- This is a harness generator, not a hosted orchestration service
-- It does not provide durable graph execution like a runtime framework
-- The public benchmarks are small reproducible fixtures, not broad industry
-  claims
-- Account-specific posting, hosted dashboards, cloud runners, credentials, and
+- this is a harness generator, not a hosted orchestration service
+- it does not provide durable graph execution by itself
+- runtime frameworks remain useful for checkpointing, graph execution, tracing,
+  and provider integrations
+- public benchmarks are deterministic fixtures with stated boundaries
+- account-specific publishing, hosted dashboards, cloud jobs, credentials, and
   private memory backends belong in project overlays
 
 ## Docs
 
+- [Docs index](docs/README.md)
 - [Harness implementer manual](docs/HARNESS_IMPLEMENTER_MANUAL.md)
 - [Operator manual](docs/OPERATOR_MANUAL.md)
-- [Comparative survey](docs/COMPARATIVE_SURVEY_2026-05-24.md)
-- [Benchmark report](docs/BENCHMARK_REPORT_2026-05-26.md)
+- [Benchmarks](docs/BENCHMARKS.md)
 - [Requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md)
 - [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
 - [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
 
 ## 한국어
 
-이 키트는 프로젝트 목표 하나를 받아 repo 안에 재개 가능한 agent 운영 구조를
-생성한다
+Easy Orchestration Harness는 프로젝트 목표 하나를 받아 재개 가능한 agent
+운영 구조를 repo 안에 생성하는 키트다.
 
-- 루트 상태 파일로 새 세션 재개
-- operator worker evaluator 역할 분리
-- shared context와 team context 기록
-- events jsonl과 status html 생성
-- 실패를 rule과 eval fixture로 되돌리는 루프
-- 요구사항 추적 assay로 구현자, operator, worker team, hook, MCP export,
-  local viz, remote policy 반영 여부 검증
-- public kit에는 개인 계정 연결, hosted dashboard, cloud runner,
-  credential, private memory backend를 포함하지 않음
-- framework 비교표는 실제 제품 순위가 아니라 이 repo에서 만든 작은
-  reference surface 기준의 repo-state assay
-- benchmark evidence는 영어 본문을 기준으로 유지하고 한국어는 동일한 claim
-  boundary를 요약함
+생성되는 프로젝트는 operator, worker, evaluator 역할을 분리하고, 공유
+콘텍스트와 팀 콘텍스트, 이벤트 로그, 로컬 status report, eval fixture,
+handoff 파일을 남긴다. 다음 세션은 이전 대화를 읽지 않아도 repo에 남은
+상태로 작업을 이어갈 수 있다.
 
-한 번의 답변보다 프로젝트 운영과 재개 가능성이 중요한 작업에 맞다. 단순한
-파일 수정이나 이미 충분한 runtime graph가 있는 프로젝트에는 과하다.
+### 빠른 시작
+
+```sh
+git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
+cd easy-orchestration-harness
+
+python3 scripts/scaffold_harness.py \
+  --target ../my-project \
+  --goal "프로젝트 목표"
+
+cd ../my-project
+./init.sh
+python3 scripts/harnessctl.py report
+```
+
+그 다음 생성된 프로젝트에서 agent tool을 열고 `AGENTS.md`를 읽게 한 뒤
+다음처럼 시작한다.
+
+```text
+you are operator
+```
+
+### 적합한 작업
+
+- 한 번의 답변보다 긴 프로젝트
+- 여러 agent session 또는 여러 도구가 함께 다루는 프로젝트
+- 기획, 제작, 평가, 인수인계를 분리해야 하는 작업
+- 중단 후 repo 상태만 보고 재개해야 하는 작업
+- 실패 사례를 rule과 regression fixture로 되돌려야 하는 작업
+
+### 공개 버전의 경계
+
+- 개인 계정 자동 게시 기능 없음
+- 활성 cloud runner 없음
+- hosted dashboard 없음
+- credential 없음
+- private memory backend 없음
+- 공개 benchmark는 작은 재현 fixture이며 업계 전체 순위가 아님
+
+세부 검증 결과는 [Benchmarks](docs/BENCHMARKS.md)와
+[Requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md)에
+정리되어 있다.
