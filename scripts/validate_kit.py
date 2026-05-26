@@ -48,6 +48,9 @@ ROOT_REQUIRED = [
     "benchmarks/spec_gate/README.md",
     "benchmarks/spec_gate/score.py",
     "benchmarks/spec_gate/expected_summary.json",
+    "benchmarks/static_viz/README.md",
+    "benchmarks/static_viz/score.py",
+    "benchmarks/static_viz/expected_summary.json",
     "benchmarks/requirements_traceability/README.md",
     "benchmarks/requirements_traceability/score.py",
     "benchmarks/requirements_traceability/expected_summary.json",
@@ -260,6 +263,7 @@ def main(argv: list[str]) -> int:
             "benchmarks/replay_recovery/score.py",
             "benchmarks/runtime_persistence/score.py",
             "benchmarks/spec_gate/score.py",
+            "benchmarks/static_viz/score.py",
             "benchmarks/requirements_traceability/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
@@ -319,6 +323,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["spec_gate_assay"] = json.loads(spec_gate.stdout)["summary"]
+    static_viz = run(
+        [
+            sys.executable,
+            "benchmarks/static_viz/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["static_viz_guard"] = json.loads(static_viz.stdout)["summary"]
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 

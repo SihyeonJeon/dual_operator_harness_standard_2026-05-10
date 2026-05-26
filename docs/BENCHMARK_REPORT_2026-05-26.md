@@ -99,6 +99,42 @@ Interpretation:
   they exist to keep this self-check from becoming a pure path-existence smoke
   test with no contrast
 
+### Static Visualization
+
+Command:
+
+```sh
+python3 benchmarks/static_viz/score.py --check-summary
+```
+
+Scope:
+
+- generated harness scaffold and `./init.sh`
+- default `local_file` visualization backend
+- status HTML and JSON
+- sanitized event JSON and NDJSON
+- no network writes
+- no hosted dashboard
+
+Result:
+
+| generated scaffold checks | failed | conformance |
+| ---: | ---: | ---: |
+| 12 | 0 | 100% |
+
+Interpretation:
+
+- the generated harness can turn canonical `events.jsonl` records into local
+  static evidence views
+- exported event fields are constrained to the allowlist used by
+  `harnessctl.py`
+- common secret and absolute local path patterns are not present in exported
+  local evidence
+- exported payloads are checked for private public-source markers and status
+  JSON declares the report as a compiled view rather than canonical memory
+- this does not claim real-time dashboard quality, hosted reliability, or
+  external visualization backend readiness
+
 ### Replay Recovery
 
 Command:
@@ -325,6 +361,7 @@ Interpretation:
 | website visual comparison | implemented with screenshots |
 | requirements traceability | implemented and validated |
 | spec gate before sharp/deep work | scaffold regression guard implemented, not a neutral comparator |
+| static visualization evidence | local export regression guard implemented, not a hosted dashboard benchmark |
 | multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
 | HITL latency | approval policy assay implemented, live latency not claimed |
 | bilingual quality | specified but not live-run in public kit |

@@ -134,6 +134,24 @@ python3 benchmarks/spec_gate/score.py --check-summary
 | ---: | ---: | ---: |
 | 12 | 0 | 100% |
 
+### Static Visualization Guard
+
+The default public harness does not enable a hosted dashboard. It does generate
+local evidence views: `status.html`, `status.json`, and sanitized event payloads
+under `harness/reports/viz/`.
+
+```sh
+python3 benchmarks/static_viz/score.py --check-summary
+```
+
+| generated scaffold checks | failed | conformance |
+| ---: | ---: | ---: |
+| 12 | 0 | 100% |
+
+Measured scope: local file export, event schema allowlist, redaction smoke,
+source metadata, and no network writes. Not measured here: live dashboard UX,
+hosted backend reliability, or real-time collaboration.
+
 ### Replay Recovery Benchmark
 
 Deterministic repo-state assay: 5 task shapes x 3 runs. The generated harness

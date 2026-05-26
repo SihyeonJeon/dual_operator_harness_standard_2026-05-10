@@ -81,6 +81,27 @@ SECRET_PATTERNS = [
     re.compile(r"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
     re.compile(r"/Users/[^/\s]+"),
+    re.compile(r"/home/[^/\s]+"),
+    re.compile(r"/private/var/folders/[^,\s\"']+"),
+    re.compile(r"/var/folders/[^,\s\"']+"),
+    re.compile(r"[A-Za-z]:\\Users\\[^\\\s]+"),
+]
+
+PRIVATE_MARKERS = [
+    "broad" + "cast" + "-draft",
+    "review" + "-packet",
+    "channel" + "_records",
+    "harness/" + "broad" + "cast",
+    "harness/" + "reviewers",
+    "published" + "_ledger",
+    "th" + "reads",
+    "x_" + "thread",
+    "blog" + "_push",
+    "github" + "_release",
+    "anti" + "gravity",
+    "lance" + "db",
+    "ku" + "zu",
+    "demo" + "_runs",
 ]
 
 
@@ -88,6 +109,8 @@ def scrub_text(value: Any) -> str:
     text = str(value)
     for pattern in SECRET_PATTERNS:
         text = pattern.sub("REDACTED", text)
+    for marker in PRIVATE_MARKERS:
+        text = re.sub(re.escape(marker), "REDACTED", text, flags=re.IGNORECASE)
     return text
 
 
@@ -383,6 +406,14 @@ def build_report(args: argparse.Namespace, root: Path) -> int:
     )
     status_payload = {
         "generated_at": generated_at,
+        "authority": "compiled_view_not_canonical_memory",
+        "canonical_sources": [
+            "feature_list.json",
+            "progress.md",
+            "session-handoff.md",
+            "harness/shared/",
+            "harness/events/events.jsonl",
+        ],
         "project_goal": scrub_text(project_goal),
         "counts": {
             "features": len(features) if isinstance(features, list) else 0,
