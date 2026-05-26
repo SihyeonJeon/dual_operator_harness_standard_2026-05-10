@@ -10,15 +10,18 @@ User-facing output should satisfy the concept without announcing that it
 satisfies the concept.
 
 Do not place the raw request, prompt wording, task label, or self-description
-into the artifact unless the user explicitly asks for that exact wording.
+into the artifact unless the user explicitly asks for that exact wording. Do
+not ban ordinary domain words only because the user used them.
 
 ## Avoid
 
 - exact prompt phrases as headings, hero copy, button text, slogans, captions,
-  or product labels;
+  or product labels when they read like assignment text instead of natural
+  artifact language;
 - meta-copy such as `as requested`, `here is`, `this is a`, `this website is`,
   `이것은`, `요청하신`, `요청에 따라`, `사용자가 요청한`, or equivalent
-  task-fulfillment wording;
+  task-fulfillment wording when it announces that the artifact satisfies the
+  prompt;
 - labels that describe the artifact from outside instead of speaking in the
   artifact's own domain voice;
 - feature names that merely restate the assignment;
@@ -52,5 +55,8 @@ python3 scripts/harnessctl.py concept-check --task-id TASK --artifact-path PATH 
 ```
 
 `concept-check` is a literal leakage guard. It also checks simple derived
-phrases from the project goal, such as a goal with request verbs removed. It
-does not replace human design, writing, or domain judgment.
+phrases from the project goal, such as a goal with request verbs removed, as
+contextual signals. Derived phrases are not universal bans by default. They are
+flagged when paired with self-descriptive announcement language or when an
+assignment-style phrase is used as prominent artifact copy. The helper does not
+replace human design, writing, or domain judgment.

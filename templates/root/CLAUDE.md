@@ -23,7 +23,8 @@ Local record policy and context-pressure control are defined in
 Agent-to-agent communication and token-saving context packets are defined in
 `harness/shared/AGENT_COMMUNICATION.md`.
 Concept-to-artifact copy rules are defined in
-`harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+`harness/shared/CONCEPT_TRANSLATION_POLICY.md`. Ordinary domain terms are
+allowed when they read naturally in the artifact.
 
 Before building dashboards, timelines, graphs, status HTML views, manager
 views, live status UI, or state visualizations, load

@@ -74,7 +74,8 @@ become the fixed operator for the current agent surface:
   evidence paths instead of forwarding long transcripts between agents.
 - Use `harness/shared/CONCEPT_TRANSLATION_POLICY.md` for user-facing output.
   Treat the user's wording as concept, not artifact copy, unless literal text
-  was explicitly requested.
+  was explicitly requested. Ordinary domain terms remain allowed when they read
+  naturally in the artifact.
 - Prefer `python3 scripts/harnessctl.py context-pack`, `worker-brief`,
   `model-route`, and `task-packet` for repeatable routing and handoff mechanics
   when the generated command surface is available.

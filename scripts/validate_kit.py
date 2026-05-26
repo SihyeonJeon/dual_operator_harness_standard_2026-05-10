@@ -305,6 +305,25 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         ],
         target,
     )
+    concept_context_sample = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "USER_FACING_CONTEXT_SAMPLE.txt"
+    concept_context_sample.write_text(
+        "이것은 편광 렌즈의 반사 억제 성능을 설명하는 문장입니다.\n",
+        encoding="utf-8",
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "concept-check",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--artifact-path",
+            "harness/tasks/H0-LOCAL-SMOKE/USER_FACING_CONTEXT_SAMPLE.txt",
+            "--output",
+            "harness/tasks/H0-LOCAL-SMOKE/CONCEPT_CHECK_CONTEXT.json",
+        ],
+        target,
+    )
     concept_bad_sample = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "USER_FACING_BAD_SAMPLE.txt"
     concept_bad_sample.write_text(
         "이것은 선글라스 파는 웹사이트입니다.\n",
@@ -358,6 +377,7 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     viz = load_json(target / "harness" / "reports" / "viz" / "summary.json")
     context_pack = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONTEXT_PACK.json")
     concept_check = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK.json")
+    concept_check_context = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_CONTEXT.json")
     concept_check_bad = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_BAD.json")
     software_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "SOFTWARE_FEEDBACK.json")
     file_count = sum(1 for path in target.rglob("*") if path.is_file())
@@ -371,6 +391,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("context-pack smoke did not write the expected artifact")
     if concept_check.get("verdict") != "PASS":
         raise SystemExit("concept-check smoke did not pass")
+    if concept_check_context.get("verdict") != "PASS":
+        raise SystemExit("concept-check contextual smoke over-constrained ordinary language")
     if concept_check_bad.get("verdict") != "FAIL" or concept_check_bad.get("finding_count", 0) < 1:
         raise SystemExit("concept-check negative smoke did not catch prompt wording leakage")
     if software_feedback.get("verdict") != "PASS":
@@ -405,6 +427,7 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "executable_governance": {
             "context_pack_sources": context_pack.get("source_count"),
             "concept_check_verdict": concept_check.get("verdict"),
+            "concept_check_contextual_verdict": concept_check_context.get("verdict"),
             "concept_check_negative_verdict": concept_check_bad.get("verdict"),
             "software_feedback_verdict": software_feedback.get("verdict"),
             "task_packet": "harness/tasks/H0-LOCAL-SMOKE/TASK_PACKET.json",

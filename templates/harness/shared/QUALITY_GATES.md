@@ -26,8 +26,10 @@ Evaluation must test both the artifact and the reasoning chain that produced it.
   user-facing copy, UI, media, reports, demos, names, labels, or public output.
 - The artifact should satisfy the user's concept without announcing the prompt
   or task label as copy.
-- Exact request phrases, self-descriptive meta-copy, and assignment wording in
-  public/user-facing surfaces require explicit user approval.
+- Exact request phrases, self-descriptive meta-copy, and awkward
+  assignment-style wording in public/user-facing surfaces require explicit user
+  approval. Ordinary domain terms are not banned just because the user used
+  them.
 - Prefer `python3 scripts/harnessctl.py concept-check` for literal phrase
   leakage when artifact paths and forbidden phrases are known.
 

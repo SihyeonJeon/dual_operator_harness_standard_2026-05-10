@@ -1554,25 +1554,69 @@ def create_task_packet(args: argparse.Namespace, root: Path) -> int:
 DEFAULT_CONCEPT_META_PHRASES = [
     "as requested",
     "as you requested",
-    "here is",
-    "this is",
-    "this is a",
     "this is a website for",
     "this website was created",
     "this page was created",
     "created for your request",
     "requested by the user",
     "the user asked for",
-    "이것은",
     "요청하신",
     "요청에 따라",
     "사용자가 요청한",
     "사용자의 요청",
     "요청한 것을",
     "라는 요청",
+    "만들어줘",
+]
+
+CONCEPT_ANNOUNCEMENT_PHRASES = [
+    "here is",
+    "this is",
+    "this is a",
+    "이것은",
     "인 것입니다",
     "만든 것입니다",
-    "만들어줘",
+]
+
+TASK_ARTIFACT_NOUNS = [
+    "app",
+    "application",
+    "dashboard",
+    "document",
+    "page",
+    "portfolio",
+    "report",
+    "service",
+    "site",
+    "tool",
+    "web app",
+    "web page",
+    "web site",
+    "website",
+    "도구",
+    "문서",
+    "보고서",
+    "사이트",
+    "서비스",
+    "앱",
+    "어플",
+    "웹사이트",
+    "페이지",
+    "포트폴리오",
+]
+
+ASSIGNMENT_STYLE_TERMS = [
+    "about",
+    "for",
+    "that",
+    "to",
+    "with",
+    "만드는",
+    "위한",
+    "용",
+    "파는",
+    "판매",
+    "하는",
 ]
 
 
@@ -1609,6 +1653,66 @@ def derived_goal_phrases(goal: str) -> list[str]:
     return sorted(phrases, key=len, reverse=True)
 
 
+def assignment_style_phrase(phrase: str) -> bool:
+    normalized = normalized_text(phrase)
+    if len(normalized) < 10:
+        return False
+    has_artifact_noun = any(noun in normalized for noun in TASK_ARTIFACT_NOUNS)
+    has_assignment_term = any(term in normalized for term in ASSIGNMENT_STYLE_TERMS)
+    return has_artifact_noun and has_assignment_term
+
+
+def prominent_phrase_line(text: str, phrase: str) -> bool:
+    normalized_phrase = normalized_text(phrase)
+    if not normalized_phrase:
+        return False
+    for index, line in enumerate(text.splitlines()):
+        stripped = line.strip()
+        normalized_line = normalized_text(stripped.lstrip("#").strip())
+        if normalized_phrase not in normalized_line:
+            continue
+        is_heading = stripped.startswith("#") or stripped.lower().startswith(("<h1", "<h2", "<title"))
+        is_early = index < 8
+        is_standalone = len(normalized_line) <= len(normalized_phrase) + 18
+        if is_heading or (is_early and is_standalone):
+            return True
+    return False
+
+
+def phrase_near_marker(text: str, phrase: str, markers: list[str], window: int = 96) -> bool:
+    normalized = normalized_text(text)
+    normalized_phrase = normalized_text(phrase)
+    if not normalized_phrase:
+        return False
+    start = 0
+    while True:
+        index = normalized.find(normalized_phrase, start)
+        if index < 0:
+            return False
+        context = normalized[max(0, index - window): index + len(normalized_phrase) + window]
+        if any(normalized_text(marker) in context for marker in markers):
+            return True
+        start = index + len(normalized_phrase)
+
+
+def add_concept_finding(
+    findings: list[dict[str, Any]],
+    path: Path,
+    root: Path,
+    phrase: str,
+    reason: str,
+    mode: str,
+) -> None:
+    findings.append(
+        {
+            "artifact_path": display_path(path, root),
+            "phrase": scrub_text(phrase),
+            "reason": reason,
+            "mode": mode,
+        }
+    )
+
+
 def concept_check(args: argparse.Namespace, root: Path) -> int:
     policy = root / "harness" / "shared" / "CONCEPT_TRANSLATION_POLICY.md"
     if not policy.exists():
@@ -1619,13 +1723,20 @@ def concept_check(args: argparse.Namespace, root: Path) -> int:
         print("ERROR: concept-check requires at least one --artifact-path", file=sys.stderr)
         return 2
 
-    forbidden = split_values(args.forbidden_phrase)
+    explicit_forbidden = split_values(args.forbidden_phrase)
+    raw_goal_phrases: list[str] = []
+    derived_phrases: list[str] = []
     if not args.allow_project_goal:
         goal = project_goal(root)
         if goal and goal != "UNKNOWN":
-            forbidden.extend(derived_goal_phrases(goal))
+            raw_goal_phrases.append(goal)
+            derived_phrases = [
+                phrase for phrase in derived_goal_phrases(goal)
+                if normalized_text(phrase) != normalized_text(goal)
+            ]
+    hard_forbidden = [*explicit_forbidden, *raw_goal_phrases]
     if not args.disable_meta_phrases:
-        forbidden.extend(DEFAULT_CONCEPT_META_PHRASES)
+        hard_forbidden.extend(DEFAULT_CONCEPT_META_PHRASES)
 
     min_length = max(1, args.min_phrase_length)
     findings: list[dict[str, Any]] = []
@@ -1637,17 +1748,57 @@ def concept_check(args: argparse.Namespace, root: Path) -> int:
         checked.append(source_metadata(path, root))
         text = read_text(path)
         normalized = normalized_text(text)
-        for phrase in forbidden:
+        for phrase in hard_forbidden:
             normalized_phrase = normalized_text(phrase)
             if len(normalized_phrase) < min_length:
                 continue
             if normalized_phrase and normalized_phrase in normalized:
-                findings.append(
-                    {
-                        "artifact_path": display_path(path, root),
-                        "phrase": scrub_text(phrase),
-                        "reason": "literal prompt or meta-copy leakage",
-                    }
+                add_concept_finding(
+                    findings,
+                    path,
+                    root,
+                    phrase,
+                    "literal prompt or self-descriptive meta-copy leakage",
+                    "hard_literal",
+                )
+        if args.disable_derived_goal:
+            continue
+        contextual_markers = [] if args.disable_meta_phrases else [
+            *DEFAULT_CONCEPT_META_PHRASES,
+            *CONCEPT_ANNOUNCEMENT_PHRASES,
+        ]
+        for phrase in derived_phrases:
+            normalized_phrase = normalized_text(phrase)
+            if len(normalized_phrase) < min_length or normalized_phrase not in normalized:
+                continue
+            if args.strict_derived_goal:
+                add_concept_finding(
+                    findings,
+                    path,
+                    root,
+                    phrase,
+                    "derived goal phrase used as artifact copy under strict mode",
+                    "strict_derived_goal",
+                )
+                continue
+            if contextual_markers and phrase_near_marker(text, phrase, contextual_markers):
+                add_concept_finding(
+                    findings,
+                    path,
+                    root,
+                    phrase,
+                    "concept phrase used in a self-descriptive announcement",
+                    "contextual_announcement",
+                )
+                continue
+            if assignment_style_phrase(phrase) and prominent_phrase_line(text, phrase):
+                add_concept_finding(
+                    findings,
+                    path,
+                    root,
+                    phrase,
+                    "assignment-style concept phrase used as prominent artifact copy",
+                    "prominent_assignment_phrase",
                 )
 
     verdict = "FAIL" if findings else "PASS"
@@ -1661,10 +1812,12 @@ def concept_check(args: argparse.Namespace, root: Path) -> int:
         "verdict": verdict,
         "checked": checked,
         "finding_count": len(findings),
-        "derived_goal_phrase_count": len(derived_goal_phrases(project_goal(root))) if not args.allow_project_goal else 0,
+        "derived_goal_phrase_count": len(derived_phrases) if not args.allow_project_goal else 0,
+        "derived_goal_policy": "disabled" if args.disable_derived_goal else ("strict" if args.strict_derived_goal else "contextual"),
         "findings": findings,
         "claim_boundary": [
             "literal leakage guard",
+            "derived goal phrases are contextual signals by default, not universal bans",
             "not a complete writing or design quality judge",
             "not semantic proof that the concept was translated well",
         ],
@@ -2007,6 +2160,8 @@ def main(argv: list[str]) -> int:
     concept.add_argument("--forbidden-phrase", action="append", default=[])
     concept.add_argument("--allow-project-goal", action="store_true")
     concept.add_argument("--disable-meta-phrases", action="store_true")
+    concept.add_argument("--disable-derived-goal", action="store_true")
+    concept.add_argument("--strict-derived-goal", action="store_true")
     concept.add_argument("--allow-findings", action="store_true")
     concept.add_argument("--min-phrase-length", type=int, default=3)
     concept.add_argument("--output", default="")
