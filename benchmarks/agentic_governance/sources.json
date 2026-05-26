@@ -1,0 +1,55 @@
+{
+  "checked_at": "2026-05-26",
+  "sources": [
+    {
+      "surface": "LangGraph",
+      "url": "https://docs.langchain.com/oss/python/langgraph/persistence",
+      "used_for": "built-in persistence layer, checkpoints, thread IDs, state history"
+    },
+    {
+      "surface": "LangGraph",
+      "url": "https://docs.langchain.com/oss/python/langgraph/durable-execution",
+      "used_for": "durable execution, replay, idempotent side effects, resume requirements"
+    },
+    {
+      "surface": "CrewAI",
+      "url": "https://docs.crewai.com/en/concepts/flows",
+      "used_for": "Flow state management, @persist, SQLite persistence, flow IDs, flow plotting"
+    },
+    {
+      "surface": "OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/sessions/",
+      "used_for": "session memory, SQLiteSession, session IDs, conversation recovery"
+    },
+    {
+      "surface": "OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/tracing/",
+      "used_for": "built-in tracing and event records"
+    },
+    {
+      "surface": "OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/handoffs/",
+      "used_for": "agent handoffs and handoff metadata"
+    },
+    {
+      "surface": "Claude Code",
+      "url": "https://code.claude.com/docs/en/subagents",
+      "used_for": "project subagents, model selection, context isolation, subagent memory"
+    },
+    {
+      "surface": "Claude Code",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "used_for": "hook events, project hooks, subagent start and stop events"
+    },
+    {
+      "surface": "OWASP MCP Top 10",
+      "url": "https://owasp.org/www-project-mcp-top-10/",
+      "used_for": "MCP security risk taxonomy"
+    },
+    {
+      "surface": "Model Context Protocol",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "used_for": "MCP security best practices"
+    }
+  ]
+}

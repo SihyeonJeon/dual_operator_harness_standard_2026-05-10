@@ -31,6 +31,10 @@ ROOT_REQUIRED = [
     "benchmarks/date_normalization/predictions/codex_goal.jsonl",
     "benchmarks/date_normalization/predictions/harness_first_pass.jsonl",
     "benchmarks/date_normalization/predictions/harness_feedback_loop.jsonl",
+    "benchmarks/agentic_governance/README.md",
+    "benchmarks/agentic_governance/score.py",
+    "benchmarks/agentic_governance/sources.json",
+    "benchmarks/agentic_governance/expected_summary.json",
     "benchmarks/replay_recovery/README.md",
     "benchmarks/replay_recovery/score.py",
     "benchmarks/replay_recovery/tasks.json",
@@ -38,6 +42,7 @@ ROOT_REQUIRED = [
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
     "schemas/observability-event.schema.json",
+    "docs/BENCHMARK_REPORT_2026-05-26.md",
     "templates/root/init.sh",
     "templates/root/scripts/harnessctl.py",
     "templates/root/.claude/settings.json",
@@ -237,6 +242,7 @@ def main(argv: list[str]) -> int:
             "scripts/validate_harness.py",
             "scripts/implementer_hooks.py",
             "benchmarks/date_normalization/score.py",
+            "benchmarks/agentic_governance/score.py",
             "benchmarks/replay_recovery/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
@@ -251,6 +257,15 @@ def main(argv: list[str]) -> int:
         "public_marker_scan": "PASS",
     }
     summary["date_normalization_benchmark"] = validate_benchmark(root)
+    governance = run(
+        [
+            sys.executable,
+            "benchmarks/agentic_governance/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["agentic_governance_benchmark"] = json.loads(governance.stdout)["summary"]
     recovery = run(
         [
             sys.executable,

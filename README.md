@@ -119,6 +119,44 @@ The generated harness is slower and heavier. The gain is durable project state:
 root state, team ownership, evaluator output, append-only events, status HTML,
 and a restart path that survives the original session.
 
+### Agentic Governance Benchmark
+
+Deterministic local comparison: reference project surfaces for LangGraph,
+CrewAI, OpenAI Agents SDK, Claude Code, a custom loop, and one generated harness.
+
+Measured scope: project-level restart evidence, governance evidence, MCP
+assurance, and dissent preservation. Not measured here: live model quality,
+vendor service latency, token cost, or production runtime throughput.
+
+The named framework rows are small reference surfaces written for this benchmark,
+not full LangGraph, CrewAI, OpenAI Agents SDK, or Claude Code applications. The
+rubric and baselines are authored in this repo. Treat this as a repo-state
+assay, not an independent product ranking. `overall` is passed criteria divided
+by 24.
+
+```sh
+python3 benchmarks/agentic_governance/score.py --check-summary
+```
+
+| surface | overall | restart | governance | runtime | files |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| custom Python loop surface | 0.208 | 0.500 | 0.000 | 0.500 | 5 |
+| LangGraph checkpoint surface | 0.417 | 0.800 | 0.133 | 1.000 | 9 |
+| CrewAI flow surface | 0.542 | 0.800 | 0.333 | 1.000 | 11 |
+| OpenAI Agents session surface | 0.500 | 0.800 | 0.267 | 1.000 | 9 |
+| Claude Code project surface | 0.500 | 0.400 | 0.533 | 0.250 | 9 |
+| generated harness | 0.958 | 0.900 | 1.000 | 0.750 | 150 |
+
+The result is narrow but useful: runtime frameworks score higher on runtime
+checkpoint semantics, while the generated harness scores higher on repo-local
+governance, audit, and restart evidence. The larger file count is the cost of
+that operating layer.
+
+| track | baseline | generated harness |
+| --- | ---: | ---: |
+| MCP assurance | 0.300 permissive client | 1.000 |
+| dissent preservation | 0.300 forced consensus fixture | 1.000 |
+
 ### Website Example
 
 Prompt:
@@ -226,6 +264,7 @@ capture, not generalization.
 - [Harness implementer manual](docs/HARNESS_IMPLEMENTER_MANUAL.md)
 - [Operator manual](docs/OPERATOR_MANUAL.md)
 - [Comparative survey](docs/COMPARATIVE_SURVEY_2026-05-24.md)
+- [Benchmark report](docs/BENCHMARK_REPORT_2026-05-26.md)
 - [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
 - [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
 
@@ -239,7 +278,12 @@ capture, not generalization.
 - shared context와 team context 기록
 - events jsonl과 status html 생성
 - 실패를 rule과 eval fixture로 되돌리는 루프
-- public kit에는 개인 계정 연결이나 게시 기록 기능을 포함하지 않음
+- public kit에는 개인 계정 연결, hosted dashboard, cloud runner,
+  credential, private memory backend를 포함하지 않음
+- framework 비교표는 실제 제품 순위가 아니라 이 repo에서 만든 작은
+  reference surface 기준의 repo-state assay
+- benchmark evidence는 영어 본문을 기준으로 유지하고 한국어는 동일한 claim
+  boundary를 요약함
 
 한 번의 답변보다 프로젝트 운영과 재개 가능성이 중요한 작업에 맞다. 단순한
 파일 수정이나 이미 충분한 runtime graph가 있는 프로젝트에는 과하다.
