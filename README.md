@@ -157,6 +157,38 @@ that operating layer.
 | MCP assurance | 0.300 permissive client | 1.000 |
 | dissent preservation | 0.300 forced consensus fixture | 1.000 |
 
+### Runtime Persistence Smoke
+
+Optional live dependency smoke. This one imports real packages through `uv` and
+does not call LLM APIs.
+
+```sh
+uv run --python 3.12 \
+  --with langgraph \
+  --with crewai \
+  --with openai-agents \
+  python benchmarks/runtime_persistence/score.py --check-summary
+```
+
+Runtime package results:
+
+| surface | score |
+| --- | ---: |
+| LangGraph memory checkpointer | 1.000 |
+| CrewAI persisted flow | 0.900 |
+| OpenAI Agents SQLite session | 1.000 |
+
+Generated harness operating-layer smoke:
+
+| surface | score |
+| --- | ---: |
+| generated harness restart evidence | 0.900 |
+
+This confirms the intended boundary: runtime frameworks are strong at runtime
+state persistence. The harness score is project restart evidence, not a runtime
+reload primitive. The harness adds governance, cross-session handoff, policy,
+reports, and evaluation structure around those runtimes.
+
 ### Website Example
 
 Prompt:

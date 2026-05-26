@@ -134,6 +134,51 @@ Interpretation:
   critique, disagreement records, human escalation, and rule-change paths
 - this tests protocol surface availability, not model judgment quality
 
+### Runtime Persistence Smoke
+
+Command:
+
+```sh
+uv run --python 3.12 \
+  --with langgraph \
+  --with crewai \
+  --with openai-agents \
+  python benchmarks/runtime_persistence/score.py --check-summary
+```
+
+Scope:
+
+- actual package imports for LangGraph, CrewAI, and OpenAI Agents SDK
+- no LLM API calls
+- deterministic state preservation and reload checks
+- generated harness scaffold and `./init.sh`
+
+Result:
+
+Runtime package results:
+
+| surface | score |
+| --- | ---: |
+| LangGraph memory checkpointer | 1.000 |
+| CrewAI persisted flow | 0.900 |
+| OpenAI Agents SQLite session | 1.000 |
+
+Generated harness operating-layer smoke:
+
+| surface | score |
+| --- | ---: |
+| generated harness restart evidence | 0.900 |
+
+Interpretation:
+
+- runtime frameworks are strong at runtime persistence
+- the generated harness score is project restart evidence, not a runtime reload
+  primitive
+- this supports the kit's positioning as a complementary project operating
+  layer, not a replacement runtime
+- this smoke does not measure throughput, hosted durability, model quality, or
+  production failure recovery under load
+
 ### Date Normalization
 
 Command:
@@ -165,6 +210,7 @@ Interpretation:
 | governance overhead | implemented as file count and governance score |
 | MCP assurance | implemented as deterministic policy assay |
 | dissent preservation | implemented as deterministic protocol assay |
+| runtime persistence smoke | implemented with live dependencies and no LLM calls |
 | date normalization feedback loop | implemented and validated |
 | website visual comparison | implemented with screenshots |
 | multi-vendor resilience | specified but not live-run in public kit |
