@@ -114,6 +114,26 @@ python3 benchmarks/requirements_traceability/score.py --check-summary
 See [requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md) for
 the exact reflected, partial, excluded, and not-claimed areas.
 
+### Spec Gate Regression Guard
+
+Deterministic self-check for generated harnesses. It verifies that the scaffold
+still emits the planning-gate surfaces needed before production work starts:
+goal intake, PRD, anti-PRD, slice approval, worker brief, part ownership,
+evaluator gate, local visibility, and operator closure.
+
+Measured scope: planning and governance surfaces before sharp/deep execution.
+Not measured here: model intelligence, product quality, or whether a human liked
+the final artifact. The script includes two authored controls for regression
+sanity checks, but this is not a neutral framework or tool comparison.
+
+```sh
+python3 benchmarks/spec_gate/score.py --check-summary
+```
+
+| generated scaffold checks | failed | conformance |
+| ---: | ---: | ---: |
+| 12 | 0 | 100% |
+
 ### Replay Recovery Benchmark
 
 Deterministic repo-state assay: 5 task shapes x 3 runs. The generated harness

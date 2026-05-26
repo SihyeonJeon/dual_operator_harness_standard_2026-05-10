@@ -39,6 +39,7 @@ content, and absence conditions. Current result: 136 passed, 0 failed.
 | replayability under repeated runs | `benchmarks/replay_recovery` | deterministic repo-state assay, not live model variance |
 | recovery after interruption | `benchmarks/replay_recovery` plus generated status and event files | restart evidence, not hosted runtime recovery |
 | governance overhead | `benchmarks/agentic_governance` file count and governance score | overhead is explicit, not hidden |
+| planning before sharp/deep work | `benchmarks/spec_gate` | scaffold regression guard, not a neutral comparator |
 | MCP assurance | `benchmarks/agentic_governance` plus `MCP_TRUST.json` and read-only server | policy and local surface, not live red-team coverage |
 | dissent preservation | `benchmarks/agentic_governance` council surface | protocol preservation, not model judgment accuracy |
 | provider failover | `benchmarks/operational_resilience` | policy assay, not live outage handling |

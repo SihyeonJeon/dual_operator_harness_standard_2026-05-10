@@ -63,6 +63,42 @@ Interpretation:
   human approval latency, bilingual quality scoring, and account-specific
   private workflows are not claimed by this public kit
 
+### Spec Gate Regression Guard
+
+Command:
+
+```sh
+python3 benchmarks/spec_gate/score.py --check-summary
+```
+
+Scope:
+
+- generated harness scaffold and `./init.sh`
+- 12 planning-gate criteria
+- two authored controls for regression sanity checks
+- no model calls
+
+This is a self-check for the generated harness scaffold. It verifies that the
+public kit still emits planning-gate surfaces before production work. It does
+not measure model quality, final artifact quality, or neutral superiority over
+other tools.
+
+Result:
+
+| generated scaffold checks | failed | conformance |
+| ---: | ---: | ---: |
+| 12 | 0 | 100% |
+
+Interpretation:
+
+- the generated harness creates the planning runway, PRD/anti-PRD templates,
+  candidate slice gate, worker brief contract, part ownership, evaluator gate,
+  event evidence, status report, and operator closure surfaces before
+  production work
+- the authored controls are intentionally not presented as product rankings;
+  they exist to keep this self-check from becoming a pure path-existence smoke
+  test with no contrast
+
 ### Replay Recovery
 
 Command:
@@ -288,6 +324,7 @@ Interpretation:
 | date normalization feedback loop | implemented and validated |
 | website visual comparison | implemented with screenshots |
 | requirements traceability | implemented and validated |
+| spec gate before sharp/deep work | scaffold regression guard implemented, not a neutral comparator |
 | multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
 | HITL latency | approval policy assay implemented, live latency not claimed |
 | bilingual quality | specified but not live-run in public kit |

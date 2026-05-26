@@ -8,5 +8,18 @@
     "do_not_reuse_part_owner_for_unrelated_parts": true,
     "part_reopen_prefers_prior_owner": true
   },
+  "worker_entry_schema": {
+    "worker_id": "stable worker session id or UNKNOWN",
+    "part_id": "owned project part or task slice id",
+    "team": "planning | design | production | evaluation | other",
+    "session_surface": "claude-code | codex | local-runner | other",
+    "model_class": "recorded model tier or UNKNOWN",
+    "reasoning_effort": "recorded effort tier or UNKNOWN",
+    "owned_paths": [],
+    "no_touch_paths": [],
+    "resume_command_or_handle": "UNKNOWN",
+    "last_verified_at": "UNKNOWN",
+    "status": "UNVERIFIED"
+  },
   "workers": []
 }

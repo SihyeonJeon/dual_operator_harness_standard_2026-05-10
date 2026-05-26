@@ -1,0 +1,23 @@
+{
+  "summary": {
+    "criteria": 12,
+    "generated_scaffold": {
+      "passed": 12,
+      "failed": 0,
+      "total": 12,
+      "conformance": 1.0
+    },
+    "authored_controls": {
+      "direct_session": {
+        "score": 0.083,
+        "passed": 1,
+        "total": 12
+      },
+      "ad_hoc_brief": {
+        "score": 0.583,
+        "passed": 7,
+        "total": 12
+      }
+    }
+  }
+}

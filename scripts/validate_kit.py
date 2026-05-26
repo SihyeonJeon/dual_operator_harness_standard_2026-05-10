@@ -45,6 +45,9 @@ ROOT_REQUIRED = [
     "benchmarks/runtime_persistence/README.md",
     "benchmarks/runtime_persistence/score.py",
     "benchmarks/runtime_persistence/expected_summary.json",
+    "benchmarks/spec_gate/README.md",
+    "benchmarks/spec_gate/score.py",
+    "benchmarks/spec_gate/expected_summary.json",
     "benchmarks/requirements_traceability/README.md",
     "benchmarks/requirements_traceability/score.py",
     "benchmarks/requirements_traceability/expected_summary.json",
@@ -256,6 +259,7 @@ def main(argv: list[str]) -> int:
             "benchmarks/operational_resilience/score.py",
             "benchmarks/replay_recovery/score.py",
             "benchmarks/runtime_persistence/score.py",
+            "benchmarks/spec_gate/score.py",
             "benchmarks/requirements_traceability/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
@@ -306,6 +310,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["requirements_traceability_assay"] = json.loads(traceability.stdout)["summary"]
+    spec_gate = run(
+        [
+            sys.executable,
+            "benchmarks/spec_gate/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["spec_gate_assay"] = json.loads(spec_gate.stdout)["summary"]
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 
