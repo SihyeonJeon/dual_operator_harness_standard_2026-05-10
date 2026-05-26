@@ -31,6 +31,38 @@ Source findings used for scoring:
 
 ## Executed Benchmarks
 
+### Requirements Traceability
+
+Command:
+
+```sh
+python3 benchmarks/requirements_traceability/score.py --check-summary
+```
+
+Scope:
+
+- generated harness scaffold and `./init.sh`
+- 12 public operating categories
+- 136 file, text, and absence checks
+- no model calls
+- private account-specific surfaces must be absent
+
+Result:
+
+| categories | passed categories | checks | failed checks | score |
+| ---: | ---: | ---: | ---: | ---: |
+| 12 | 12 | 136 | 0 | 1.000 |
+
+Interpretation:
+
+- the harness requirements are reflected in the public-safe scaffold for
+  implementer bootstrap, dual operators, worker teams, context controls, hooks,
+  spec gates, eval loops, local visibility, bounded remote descriptors, and
+  read-only MCP export
+- hosted dashboards, enabled cloud runners, live provider outage tests, live
+  human approval latency, bilingual quality scoring, and account-specific
+  private workflows are not claimed by this public kit
+
 ### Replay Recovery
 
 Command:
@@ -255,6 +287,7 @@ Interpretation:
 | runtime persistence smoke | implemented with live dependencies and no LLM calls |
 | date normalization feedback loop | implemented and validated |
 | website visual comparison | implemented with screenshots |
+| requirements traceability | implemented and validated |
 | multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
 | HITL latency | approval policy assay implemented, live latency not claimed |
 | bilingual quality | specified but not live-run in public kit |

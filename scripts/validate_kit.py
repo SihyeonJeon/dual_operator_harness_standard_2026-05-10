@@ -45,10 +45,14 @@ ROOT_REQUIRED = [
     "benchmarks/runtime_persistence/README.md",
     "benchmarks/runtime_persistence/score.py",
     "benchmarks/runtime_persistence/expected_summary.json",
+    "benchmarks/requirements_traceability/README.md",
+    "benchmarks/requirements_traceability/score.py",
+    "benchmarks/requirements_traceability/expected_summary.json",
     "schemas/feature-list.schema.json",
     "schemas/eval-suite.schema.json",
     "schemas/observability-event.schema.json",
     "docs/BENCHMARK_REPORT_2026-05-26.md",
+    "docs/REQUIREMENT_TRACEABILITY_2026-05-26.md",
     "templates/root/init.sh",
     "templates/root/scripts/harnessctl.py",
     "templates/root/.claude/settings.json",
@@ -252,6 +256,7 @@ def main(argv: list[str]) -> int:
             "benchmarks/operational_resilience/score.py",
             "benchmarks/replay_recovery/score.py",
             "benchmarks/runtime_persistence/score.py",
+            "benchmarks/requirements_traceability/score.py",
             "templates/root/scripts/harnessctl.py",
             "templates/root/.claude/hooks/post_tool_use_index.py",
         ],
@@ -292,6 +297,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["replay_recovery_benchmark"] = json.loads(recovery.stdout)["summary"]
+    traceability = run(
+        [
+            sys.executable,
+            "benchmarks/requirements_traceability/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["requirements_traceability_assay"] = json.loads(traceability.stdout)["summary"]
     if not args.skip_smoke:
         summary["smoke"] = validate_smoke(root, args)
 

@@ -93,6 +93,27 @@ same worker session when that is safe.
 
 ## Evidence
 
+### Requirements Traceability
+
+The public kit includes a generated-harness traceability assay. It is a
+regression guard that checks whether the scaffold still contains implementer
+bootstrap files, fixed operators, worker team memory, part ownership, context
+pressure controls, hook lifecycle, spec gates, local reports, bounded remote
+descriptors, read-only MCP export, and public benchmark evidence. It also
+checks that account-specific private surfaces are absent from the generated
+public harness.
+
+```sh
+python3 benchmarks/requirements_traceability/score.py --check-summary
+```
+
+| checks | failed | score |
+| ---: | ---: | ---: |
+| 136 | 0 | 1.000 |
+
+See [requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md) for
+the exact reflected, partial, excluded, and not-claimed areas.
+
 ### Replay Recovery Benchmark
 
 Deterministic repo-state assay: 5 task shapes x 3 runs. The generated harness
@@ -330,6 +351,7 @@ capture, not generalization.
 - [Operator manual](docs/OPERATOR_MANUAL.md)
 - [Comparative survey](docs/COMPARATIVE_SURVEY_2026-05-24.md)
 - [Benchmark report](docs/BENCHMARK_REPORT_2026-05-26.md)
+- [Requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md)
 - [Evaluation rubric](docs/EVALUATION_RUBRIC.md)
 - [Optional extensions](docs/OPTIONAL_EXTENSIONS.md)
 
@@ -343,6 +365,8 @@ capture, not generalization.
 - shared context와 team context 기록
 - events jsonl과 status html 생성
 - 실패를 rule과 eval fixture로 되돌리는 루프
+- 요구사항 추적 assay로 구현자, operator, worker team, hook, MCP export,
+  local viz, remote policy 반영 여부 검증
 - public kit에는 개인 계정 연결, hosted dashboard, cloud runner,
   credential, private memory backend를 포함하지 않음
 - framework 비교표는 실제 제품 순위가 아니라 이 repo에서 만든 작은
