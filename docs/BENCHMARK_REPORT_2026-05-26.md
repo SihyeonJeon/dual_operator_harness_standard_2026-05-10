@@ -43,7 +43,7 @@ Scope:
 
 - generated harness scaffold and `./init.sh`
 - 12 public operating categories
-- 136 file, text, and absence checks
+- 137 file, text, and absence checks
 - no model calls
 - private account-specific surfaces must be absent
 
@@ -51,7 +51,7 @@ Result:
 
 | categories | passed categories | checks | failed checks | score |
 | ---: | ---: | ---: | ---: | ---: |
-| 12 | 12 | 136 | 0 | 1.000 |
+| 12 | 12 | 137 | 0 | 1.000 |
 
 Interpretation:
 
@@ -60,8 +60,8 @@ Interpretation:
   spec gates, eval loops, local visibility, bounded remote descriptors, and
   read-only MCP export
 - hosted dashboards, enabled cloud runners, live provider outage tests, live
-  human approval latency, bilingual quality scoring, and account-specific
-  private workflows are not claimed by this public kit
+  human approval latency, native-review bilingual quality scoring, and
+  account-specific private workflows are not claimed by this public kit
 
 ### Spec Gate Regression Guard
 
@@ -170,6 +170,38 @@ Interpretation:
 - ad-hoc loop captures some state but lacks audit and governance surfaces
 - generated harness leaves enough repo-local evidence for another session to
   resume without reading the original chat
+
+### Bilingual README Parity
+
+Command:
+
+```sh
+python3 benchmarks/bilingual_readme_parity/score.py --check-summary
+```
+
+Scope:
+
+- generated project README scaffolded from this public kit
+- Korean and English section parity for operational surfaces
+- authored controls for Korean-only and thin bilingual summary outputs
+- no model calls
+- no native speaker fluency claim
+
+Result:
+
+| surface | passed | failed | total | score |
+| --- | ---: | ---: | ---: | ---: |
+| korean only control | 2 | 12 | 14 | 0.143 |
+| bilingual summary control | 5 | 9 | 14 | 0.357 |
+| generated harness | 14 | 0 | 14 | 1.000 |
+
+Interpretation:
+
+- generated harness README carries the same operating commands, role terms,
+  context policy, visualization boundary, MCP boundary, remote boundary, and
+  public/private boundary in both Korean and English sections
+- this guard tests structural parity, not wording quality, translation quality,
+  or publication readiness
 
 ### Agentic Governance
 
@@ -369,7 +401,7 @@ Interpretation:
 | static visualization evidence | local export regression guard implemented, not a hosted dashboard benchmark |
 | multi-vendor resilience | deterministic policy assay implemented, live outage not claimed |
 | HITL latency | approval policy assay implemented, live latency not claimed |
-| bilingual quality | specified but not live-run in public kit |
+| bilingual quality | deterministic README parity guard implemented, native review not claimed |
 | live framework throughput | not claimed |
 
 ## Public Claim Boundary

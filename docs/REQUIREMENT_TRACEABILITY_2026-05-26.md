@@ -29,8 +29,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 136 file,
-content, and absence conditions. Current result: 136 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 137 file,
+content, and absence conditions. Current result: 137 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -46,7 +46,7 @@ content, and absence conditions. Current result: 136 passed, 0 failed.
 | provider failover | `benchmarks/operational_resilience` | policy assay, not live outage handling |
 | human approval gates | `benchmarks/operational_resilience` | policy assay, not real approval latency |
 | runtime persistence | `benchmarks/runtime_persistence` optional package smoke | runtime frameworks are compared only on state reload smoke |
-| bilingual quality | not live-run | docs include Korean summary, quality benchmark not claimed |
+| bilingual quality | `benchmarks/bilingual_readme_parity` | deterministic README parity guard, not native fluency scoring |
 
 ## Harness Requirements Coverage
 
@@ -80,8 +80,8 @@ private account workflows.
 1. Static visualization example built from `events.jsonl`
 2. Local spec-agent command that fills PRD and anti-PRD drafts without network
 3. Cloud runner smoke example that proves policy shape without credentials
-4. Larger replay/recovery benchmark with repeated live-model runs
-5. Bilingual quality fixture with explicit reference outputs and native review
+4. Larger live-model replay/recovery benchmark with real variance data
+5. Native bilingual review fixture with explicit public reference outputs
 
 ## Interpretation
 

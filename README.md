@@ -109,7 +109,7 @@ python3 benchmarks/requirements_traceability/score.py --check-summary
 
 | checks | failed | score |
 | ---: | ---: | ---: |
-| 136 | 0 | 1.000 |
+| 137 | 0 | 1.000 |
 
 See [requirement traceability](docs/REQUIREMENT_TRACEABILITY_2026-05-26.md) for
 the exact reflected, partial, excluded, and not-claimed areas.
@@ -183,6 +183,27 @@ and a restart path that survives the original session.
 The direct transcript and ad-hoc loop rows are authored controls, so this table
 is illustrative evidence for the generated scaffold rather than an independent
 competitive ranking.
+
+### Bilingual README Parity Guard
+
+Generated project README files include Korean and English sections. This guard
+checks structural parity: goal, bootstrap commands, operator entry, worker role
+terms, planning policy, part-owner reuse, records policy, visualization
+boundary, MCP and remote boundaries, file inventory, and public/private
+boundary.
+
+It is not a native fluency benchmark, translation quality benchmark, or live LLM
+evaluation.
+
+```sh
+python3 benchmarks/bilingual_readme_parity/score.py --check-summary
+```
+
+| surface | passed | failed | total | score |
+| --- | ---: | ---: | ---: | ---: |
+| korean only control | 2 | 12 | 14 | 0.143 |
+| bilingual summary control | 5 | 9 | 14 | 0.357 |
+| generated harness | 14 | 0 | 14 | 1.000 |
 
 ### Agentic Governance Benchmark
 

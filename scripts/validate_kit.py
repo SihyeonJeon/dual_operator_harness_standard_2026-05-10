@@ -42,6 +42,9 @@ ROOT_REQUIRED = [
     "benchmarks/replay_recovery/score.py",
     "benchmarks/replay_recovery/tasks.json",
     "benchmarks/replay_recovery/expected_summary.json",
+    "benchmarks/bilingual_readme_parity/README.md",
+    "benchmarks/bilingual_readme_parity/score.py",
+    "benchmarks/bilingual_readme_parity/expected_summary.json",
     "benchmarks/runtime_persistence/README.md",
     "benchmarks/runtime_persistence/score.py",
     "benchmarks/runtime_persistence/expected_summary.json",
@@ -261,6 +264,7 @@ def main(argv: list[str]) -> int:
             "benchmarks/agentic_governance/score.py",
             "benchmarks/operational_resilience/score.py",
             "benchmarks/replay_recovery/score.py",
+            "benchmarks/bilingual_readme_parity/score.py",
             "benchmarks/runtime_persistence/score.py",
             "benchmarks/spec_gate/score.py",
             "benchmarks/static_viz/score.py",
@@ -305,6 +309,15 @@ def main(argv: list[str]) -> int:
         root,
     )
     summary["replay_recovery_benchmark"] = json.loads(recovery.stdout)["summary"]
+    bilingual = run(
+        [
+            sys.executable,
+            "benchmarks/bilingual_readme_parity/score.py",
+            "--check-summary",
+        ],
+        root,
+    )
+    summary["bilingual_readme_parity_guard"] = json.loads(bilingual.stdout)["summary"]
     traceability = run(
         [
             sys.executable,

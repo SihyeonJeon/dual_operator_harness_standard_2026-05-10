@@ -219,6 +219,7 @@ CATEGORIES: tuple[Category, ...] = (
             "benchmarks/operational_resilience/score.py",
             "benchmarks/runtime_persistence/score.py",
             "benchmarks/date_normalization/score.py",
+            "benchmarks/bilingual_readme_parity/score.py",
             "docs/BENCHMARK_REPORT_2026-05-26.md",
         ),
     ),
@@ -248,7 +249,7 @@ CATEGORIES: tuple[Category, ...] = (
 KNOWN_NON_GOALS = (
     "No live provider outage benchmark in the public suite.",
     "No live human approval latency benchmark in the public suite.",
-    "No live bilingual quality benchmark in the public suite.",
+    "No live native-review bilingual quality benchmark in the public suite.",
     "No hosted dashboard or cloud runner enabled by default.",
     "No account-specific publishing workflow in the public kit.",
 )

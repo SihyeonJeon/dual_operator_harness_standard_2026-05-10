@@ -1,0 +1,20 @@
+{
+  "bilingual_summary": {
+    "failed": 9,
+    "parity_score": 0.357,
+    "passed": 5,
+    "total": 14
+  },
+  "generated_harness": {
+    "failed": 0,
+    "parity_score": 1.0,
+    "passed": 14,
+    "total": 14
+  },
+  "korean_only": {
+    "failed": 12,
+    "parity_score": 0.143,
+    "passed": 2,
+    "total": 14
+  }
+}
