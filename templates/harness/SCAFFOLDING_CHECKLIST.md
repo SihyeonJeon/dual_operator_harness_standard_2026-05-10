@@ -34,6 +34,7 @@ Use this before fixed operators begin H0 local smoke.
 - [ ] Codex and Claude Code are equal fixed operators; `.claude/` does not override Codex.
 - [ ] Worker model/effort routing is task-difficulty-shaped.
 - [ ] Simple, well-specified delegated work can route to a configured routine worker session.
+- [ ] `AGENT_PROVIDER_OVERRIDES.json` exists and keeps optional user-owned agent surfaces unverified.
 - [ ] `ROLE_FILE_INDEX.md` exists.
 - [ ] `SESSION_CONTINUITY.md` exists.
 - [ ] `SHARP_DEEP_EXECUTION.md` exists.

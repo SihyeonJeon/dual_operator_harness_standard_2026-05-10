@@ -12,6 +12,9 @@ from datetime import date
 from pathlib import Path
 import re
 
+DEFAULT_TARGET = "../generated-harness-project"
+DEFAULT_OPERATOR_SURFACES = ["claude-code", "codex"]
+
 
 def contains_any(text: str, terms: list[str]) -> bool:
     for term in terms:
@@ -260,6 +263,112 @@ def run_implementer_hook(script: Path, command: str, args: list[str]) -> tuple[s
     return ("PASS" if result.returncode == 0 else "FAIL"), output
 
 
+def normalize_agent_surface(value: str) -> str:
+    normalized = re.sub(r"[^a-zA-Z0-9_.:-]+", "-", value.strip().lower()).strip("-")
+    return normalized
+
+
+def default_target_for_project(project_name: str) -> str:
+    slug = re.sub(r"[^a-zA-Z0-9_.:-]+", "-", project_name.strip().lower()).strip("-")
+    if not slug or slug == "unknown":
+        return DEFAULT_TARGET
+    return f"../{slug}"
+
+
+def normalize_extra_agent_surfaces(values: list[str]) -> list[str]:
+    surfaces: list[str] = []
+    seen = set(DEFAULT_OPERATOR_SURFACES)
+    for value in values:
+        surface = normalize_agent_surface(value)
+        if not surface:
+            continue
+        if surface in seen:
+            continue
+        seen.add(surface)
+        surfaces.append(surface)
+    return surfaces
+
+
+def write_agent_provider_overrides(harness: Path, extra_surfaces: list[str]) -> None:
+    requested = [
+        {
+            "surface": surface,
+            "status": "UNVERIFIED",
+            "intended_uses": ["worker", "evaluator", "council_reviewer"],
+            "login_required": "user_managed_before_runtime_use",
+            "credential_policy": "credentials_are_never_stored_in_public_harness_files",
+            "runner_descriptor": "UNKNOWN",
+            "smoke_evidence_path": "UNKNOWN",
+            "promotion_policy": "human_decision_and_project_local_smoke_required_before_operator_or_production_authority",
+            "notes": "Optional agent surface requested during scaffold. It does not replace the default Codex and Claude Code fixed operators.",
+        }
+        for surface in extra_surfaces
+    ]
+    payload = {
+        "version": "1.0",
+        "default_fixed_operator_surfaces": DEFAULT_OPERATOR_SURFACES,
+        "policy": {
+            "default_structure_when_no_request": "codex_and_claude_code_fixed_operators",
+            "requested_extra_surfaces_are_candidates_only": True,
+            "all_extra_surfaces_start_unverified": True,
+            "extra_surfaces_do_not_change_operator_parity_by_default": True,
+            "promotion_requires_human_decision": True,
+            "promotion_requires_project_local_smoke": True,
+            "no_credentials_in_git": True,
+            "canonical_memory_remains_file_backed": True,
+        },
+        "requested_extra_surfaces": requested,
+    }
+    path = harness / "shared" / "AGENT_PROVIDER_OVERRIDES.json"
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def update_agent_surface_files(harness: Path, extra_surfaces: list[str]) -> None:
+    def capabilities_updater(data: dict) -> None:
+        caps = data.get("capabilities", [])
+        if not isinstance(caps, list):
+            return
+        existing = {cap.get("id") for cap in caps if isinstance(cap, dict)}
+        for surface in extra_surfaces:
+            cap_id = f"extra_agent_surface_{surface.replace('-', '_').replace('.', '_').replace(':', '_')}"
+            if cap_id in existing:
+                continue
+            caps.append(
+                {
+                    "id": cap_id,
+                    "name": f"Optional agent surface: {surface}",
+                    "class": "agent_surface",
+                    "status": "UNVERIFIED",
+                    "evidence_path": "",
+                    "verified_at": "",
+                    "reviewer": "",
+                    "notes": "Requested by scaffold input. Candidate for worker, evaluator, or council review use after login and smoke evidence; not a default fixed operator.",
+                }
+            )
+
+    def worker_registry_updater(data: dict) -> None:
+        policy = data.setdefault("policy", {})
+        if isinstance(policy, dict):
+            policy["available_surfaces_source"] = "harness/shared/AGENT_PROVIDER_OVERRIDES.json"
+            policy["extra_agent_surfaces_start_unverified"] = True
+            policy["extra_agent_surfaces_do_not_replace_fixed_operators"] = True
+        data["requested_extra_agent_surfaces"] = extra_surfaces
+
+    def model_routing_updater(data: dict) -> None:
+        data["provider_override_policy"] = {
+            "source": "harness/shared/AGENT_PROVIDER_OVERRIDES.json",
+            "default_when_no_request": "use_codex_and_claude_code_operator_structure",
+            "extra_surfaces_allowed_for": ["worker", "evaluator", "council_reviewer"],
+            "extra_surfaces_start_unverified": True,
+            "selection_rule": "use only after login, project-local smoke evidence, and operator routing decision",
+        }
+        data["requested_extra_agent_surfaces"] = extra_surfaces
+
+    update_json(harness / "shared" / "CAPABILITY_REGISTRY.json", capabilities_updater)
+    update_json(harness / "shared" / "WORKER_SESSION_REGISTRY.json", worker_registry_updater)
+    update_json(harness / "shared" / "MODEL_ROUTING.json", model_routing_updater)
+
+
 def write_implementer_hook_run(harness: Path, pre_hook_result: str, pre_hook_output: str) -> None:
     path = harness / "IMPLEMENTER_HOOKS_RUN.json"
     data = {
@@ -501,11 +610,21 @@ def update_root_handoff_from_doctor(target: Path, values: dict[str, str], doctor
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", required=True, help="Target project directory")
+    parser.add_argument(
+        "--target",
+        default=None,
+        help=f"Target project directory. Defaults to ../<project-name> when --project-name is set, otherwise {DEFAULT_TARGET}.",
+    )
     parser.add_argument("--constraints", default="UNKNOWN", help="Optional prior information and constraints")
     parser.add_argument("--goal", required=True, help="Project goal")
     parser.add_argument("--project-name", default="UNKNOWN")
     parser.add_argument("--mode", choices=["lite", "standard", "full"], default=None)
+    parser.add_argument(
+        "--extra-agent-surface",
+        action="append",
+        default=[],
+        help="Optional additional user-owned agent surface such as gemini-cli, cursor, openai-agents, or local-llm. May be repeated. Defaults keep Codex and Claude Code only.",
+    )
     args = parser.parse_args()
 
     standard_root = Path(__file__).resolve().parents[1]
@@ -513,7 +632,16 @@ def main() -> int:
     template_harness = standard_root / "templates" / "harness"
     template_root = standard_root / "templates" / "root"
     input_packet_template = standard_root / "templates" / "input" / "INPUT_PACKET.md"
-    target = Path(args.target).resolve()
+    target_from_default = args.target is None
+    if args.target:
+        target = Path(args.target).resolve()
+    else:
+        target = (standard_root / default_target_for_project(args.project_name)).resolve()
+    if target_from_default and target.exists() and any(target.iterdir()):
+        print(f"Default target already exists and is not empty: {target}")
+        print("Pass --target explicitly to scaffold into an existing project or choose another directory.")
+        return 1
+    extra_agent_surfaces = normalize_extra_agent_surfaces(args.extra_agent_surface)
     pre_hook_result, pre_hook_output = run_implementer_hook(
         implementer_hook_script,
         "pre-scaffold",
@@ -594,6 +722,8 @@ def main() -> int:
 
     update_json(harness / "shared" / "PROJECT_PROFILE.json", profile_updater)
     update_json(harness / "shared" / "HARNESS_CONFIG.json", config_updater)
+    write_agent_provider_overrides(harness, extra_agent_surfaces)
+    update_agent_surface_files(harness, extra_agent_surfaces)
     write_implementer_hook_run(harness, pre_hook_result, pre_hook_output)
     extra_hook_runs = [
         (
@@ -705,6 +835,7 @@ def main() -> int:
                     f"Compliance profile: {compliance_profile}",
                     f"Primary workstream: {primary_workstream}",
                     f"Detected workstreams: {', '.join(detected_workstreams)}",
+                    f"Requested extra agent surfaces: {', '.join(extra_agent_surfaces) if extra_agent_surfaces else 'none'}",
                     "Domain packs selected: UNKNOWN",
                     "",
                     "## Root Harness Entry",
@@ -718,6 +849,7 @@ def main() -> int:
                     "- `progress.md` and `session-handoff.md`: session continuity",
                     "- `scripts/harnessctl.py`: thin local validation, event, report, visualization-spec, eval-run, viz-export, archive, context-pack, worker-brief, model-route, task-packet, concept-check, software-feedback, preregister-benchmark, blind-redact, council-decision, and recovery-evidence command surface",
                     "- `harness/shared/WORKSTREAM_PROFILE.json`: inferred workstream and team topology",
+                    "- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`: optional user-owned agent surfaces, all starting unverified",
                     "- `harness/shared/OPERATOR_SESSION_REGISTRY.json`: fixed operator session handles and verification status",
                     "- `harness/shared/DUAL_OPERATOR_PROTOCOL.md`: Codex/Claude parity and non-forced meetings",
                     "- `harness/shared/PART_OWNERSHIP.md`: part-owner worker session reuse rules",
@@ -744,6 +876,7 @@ def main() -> int:
                     "- Confirm planning runway inputs before approving a sharp/deep production slice.",
                     "- Confirm detected workstreams and team topology.",
                     "- Confirm fixed Codex and Claude operator session handles.",
+                    "- Confirm optional user-owned agent surfaces before using them as workers, evaluators, or council reviewers.",
                     "- Confirm any local context-saving plugins beyond caveman.",
                     "- Confirm project-specific start/test/build/evaluation commands.",
                     "- Confirm visualization spec before creating dashboards, timelines, graphs, live status UI, or status views.",
@@ -858,6 +991,7 @@ def main() -> int:
                 "- Confirm quality bar and planning runway inputs.",
                 "- Confirm detected workstreams and whether the initial team topology is right.",
                 "- Confirm the fixed Codex and Claude Code operator sessions.",
+                "- Confirm optional user-owned agent surfaces before using them as workers, evaluators, or council reviewers.",
                 "- Confirm which four context-saving plugins to use; caveman is the preferred compression slot when verified.",
                 "- Confirm visualization spec before creating dashboards, timelines, graphs, live status UI, or status views.",
                 "- Confirm visualization backend before connecting `events.jsonl` to external or live viz systems.",

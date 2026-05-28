@@ -22,3 +22,8 @@ harness_private/
 private_overlays/
 *.local.json
 *.local.md
+docs/*WORKPLAN*.md
+docs/*SURVEY*.md
+docs/*DEMO_REPORT*.md
+docs/*FRAMEWORK_COMPARISON*.md
+docs/private/

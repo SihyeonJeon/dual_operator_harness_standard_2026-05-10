@@ -16,6 +16,15 @@ Unknown facts MUST be represented as `UNKNOWN`, not invented.
 Prior information and constraints MAY be supplied. If absent, they are recorded
 as `UNKNOWN`.
 
+Default output path:
+
+- explicit target path wins;
+- no explicit target with a project name creates sibling directory
+  `../<project-name>`;
+- no explicit target and no project name creates
+  `../generated-harness-project`;
+- implicit targets must be empty before scaffolding.
+
 ## Domain-Free Rule
 
 This kit is topic-neutral. It must be usable for software, research, writing,
@@ -100,6 +109,8 @@ A generated harness MUST include:
 - `harness/shared/SHARP_DEEP_EXECUTION.md`
 - `harness/shared/WORKSPACE_LAYOUT.md`
 - `harness/shared/MEMORY_BACKEND.json`
+- `harness/shared/MODEL_ROUTING.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/shared/WORKSTREAM_PROFILE.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/PART_OWNERSHIP.md`
@@ -316,6 +327,11 @@ feature state, progress, and operator routing work for a fresh session.
   such as Sonnet, Codex Spark, or an equivalent configured routine worker tier
   when gates allow. Simple, well-specified worker chores SHOULD prefer the
   configured routine worker session when available and safe.
+- Optional user-owned LLM or agent surfaces MAY be registered by explicit
+  scaffold input. They MUST start `UNVERIFIED`, MUST NOT replace the default
+  Codex and Claude Code fixed operators by default, and MAY be used only as
+  bounded worker/evaluator/council-review candidates after login and local
+  smoke evidence.
 - At most four active context-saving plugins may be used per task. `caveman` is
   the preferred context-compression slot when available and verified. Plugin
   output is advisory until written to file-backed harness artifacts.

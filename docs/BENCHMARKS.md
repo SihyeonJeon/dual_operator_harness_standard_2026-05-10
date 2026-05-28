@@ -40,7 +40,7 @@ requirements are reflected in public-safe files.
 
 | categories | checks | failed | score |
 | ---: | ---: | ---: | ---: |
-| 13 | 224 | 0 | 1.000 |
+| 13 | 228 | 0 | 1.000 |
 
 Covered areas include implementer bootstrap, fixed operators, worker teams,
 part ownership, context pressure controls, hook lifecycle, spec gates, local

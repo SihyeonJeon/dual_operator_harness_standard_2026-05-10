@@ -34,6 +34,7 @@ P0_REQUIRED = [
     "shared/INCIDENT_RESPONSE.md",
     "shared/OPERATOR_SESSION_REGISTRY.json",
     "shared/WORKER_SESSION_REGISTRY.json",
+    "shared/AGENT_PROVIDER_OVERRIDES.json",
     "shared/CONTEXT_LOADING.md",
     "shared/WORKSPACE_LAYOUT.md",
     "shared/MEMORY_BACKEND.json",
@@ -434,6 +435,14 @@ def check_model_routing(model_routing: dict[str, Any], errors: list[str]) -> Non
         errors.append("MODEL_ROUTING.json operators.reasoning_effort must be highest_verified_available")
     if model_routing.get("executable_helper") != "python3 scripts/harnessctl.py model-route":
         errors.append("MODEL_ROUTING.json must name the model-route executable helper")
+    override_policy = model_routing.get("provider_override_policy", {})
+    if not isinstance(override_policy, dict):
+        errors.append("MODEL_ROUTING.json provider_override_policy must be an object")
+    else:
+        if override_policy.get("source") != "harness/shared/AGENT_PROVIDER_OVERRIDES.json":
+            errors.append("MODEL_ROUTING.json provider_override_policy must point to AGENT_PROVIDER_OVERRIDES.json")
+        if override_policy.get("extra_surfaces_start_unverified") is not True:
+            errors.append("MODEL_ROUTING.json extra agent surfaces must start UNVERIFIED")
     worker_policy = model_routing.get("policy", {}).get("workers", {})
     if worker_policy.get("session_policy") != "part_owner_resume_when_safe":
         errors.append("MODEL_ROUTING.json workers.session_policy must be part_owner_resume_when_safe")
@@ -505,6 +514,58 @@ def check_operator_sessions(registry: dict[str, Any], errors: list[str]) -> None
             for key in ["evidence_path", "verified_at", "reviewer"]:
                 if not operator.get(key):
                     errors.append(f"VERIFIED operator session {operator.get('operator_id')} lacks {key}")
+
+
+def check_agent_provider_overrides(overrides: dict[str, Any], errors: list[str]) -> None:
+    require_keys(
+        overrides,
+        ["version", "default_fixed_operator_surfaces", "policy", "requested_extra_surfaces"],
+        "AGENT_PROVIDER_OVERRIDES.json",
+        errors,
+    )
+    defaults = overrides.get("default_fixed_operator_surfaces")
+    if defaults != ["claude-code", "codex"]:
+        errors.append("AGENT_PROVIDER_OVERRIDES.json must keep default fixed operator surfaces as claude-code and codex")
+    policy = overrides.get("policy", {})
+    if not isinstance(policy, dict):
+        errors.append("AGENT_PROVIDER_OVERRIDES.json policy must be an object")
+    else:
+        for key in [
+            "requested_extra_surfaces_are_candidates_only",
+            "all_extra_surfaces_start_unverified",
+            "extra_surfaces_do_not_change_operator_parity_by_default",
+            "promotion_requires_human_decision",
+            "promotion_requires_project_local_smoke",
+            "no_credentials_in_git",
+            "canonical_memory_remains_file_backed",
+        ]:
+            if policy.get(key) is not True:
+                errors.append(f"AGENT_PROVIDER_OVERRIDES.json policy {key} must be true")
+    surfaces = overrides.get("requested_extra_surfaces")
+    if not isinstance(surfaces, list):
+        errors.append("AGENT_PROVIDER_OVERRIDES.json requested_extra_surfaces must be an array")
+        return
+    for surface in surfaces:
+        if not isinstance(surface, dict):
+            errors.append("AGENT_PROVIDER_OVERRIDES.json surface entry must be an object")
+            continue
+        require_keys(
+            surface,
+            [
+                "surface",
+                "status",
+                "intended_uses",
+                "login_required",
+                "credential_policy",
+                "runner_descriptor",
+                "smoke_evidence_path",
+                "promotion_policy",
+            ],
+            f"agent provider surface {surface.get('surface', '<unknown>')}",
+            errors,
+        )
+        if surface.get("status") != "UNVERIFIED":
+            errors.append(f"agent provider surface {surface.get('surface')} must start UNVERIFIED")
 
 
 def check_runner_configs(harness: Path, errors: list[str]) -> None:
@@ -873,6 +934,7 @@ def check_eval_suite(harness: Path, errors: list[str]) -> None:
         "verified_evidence_integrity",
         "budget_caps_defined",
         "routine_worker_aliases",
+        "optional_agent_surface_registry",
         "agent_communication_packets",
         "software_feedback_policy",
         "concept_translation_policy",
@@ -977,6 +1039,7 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "CURRENT_MARKET_RESEARCH_POLICY.md",
         "CROSS_FEEDBACK_LOOP.md",
         "CONCEPT_TRANSLATION_POLICY.md",
+        "AGENT_PROVIDER_OVERRIDES.json",
         "context-pack",
         "worker-brief",
         "model-route",
@@ -996,6 +1059,7 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
     for phrase in [
         "Root `CLAUDE.md` is intentional",
         ".claude/",
+        "AGENT_PROVIDER_OVERRIDES.json",
         "SOFTWARE_FEEDBACK_POLICY.md",
         "CURRENT_MARKET_RESEARCH_POLICY.md",
         "CROSS_FEEDBACK_LOOP.md",
@@ -1168,6 +1232,7 @@ def main(argv: list[str]) -> int:
     permissions = load_json(harness / "shared" / "PERMISSION_POLICY.json", errors)
     mcp = load_json(harness / "shared" / "MCP_TRUST.json", errors)
     worker_sessions = load_json(harness / "shared" / "WORKER_SESSION_REGISTRY.json", errors)
+    agent_provider_overrides = load_json(harness / "shared" / "AGENT_PROVIDER_OVERRIDES.json", errors)
     operator_sessions = load_json(harness / "shared" / "OPERATOR_SESSION_REGISTRY.json", errors)
     model_routing = load_json(harness / "shared" / "MODEL_ROUTING.json", errors)
     worker_brief = load_json(harness / "templates" / "WORKER_BRIEF.json", errors)
@@ -1227,6 +1292,12 @@ def main(argv: list[str]) -> int:
             errors.append("WORKER_SESSION_REGISTRY.json must forbid unrelated reuse of part-owner sessions")
         if policy.get("part_reopen_prefers_prior_owner") is not True:
             errors.append("WORKER_SESSION_REGISTRY.json must prefer prior part owner on reopen")
+        if policy.get("available_surfaces_source") != "harness/shared/AGENT_PROVIDER_OVERRIDES.json":
+            errors.append("WORKER_SESSION_REGISTRY.json must point to AGENT_PROVIDER_OVERRIDES.json")
+        if policy.get("extra_agent_surfaces_do_not_replace_fixed_operators") is not True:
+            errors.append("WORKER_SESSION_REGISTRY.json must preserve default fixed operators for extra surfaces")
+    if isinstance(agent_provider_overrides, dict):
+        check_agent_provider_overrides(agent_provider_overrides, errors)
     if isinstance(operator_sessions, dict):
         check_operator_sessions(operator_sessions, errors)
     if isinstance(model_routing, dict):

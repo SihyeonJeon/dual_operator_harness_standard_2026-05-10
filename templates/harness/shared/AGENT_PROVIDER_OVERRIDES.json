@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "default_fixed_operator_surfaces": ["claude-code", "codex"],
+  "policy": {
+    "default_structure_when_no_request": "codex_and_claude_code_fixed_operators",
+    "requested_extra_surfaces_are_candidates_only": true,
+    "all_extra_surfaces_start_unverified": true,
+    "extra_surfaces_do_not_change_operator_parity_by_default": true,
+    "promotion_requires_human_decision": true,
+    "promotion_requires_project_local_smoke": true,
+    "no_credentials_in_git": true,
+    "canonical_memory_remains_file_backed": true
+  },
+  "requested_extra_surfaces": []
+}

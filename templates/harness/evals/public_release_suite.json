@@ -178,6 +178,14 @@
       "terms": ["sonnet", "haiku", "gpt-5.3-codex-spark", "routine_task_rule"]
     },
     {
+      "id": "optional_agent_surface_registry",
+      "name": "Optional user-owned agent surfaces stay candidate-only and unverified",
+      "type": "text_contains",
+      "severity": "required",
+      "path": "harness/shared/AGENT_PROVIDER_OVERRIDES.json",
+      "terms": ["default_fixed_operator_surfaces", "requested_extra_surfaces_are_candidates_only", "all_extra_surfaces_start_unverified", "extra_surfaces_do_not_change_operator_parity_by_default"]
+    },
+    {
       "id": "agent_communication_packets",
       "name": "Agent communication uses bounded task packets",
       "type": "text_contains",

@@ -6,8 +6,12 @@
     "replacement_requires_reason": true,
     "part_owner_session_isolation": true,
     "do_not_reuse_part_owner_for_unrelated_parts": true,
-    "part_reopen_prefers_prior_owner": true
+    "part_reopen_prefers_prior_owner": true,
+    "available_surfaces_source": "harness/shared/AGENT_PROVIDER_OVERRIDES.json",
+    "extra_agent_surfaces_start_unverified": true,
+    "extra_agent_surfaces_do_not_replace_fixed_operators": true
   },
+  "requested_extra_agent_surfaces": [],
   "worker_entry_schema": {
     "worker_id": "stable worker session id or UNKNOWN",
     "part_id": "owned project part or task slice id",

@@ -64,11 +64,13 @@ CATEGORIES: tuple[Category, ...] = (
             "harness/shared/DUAL_OPERATOR_PROTOCOL.md",
             "harness/shared/OPERATOR_SESSION_REGISTRY.json",
             "harness/shared/MODEL_ROUTING.json",
+            "harness/shared/AGENT_PROVIDER_OVERRIDES.json",
             "harness/shared/COUNCIL_MCP.md",
             "scripts/harnessctl.py",
         ),
         text=(
             TextCheck("harness/shared/MODEL_ROUTING.json", ("highest_verified_available", "part_owner_resume_when_safe", "executable_helper")),
+            TextCheck("harness/shared/AGENT_PROVIDER_OVERRIDES.json", ("default_fixed_operator_surfaces", "all_extra_surfaces_start_unverified", "extra_surfaces_do_not_change_operator_parity_by_default")),
             TextCheck("scripts/harnessctl.py", ("model-route", "selected_model_class")),
             TextCheck("harness/shared/DUAL_OPERATOR_PROTOCOL.md", ("Non-Coercion", "human")),
         ),

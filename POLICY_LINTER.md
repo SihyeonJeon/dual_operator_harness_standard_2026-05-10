@@ -93,6 +93,9 @@ treated as operational.
 - `MODEL_ROUTING.json` keeps operators highest verified while worker tiers are
   task-difficulty-shaped and simple work can route to a configured routine
   worker session.
+- `AGENT_PROVIDER_OVERRIDES.json` exists. Extra user-owned LLM or agent
+  surfaces are candidate-only, start `UNVERIFIED`, and do not replace Codex and
+  Claude Code fixed operators by default.
 - Operator manuals exist and include an ambiguity protocol.
 - H0 local smoke blueprint exists.
 - H1 bootstrap restart smoke blueprint exists.

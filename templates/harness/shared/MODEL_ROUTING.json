@@ -1,6 +1,14 @@
 {
   "simple_task_aliases": ["sonnet", "haiku", "gpt-5.3-codex-spark"],
   "executable_helper": "python3 scripts/harnessctl.py model-route",
+  "provider_override_policy": {
+    "source": "harness/shared/AGENT_PROVIDER_OVERRIDES.json",
+    "default_when_no_request": "use_codex_and_claude_code_operator_structure",
+    "extra_surfaces_allowed_for": ["worker", "evaluator", "council_reviewer"],
+    "extra_surfaces_start_unverified": true,
+    "selection_rule": "use only after login, project-local smoke evidence, and operator routing decision"
+  },
+  "requested_extra_agent_surfaces": [],
   "policy": {
     "operators": {
       "model_class": "highest_verified_available",

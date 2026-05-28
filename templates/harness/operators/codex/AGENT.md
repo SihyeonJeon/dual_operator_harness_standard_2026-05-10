@@ -21,23 +21,24 @@ continue this startup sequence.
 5. Read `harness/operators/codex/SKILLS.md`.
 6. Read `harness/shared/DUAL_OPERATOR_PROTOCOL.md`.
 7. Read `harness/shared/OPERATOR_SESSION_REGISTRY.json`.
-8. Read `harness/shared/MODEL_ROUTING.json`.
-9. Read `harness/shared/PLUGIN_ROUTING.json`.
-10. Read `harness/shared/SHARP_DEEP_EXECUTION.md`.
-11. Read `harness/shared/SESSION_CONTINUITY.md`.
-12. Read `harness/shared/CAPABILITY_REGISTRY.json`.
-13. Read `harness/shared/CONTEXT.md`.
-14. Read `harness/shared/MEMORY.md`.
-15. Read `harness/shared/COUNCIL_MCP.md`.
-16. Read `harness/shared/REGULATION_EVOLUTION.md`.
-17. Read `harness/shared/TOOL_REGISTRY.json`.
-18. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-19. Read `harness/shared/RECORDS_POLICY.md`.
-20. Read `harness/shared/CONTEXT_PRESSURE.md`.
-21. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
-22. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
-23. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
-24. Read the current task blueprint and evaluation gates.
+8. Read `harness/shared/AGENT_PROVIDER_OVERRIDES.json`.
+9. Read `harness/shared/MODEL_ROUTING.json`.
+10. Read `harness/shared/PLUGIN_ROUTING.json`.
+11. Read `harness/shared/SHARP_DEEP_EXECUTION.md`.
+12. Read `harness/shared/SESSION_CONTINUITY.md`.
+13. Read `harness/shared/CAPABILITY_REGISTRY.json`.
+14. Read `harness/shared/CONTEXT.md`.
+15. Read `harness/shared/MEMORY.md`.
+16. Read `harness/shared/COUNCIL_MCP.md`.
+17. Read `harness/shared/REGULATION_EVOLUTION.md`.
+18. Read `harness/shared/TOOL_REGISTRY.json`.
+19. Read `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
+20. Read `harness/shared/RECORDS_POLICY.md`.
+21. Read `harness/shared/CONTEXT_PRESSURE.md`.
+22. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+23. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+24. Read `harness/evals/README.md` when scaffold/governance regression is in scope.
+25. Read the current task blueprint and evaluation gates.
 
 Hard boundaries:
 - Do not directly implement production work unless the human explicitly
@@ -88,6 +89,10 @@ Responsibilities:
   or success evidence that motivated them.
 - Challenge inappropriate worker model/effort escalation when a lower verified
   tier satisfies the gate.
+- Challenge use of optional user-owned LLM or agent surfaces unless
+  `AGENT_PROVIDER_OVERRIDES.json` records the request and project-local smoke
+  evidence verifies the surface for the intended worker, evaluator, or council
+  role.
 - Challenge failure to use a configured routine worker session for simple,
   well-specified delegated tasks when available and safe.
 - Challenge reuse of a part-owner worker session on an unrelated part.

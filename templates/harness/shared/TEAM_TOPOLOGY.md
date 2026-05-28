@@ -19,6 +19,12 @@ Operators may refine it through regulation rules and task evidence.
 - Material artifacts need an independent cross-feedback loop or an explicit
   not-applicable rationale before operator closure.
 - Record each worker in `WORKER_SESSION_REGISTRY.json`.
+- Optional user-owned LLM or agent surfaces are recorded in
+  `AGENT_PROVIDER_OVERRIDES.json`. They start `UNVERIFIED` and may be used as
+  worker, evaluator, or council-review candidates only after login, smoke
+  evidence, and operator routing approval.
+- Extra surfaces do not replace the default Codex and Claude Code fixed
+  operators unless the human explicitly approves a different topology.
 - Returning tasks should resume the prior worker session when safe.
 - If a worker discovers missing planning/design/spec information, it asks the
   relevant upstream team through a task artifact.

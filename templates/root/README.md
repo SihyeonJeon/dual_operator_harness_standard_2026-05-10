@@ -39,11 +39,14 @@ you are operator
 ### 운영 축
 
 - Codex Claude Code 동등 fixed operator
+- 기본 operator 구조는 Codex Claude Code 유지
+- 요청된 추가 LLM agent surface는 AGENT_PROVIDER_OVERRIDES.json에 UNVERIFIED 후보로 기록
 - operator 생산 작업 기본 금지
 - planning runway 우선
 - sharp deep slice 승인 후 production
 - worker model effort task difficulty routing
 - simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
+- extra agent surfaces can support worker evaluator council review after login and smoke evidence
 - executable model-route helper applies routing policy
 - BUDGET.json token time cost cap and budget-check kill surface
 - routine worker configured low cost model 가능
@@ -84,6 +87,7 @@ you are operator
 - `guide_for_human.md`
 - `scripts/harnessctl.py`
 - `harness/shared`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/operators`
 - `harness/teams`
 - `harness/tasks`
@@ -139,11 +143,14 @@ you are operator
 ### Operating Axes
 
 - equal fixed Codex Claude Code operators
+- default operator structure keeps Codex Claude Code
+- requested extra LLM agent surfaces are recorded as UNVERIFIED candidates in AGENT_PROVIDER_OVERRIDES.json
 - operators avoid production work by default
 - planning runway first
 - production after approved sharp deep slice
 - worker model effort task difficulty routing
 - simple task aliases sonnet haiku gpt-5.3-codex-spark when verified
+- extra agent surfaces can support worker evaluator council review after login and smoke evidence
 - executable model-route helper applies routing policy
 - BUDGET.json token time cost caps and budget-check kill surface
 - routine worker configured low cost model when verified
@@ -184,6 +191,7 @@ you are operator
 - `guide_for_human.md`
 - `scripts/harnessctl.py`
 - `harness/shared`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/operators`
 - `harness/teams`
 - `harness/tasks`

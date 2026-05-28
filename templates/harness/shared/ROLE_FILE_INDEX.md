@@ -17,6 +17,7 @@ Root always-load for any operator invocation:
 - `harness/shared/WORKSTREAM_PROFILE.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OPERATOR_SESSION_REGISTRY.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/shared/MODEL_ROUTING.json`
 - `harness/shared/PLUGIN_ROUTING.json`
 - `harness/shared/OBSERVABILITY.md`
@@ -40,6 +41,7 @@ Claude Code operator always-load:
 - `harness/shared/HARNESS_CONFIG.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OPERATOR_SESSION_REGISTRY.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
@@ -58,6 +60,7 @@ Codex operator always-load:
 - `harness/shared/HARNESS_CONFIG.json`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
 - `harness/shared/OPERATOR_SESSION_REGISTRY.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
@@ -78,6 +81,7 @@ Planning worker always-load:
 - `harness/teams/planning/TEAM_CONTEXT.md`
 - `harness/shared/PART_OWNERSHIP.md`
 - `harness/shared/MODEL_ROUTING.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json` when routing to optional user-owned agent surfaces
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
 - `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`
@@ -95,6 +99,7 @@ Design worker always-load:
 - `harness/teams/design/TEAM_CONTEXT.md`
 - `harness/shared/PART_OWNERSHIP.md`
 - `harness/shared/MODEL_ROUTING.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json` when routing to optional user-owned agent surfaces
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
 - `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md` when planning depends on current external reality
@@ -111,6 +116,7 @@ Coding or production worker always-load:
 - `harness/teams/coding/TEAM_CONTEXT.md`
 - `harness/shared/PART_OWNERSHIP.md`
 - `harness/shared/MODEL_ROUTING.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json` when routing to optional user-owned agent surfaces
 - `harness/shared/CONTEXT_PRESSURE.md`
 - `harness/shared/AGENT_COMMUNICATION.md`
 - `harness/shared/CROSS_FEEDBACK_LOOP.md`
@@ -139,6 +145,7 @@ Evaluation worker always-load:
 - `harness/evals/golden_suite.json` when scaffold or governance regression is in scope
 - `harness/viz/VIZ_BACKENDS.json` when visualization backend work is in scope
 - `harness/shared/MODEL_ROUTING.json`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json` when routing to optional user-owned agent surfaces
 - assigned worker brief
 
 ## Session Change Rule

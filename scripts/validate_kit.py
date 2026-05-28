@@ -88,6 +88,7 @@ ROOT_REQUIRED = [
     "templates/harness/shared/CONCEPT_TRANSLATION_POLICY.md",
     "templates/harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
     "templates/harness/shared/BUDGET_GOVERNANCE.md",
+    "templates/harness/shared/AGENT_PROVIDER_OVERRIDES.json",
     "templates/harness/shared/RECORDS_POLICY.md",
     "templates/harness/shared/MCP_TRUST.json",
     "templates/harness/runtime/CONNECTORS/README.md",
@@ -215,11 +216,23 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
             args.goal,
             "--project-name",
             "Public Kit Smoke",
+            "--extra-agent-surface",
+            "gemini-cli",
         ],
         root,
     )
     run(["./init.sh"], target)
     run([sys.executable, "harness/mcp_server/server.py", "--root", ".", "list-tools"], target)
+    overrides = load_json(target / "harness" / "shared" / "AGENT_PROVIDER_OVERRIDES.json")
+    requested_surfaces = [
+        entry.get("surface")
+        for entry in overrides.get("requested_extra_surfaces", [])
+        if isinstance(entry, dict)
+    ]
+    if requested_surfaces != ["gemini-cli"]:
+        raise SystemExit("extra agent surface smoke did not record gemini-cli")
+    if overrides.get("policy", {}).get("extra_surfaces_do_not_change_operator_parity_by_default") is not True:
+        raise SystemExit("extra agent surface smoke did not preserve default operator parity")
     broad_search_guard = run_claude_hook(
         target,
         {
@@ -657,6 +670,34 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     if recovery_evidence.get("artifact") != "recovery_evidence_packet" or recovery_evidence.get("same_packet_required_for_all_recovery_arms") is not True:
         raise SystemExit("recovery-evidence smoke did not write matched packet rule")
 
+    default_target_summary: dict[str, object] = {"status": "SKIPPED"}
+    default_name = "eoh-default-path-smoke"
+    default_project = root.parent / default_name
+    if default_project.exists():
+        shutil.rmtree(default_project)
+    try:
+        run(
+            [
+                sys.executable,
+                str(root / "scripts" / "scaffold_harness.py"),
+                "--project-name",
+                default_name,
+                "--goal",
+                "default target smoke",
+            ],
+            root,
+        )
+        if not default_project.joinpath("harness", "shared", "AGENT_PROVIDER_OVERRIDES.json").exists():
+            raise SystemExit("default target smoke did not create generated project at ../<project-name>")
+        default_target_summary = {
+            "status": "PASS",
+            "target_name": default_name,
+            "created_at": str(default_project),
+        }
+    finally:
+        if default_project.exists():
+            shutil.rmtree(default_project)
+
     summary = {
         "target": str(target),
         "file_count": file_count,
@@ -683,6 +724,11 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "kill_event": "budget.kill_required",
             "escalation_event": "budget.escalation_required",
         },
+        "agent_provider_overrides": {
+            "requested_extra_surfaces": requested_surfaces,
+            "default_operator_parity_preserved": True,
+        },
+        "default_target": default_target_summary,
         "executable_governance": {
             "context_pack_sources": context_pack.get("source_count"),
             "current_research_verdict": current_research.get("verdict"),

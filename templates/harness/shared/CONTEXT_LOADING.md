@@ -19,6 +19,7 @@ starts crowding out the current task, compact `progress.md`,
 - `harness/shared/HARNESS_CONFIG.json`
 - `harness/shared/ROLE_FILE_INDEX.md`
 - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
+- `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
 - `harness/shared/OBSERVABILITY.md`
 - `harness/shared/RECORDS_POLICY.md`
 - `harness/shared/CONTEXT_PRESSURE.md`
@@ -33,6 +34,8 @@ starts crowding out the current task, compact `progress.md`,
 - `.claude/settings.json` and `.claude/hooks/` when Claude Code behavior is
   being verified or debugged
 - `PLUGIN_ROUTING.json`
+- `AGENT_PROVIDER_OVERRIDES.json` when routing to optional user-owned agent
+  surfaces or changing operator topology
 - `PART_OWNERSHIP.md`
 - `QUALITY_GATES.md`
 - `CAPABILITY_REGISTRY.json`

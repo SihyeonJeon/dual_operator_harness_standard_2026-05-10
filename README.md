@@ -33,7 +33,7 @@ git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
 cd easy-orchestration-harness
 
 python3 scripts/scaffold_harness.py \
-  --target ../my-project \
+  --project-name my-project \
   --goal "your project goal"
 
 cd ../my-project
@@ -53,6 +53,29 @@ To verify the public kit itself:
 python3 scripts/validate_kit.py
 ```
 
+Default generation path:
+
+- `--target` omitted: `../generated-harness-project`
+- `--project-name my-project` with no `--target`: `../my-project`
+- `--target ../my-project`: explicit path wins
+- default path refuses to overlay a non-empty directory
+
+Optional user-owned agent surfaces:
+
+```sh
+python3 scripts/scaffold_harness.py \
+  --project-name my-project \
+  --goal "your project goal" \
+  --extra-agent-surface gemini-cli \
+  --extra-agent-surface local-llm
+```
+
+Without `--extra-agent-surface`, the generated harness keeps the default
+Codex and Claude Code fixed-operator structure. Extra surfaces start
+`UNVERIFIED` in `harness/shared/AGENT_PROVIDER_OVERRIDES.json` and are only
+worker, evaluator, or council-review candidates until login and project-local
+smoke evidence exist.
+
 ## What It Generates
 
 ```text
@@ -71,6 +94,7 @@ project/
     operators/
     teams/
     shared/
+      AGENT_PROVIDER_OVERRIDES.json
     tasks/
     events/events.jsonl
     evals/
@@ -87,6 +111,7 @@ project/
 | harness implementer | converts a goal into project-local operating files |
 | operator | routes work, reviews gates, decides closure |
 | worker teams | handle planning, design, production, and evaluation lanes |
+| optional agent surfaces | let the user register owned tools such as Gemini, Cursor, OpenAI Agents SDK apps, or local LLM runners as unverified worker/evaluator candidates |
 | part ownership | sends the same part back to the same worker session when safe |
 | hooks and validators | enforce lifecycle checks beyond markdown instructions |
 | executable helpers | generate context packs, worker briefs, task packets, model routes, and software feedback evidence |
@@ -102,6 +127,12 @@ Generated routing policy names `sonnet`, `haiku`, and
 `gpt-5.3-codex-spark` as routine-task aliases when they are available and
 verified in the local environment. Operators still keep the strongest verified
 model and effort for routing, review, and closure.
+
+Codex CLI and Claude Code login are expected for the default dual-operator
+route. If a user has other LLM or agent tools, the scaffold can record them
+with `--extra-agent-surface`. This does not promote them to fixed operators by
+default; it makes them eligible for bounded worker, evaluator, or council
+review after local smoke evidence.
 
 Token saving is handled through bounded context packs, part-owner session
 reuse, a four-plugin cap with a `caveman` compression slot, and compact
@@ -169,7 +200,7 @@ regression checks, not broad industry rankings.
 
 | Fixture | Scope | Current result |
 | --- | --- | --- |
-| requirements traceability | generated harness requirements reflected in public-safe files | 224/224 checks |
+| requirements traceability | generated harness requirements reflected in public-safe files | 228/228 checks |
 | spec gate | planning surfaces before production work | 12/12 checks |
 | static visualization | local status HTML, JSON, sanitized event export | 12/12 checks |
 | replay recovery | file-only restart surface across 10 task shapes | generated harness 1.000, controls 0.110 and 0.500 |
@@ -280,13 +311,34 @@ git clone https://github.com/SihyeonJeon/easy-orchestration-harness.git
 cd easy-orchestration-harness
 
 python3 scripts/scaffold_harness.py \
-  --target ../my-project \
+  --project-name my-project \
   --goal "프로젝트 목표"
 
 cd ../my-project
 ./init.sh
 python3 scripts/harnessctl.py report
 ```
+
+기본 생성 위치
+
+- `--target` 생략: `../generated-harness-project`
+- `--project-name my-project`만 입력: `../my-project`
+- `--target ../my-project`: 지정 경로 우선
+- 기본 경로가 비어 있지 않으면 자동 덮어쓰기 거부
+
+추가 LLM agent surface는 요청할 때만 기록한다.
+
+```sh
+python3 scripts/scaffold_harness.py \
+  --project-name my-project \
+  --goal "프로젝트 목표" \
+  --extra-agent-surface gemini-cli
+```
+
+요청하지 않으면 Codex Claude Code fixed operator 구조 그대로 동작한다.
+추가 surface는 `AGENT_PROVIDER_OVERRIDES.json`에 `UNVERIFIED` 후보로 남고,
+로그인과 project-local smoke evidence가 있어야 worker evaluator council
+review 용도로 사용할 수 있다.
 
 그 다음 생성된 프로젝트에서 agent tool을 열고 `AGENTS.md`를 읽게 한 뒤
 다음처럼 시작한다.

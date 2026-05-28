@@ -111,6 +111,16 @@
       "notes": "Preferred for simple, well-specified delegated chores when available, safe, and sufficient for the gate. Operators remain highest verified model/effort."
     },
     {
+      "id": "optional_agent_surfaces",
+      "name": "Optional user-owned agent surfaces",
+      "class": "agent_surface",
+      "status": "UNVERIFIED",
+      "evidence_path": "",
+      "verified_at": "",
+      "reviewer": "",
+      "notes": "Configured through AGENT_PROVIDER_OVERRIDES.json only when requested. Extra surfaces may support workers, evaluators, or council review after login and smoke evidence; they do not replace Codex/Claude fixed operators by default."
+    },
+    {
       "id": "harnessctl_local_report",
       "name": "Local harnessctl event and report helper",
       "class": "local_cli",

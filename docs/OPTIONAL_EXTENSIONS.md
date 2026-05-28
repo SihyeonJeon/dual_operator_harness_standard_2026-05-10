@@ -21,6 +21,7 @@ Public kit rule
 | memory backend | file-backed search, vector index example, graph index example | selected vector database, graph database, private RAG service |
 | chat approval connector | disabled Discord approval example with denied publication payloads | real bot, webhook, mobile approval bridge, private credential overlay |
 | browser/device validation | policy requires Playwright or equivalent evidence for interactive UI | real Playwright project, device farm, visual regression service |
+| additional LLM or agent surface | `AGENT_PROVIDER_OVERRIDES.json` records requested surfaces as `UNVERIFIED` candidates | real Gemini, Cursor, OpenAI Agents SDK, local LLM, hosted model, or private tool runner smoke-tested in the project |
 
 ## Adapter Contract
 

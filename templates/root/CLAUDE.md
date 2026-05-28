@@ -18,6 +18,10 @@ with current scope in `feature_list.json`, `progress.md`, and task artifacts.
 Team-shared memory is in `harness/teams/*/TEAM_CONTEXT.md`.
 Dual-operator parity and non-forced consensus are defined in
 `harness/shared/DUAL_OPERATOR_PROTOCOL.md`.
+Optional user-owned agent surfaces are recorded in
+`harness/shared/AGENT_PROVIDER_OVERRIDES.json`; they start unverified and do
+not replace the default Codex/Claude fixed operators unless the human approves
+that topology with project-local smoke evidence.
 Local record policy and context-pressure control are defined in
 `harness/shared/RECORDS_POLICY.md` and `harness/shared/CONTEXT_PRESSURE.md`.
 Agent-to-agent communication and token-saving context packets are defined in

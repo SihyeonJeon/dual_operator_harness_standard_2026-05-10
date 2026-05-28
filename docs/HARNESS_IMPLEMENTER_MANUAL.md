@@ -14,6 +14,14 @@ Given only:
 create a complete harness scaffold that can later be operated by fixed dual
 operators and task-shaped worker teams.
 
+Generation location:
+
+- explicit `--target` creates or overlays that target project directory;
+- no `--target` with `--project-name my-project` creates `../my-project`;
+- no `--target` and no project name creates `../generated-harness-project`;
+- an implicit default target must be empty so generated project files do not
+  mix into an unintended directory.
+
 The implementer designs the harness, not the project execution strategy. The
 implementer must not choose a domain track, product/topic direction, platform,
 budget, identity, user/audience target, deployment model, publication channel,
@@ -37,6 +45,8 @@ The implementer may:
 - create dual-operator parity, part ownership, plugin routing, and quality-gate
   files;
 - create agent communication and software feedback policy files;
+- record optional user-owned agent surfaces when explicitly requested, while
+  preserving the default Codex and Claude Code fixed-operator structure;
 - create visualization spec policy and template files;
 - create records policy and context-pressure control files;
 - create read-only MCP export and spec automation scaffold files;
@@ -81,38 +91,41 @@ The implementer must not:
 8. Ensure fixed operator files point to shared canonical context.
 9. Ensure worker session, role-file, sharp/deep, model-routing, council, and
    regulation-evolution policies exist.
-10. Ensure dual-operator protocol, part ownership, plugin routing, and quality
+10. Ensure `AGENT_PROVIDER_OVERRIDES.json` exists. Extra user-owned LLM or
+    agent surfaces may be recorded only when requested and must start
+    `UNVERIFIED`.
+11. Ensure dual-operator protocol, part ownership, plugin routing, and quality
     gates exist.
-11. Ensure routine model aliases, agent communication policy, and software
+12. Ensure routine model aliases, agent communication policy, and software
     feedback policy exist.
-12. Ensure visualization spec policy and template exist, and visualization
+13. Ensure visualization spec policy and template exist, and visualization
     production is blocked until a task-local spec is approved or explicitly not
     required.
-13. Ensure records policy, context-pressure controls, read-only MCP export, and
+14. Ensure records policy, context-pressure controls, read-only MCP export, and
     spec automation policy exist. These start as scaffolded/`UNVERIFIED`
     surfaces and do not approve external posting, private adapters, or remote
     operation.
-14. Ensure visualization backend descriptors exist under `harness/viz/`, with
+15. Ensure visualization backend descriptors exist under `harness/viz/`, with
     `local_file` as the only verified local backend and external backends denied
     until human selection, bounded policy, credential lifecycle, and smoke
     evidence exist.
-15. Ensure H0, H1, and F0 planning runway tasks exist but production work
+16. Ensure H0, H1, and F0 planning runway tasks exist but production work
     is not started.
-16. Write `harness/IMPLEMENTER_HANDOFF.md`.
-17. Write and update `harness/IMPLEMENTER_HOOKS.md` and
+17. Write `harness/IMPLEMENTER_HANDOFF.md`.
+18. Write and update `harness/IMPLEMENTER_HOOKS.md` and
     `harness/IMPLEMENTER_HOOKS_RUN.json`.
-18. Write project-root `guide_for_human.md`.
-19. Write project-root bilingual `README.md`.
-20. Write `harness/runtime/OFFLINE_OPERATION.md`.
-21. Write `harness/runtime/REMOTE_OPERATION_POLICY.md`.
-22. Write `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md`.
-23. Write `harness/evals/README.md`, `harness/evals/golden_suite.json`, and
+19. Write project-root `guide_for_human.md`.
+20. Write project-root bilingual `README.md`.
+21. Write `harness/runtime/OFFLINE_OPERATION.md`.
+22. Write `harness/runtime/REMOTE_OPERATION_POLICY.md`.
+23. Write `harness/runtime/CLOUD_VIZ_OPERATOR_GUIDE.md`.
+24. Write `harness/evals/README.md`, `harness/evals/golden_suite.json`, and
     `schemas/eval-suite.schema.json`.
-24. Ensure the target project has its own validator, `scripts/harnessctl.py`,
+25. Ensure the target project has its own validator, `scripts/harnessctl.py`,
     `scripts/implementer_hooks.py`, and schemas or equivalent local validation
     command.
-25. Run `scripts/validate_harness.py <target-project>`.
-26. Write `harness/SCAFFOLDING_REPORT.md`.
+26. Run `scripts/validate_harness.py <target-project>`.
+27. Write `harness/SCAFFOLDING_REPORT.md`.
 
 ## When To Ask The User
 
@@ -147,6 +160,8 @@ The implementer must leave:
 - dual-operator protocol that keeps Codex and Claude Code equal, preserves
   dissent, and forbids forced consensus;
 - operator session registry for fixed Claude Code and Codex session handles;
+- optional agent-provider override registry that keeps additional user-owned
+  surfaces unverified and candidate-only until smoke evidence exists;
 - part-owner session reuse rules;
 - context-saving plugin routing with a four-plugin cap and caveman compression
   slot;

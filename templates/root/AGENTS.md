@@ -21,15 +21,16 @@ Before doing project work:
 6. Read `harness/shared/PROJECT_PROFILE.json`.
 7. Read `harness/shared/WORKSTREAM_PROFILE.json`.
 8. Read `harness/shared/OPERATOR_SESSION_REGISTRY.json`.
-9. Read `harness/shared/OBSERVABILITY.md` and
+9. Read `harness/shared/AGENT_PROVIDER_OVERRIDES.json`.
+10. Read `harness/shared/OBSERVABILITY.md` and
    `harness/shared/VISUALIZATION_SPEC_POLICY.md`.
-10. Read `harness/shared/RECORDS_POLICY.md` and
+11. Read `harness/shared/RECORDS_POLICY.md` and
    `harness/shared/CONTEXT_PRESSURE.md`.
-11. Read `harness/shared/AGENT_COMMUNICATION.md`.
-12. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
-13. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
-14. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
-15. Read the role file that matches the user's instruction or the current agent
+12. Read `harness/shared/AGENT_COMMUNICATION.md`.
+13. Read `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
+14. Read `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+15. Read `harness/shared/CONCEPT_TRANSLATION_POLICY.md`.
+16. Read the role file that matches the user's instruction or the current agent
    surface.
 
 If the user says only "you are operator", "act as operator", or equivalent,
@@ -56,6 +57,11 @@ become the fixed operator for the current agent surface:
   canonical internal files.
 - Preserve dual-operator parity: do not force consensus, erase dissent, or let
   one operator's runtime adapter outrank the other operator.
+- Keep Codex and Claude Code as the default fixed operators unless the human
+  explicitly approves a different operator topology with smoke evidence.
+- Treat extra user-owned LLM or agent surfaces in
+  `harness/shared/AGENT_PROVIDER_OVERRIDES.json` as unverified worker,
+  evaluator, or council-review candidates, not as automatic authority.
 - Preserve context accumulation and shared feedback loops: update
   `progress.md`, `session-handoff.md`, task artifacts, `harness/shared/MEMORY.md`,
   `harness/shared/FAILURE_LEDGER.md`, and `harness/shared/RULE_CHANGE_LOG.md`

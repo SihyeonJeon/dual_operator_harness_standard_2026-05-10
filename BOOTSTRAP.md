@@ -12,6 +12,11 @@ Optional input:
 
 - `PRIOR_INFO_AND_CONSTRAINTS`: known facts, constraints, tools, budget, risks,
   preferences, forbidden shortcuts, and operating requirements.
+- `TARGET_PROJECT`: explicit output directory. If absent, `--project-name`
+  creates sibling directory `../<project-name>`; otherwise the default output
+  directory is `../generated-harness-project`.
+- `EXTRA_AGENT_SURFACES`: optional user-owned LLM or agent surfaces. If absent,
+  keep the default Codex and Claude Code fixed-operator structure.
 
 The bootstrap agent may create harness files. It is not one of the fixed
 operators and it must not start production work for the target project.
@@ -56,6 +61,7 @@ goal unless the inputs explicitly specify that strategy.
    - `harness/shared/WORKSPACE_LAYOUT.md`
    - `harness/shared/MEMORY_BACKEND.json`
    - `harness/shared/MODEL_ROUTING.json`
+   - `harness/shared/AGENT_PROVIDER_OVERRIDES.json`
    - `harness/shared/TEAM_TOPOLOGY.md`
    - `harness/shared/WORKSTREAM_PROFILE.json`
    - `harness/shared/DUAL_OPERATOR_PROTOCOL.md`
@@ -164,6 +170,9 @@ Bootstrap is complete only when:
   task artifacts;
 - model routing keeps operators on highest verified model/effort while workers
   use the lowest verified tier that satisfies task gates;
+- extra user-owned agent surfaces, when requested, are recorded as unverified
+  worker/evaluator/council-review candidates and do not replace Codex/Claude
+  fixed operators by default;
 - worker session registry preserves part-owner sessions for the same part and
   prevents unrelated reuse;
 - plugin routing caps context-saving plugins at four and includes caveman as the

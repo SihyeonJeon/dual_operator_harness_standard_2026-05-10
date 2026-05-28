@@ -30,8 +30,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 224 file,
-content, and absence conditions. Current result: 224 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 228 file,
+content, and absence conditions. Current result: 228 passed, 0 failed.
 
 ## Benchmark Topics
 
@@ -64,6 +64,7 @@ content, and absence conditions. Current result: 224 passed, 0 failed.
 | lower-tier worker routing for routine work | yes | `MODEL_ROUTING.json` |
 | sonnet/haiku/spark routine aliases | yes | `MODEL_ROUTING.json` names `sonnet`, `haiku`, and `gpt-5.3-codex-spark` as verified-environment aliases |
 | executable model routing | yes | `harnessctl.py model-route` applies `MODEL_ROUTING.json` without relying on prose memory |
+| optional user-owned agent surfaces | yes | `AGENT_PROVIDER_OVERRIDES.json` records requested extra LLM/agent surfaces as `UNVERIFIED` candidate-only worker/evaluator/council-review surfaces |
 | executable context pack | yes | `harnessctl.py context-pack` compiles bounded source excerpts and recent events |
 | executable worker brief | yes | `harnessctl.py worker-brief` renders task-local brief JSON from the canonical template |
 | agent communication optimization | yes | `AGENT_COMMUNICATION.md` and `harnessctl.py task-packet` require bounded packets, evidence paths, and no full transcript forwarding |
