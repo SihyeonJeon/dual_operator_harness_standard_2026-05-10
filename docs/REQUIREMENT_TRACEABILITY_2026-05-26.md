@@ -30,8 +30,8 @@ Result:
 | benchmark evidence | public fixtures implemented |
 | public/private boundary | private account surfaces excluded |
 
-The traceability assay scaffolds a generated harness and checks 215 file,
-content, and absence conditions. Current result: 215 passed, 0 failed.
+The traceability assay scaffolds a generated harness and checks 224 file,
+content, and absence conditions. Current result: 224 passed, 0 failed.
 
 ## Benchmark Topics
 

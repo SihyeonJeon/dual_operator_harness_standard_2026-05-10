@@ -38,6 +38,22 @@ disputed result:
    `harness/shared/CONTEXT.md`, `MEMORY.md`, `FAILURE_LEDGER.md`, or
    `RULE_CHANGE_LOG.md`.
 
+For benchmark-like, high-risk, or externally visible decisions, record the
+meeting as a machine-readable packet:
+
+```sh
+python3 scripts/harnessctl.py council-decision \
+  --task-id TASK \
+  --decision-id DECISION \
+  --question "..." \
+  --position codex="..." \
+  --position claude="..." \
+  --dissent "..." \
+  --selected-option "..."
+```
+
+This packet preserves dissent. It is not a forced consensus mechanism.
+
 ## Complementary Responsibilities
 
 Claude Code tends to own local runtime orchestration, project-file navigation,

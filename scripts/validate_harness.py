@@ -781,6 +781,11 @@ def check_harnessctl(project_root: Path, errors: list[str]) -> None:
         "event",
         "report",
         "budget-check",
+        "integration-evidence",
+        "preregister-benchmark",
+        "blind-redact",
+        "council-decision",
+        "recovery-evidence",
         "viz-export",
         "viz-spec-check",
         "eval-run",
@@ -980,11 +985,25 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "cross-feedback",
         "concept-check",
         "software-feedback",
+        "preregister-benchmark",
+        "blind-redact",
+        "council-decision",
+        "recovery-evidence",
     ]:
         if phrase not in readme_text:
             errors.append(f"README.md lacks required bilingual/operation phrase: {phrase}")
     claude_text = (project_root / "CLAUDE.md").read_text(encoding="utf-8")
-    for phrase in ["Root `CLAUDE.md` is intentional", ".claude/", "SOFTWARE_FEEDBACK_POLICY.md", "CURRENT_MARKET_RESEARCH_POLICY.md", "CROSS_FEEDBACK_LOOP.md"]:
+    for phrase in [
+        "Root `CLAUDE.md` is intentional",
+        ".claude/",
+        "SOFTWARE_FEEDBACK_POLICY.md",
+        "CURRENT_MARKET_RESEARCH_POLICY.md",
+        "CROSS_FEEDBACK_LOOP.md",
+        "preregister-benchmark",
+        "blind-redact",
+        "council-decision",
+        "recovery-evidence",
+    ]:
         if phrase not in claude_text:
             errors.append(f"CLAUDE.md lacks required Claude adapter phrase: {phrase}")
     report = harness / "SCAFFOLDING_REPORT.md"
@@ -1032,6 +1051,11 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "Playwright or equivalent evidence",
         "Current Research Gate",
         "Cross Feedback Gate",
+        "Benchmark Claim Gate",
+        "harnessctl.py preregister-benchmark",
+        "harnessctl.py blind-redact",
+        "harnessctl.py council-decision",
+        "RECOVERY_EVIDENCE_PACKET.json",
     ]:
         if phrase not in quality_text:
             errors.append(f"QUALITY_GATES.md lacks required held-out eval phrase: {phrase}")
@@ -1050,11 +1074,22 @@ def check_text_files(harness: Path, project_root: Path, errors: list[str]) -> No
         "Do not forward full transcripts",
         "Material dissent is preserved",
         "harnessctl.py cross-feedback",
+        "harnessctl.py council-decision",
     ]:
         if phrase not in cross_feedback:
             errors.append(f"CROSS_FEEDBACK_LOOP.md lacks {phrase}")
     software_feedback = (harness / "shared" / "SOFTWARE_FEEDBACK_POLICY.md").read_text(encoding="utf-8")
-    for phrase in ["lint", "runtime smoke", "Playwright", "UI/UX/layout", "NOT-RUN", "harnessctl.py software-feedback"]:
+    for phrase in [
+        "lint",
+        "runtime smoke",
+        "Playwright",
+        "UI/UX/layout",
+        "NOT-RUN",
+        "harnessctl.py software-feedback",
+        "harnessctl.py integration-evidence",
+        "INTEGRATION_EVIDENCE.json",
+        "Broad repository scans must be bounded",
+    ]:
         if phrase not in software_feedback:
             errors.append(f"SOFTWARE_FEEDBACK_POLICY.md lacks {phrase}")
     agent_communication = (harness / "shared" / "AGENT_COMMUNICATION.md").read_text(encoding="utf-8")
@@ -1220,6 +1255,12 @@ def main(argv: list[str]) -> int:
             "WORKER_BRIEF.json",
             errors,
         )
+        software_gate = worker_brief.get("software_feedback_gate", {})
+        if isinstance(software_gate, dict):
+            if software_gate.get("integration_evidence_helper") != "python3 scripts/harnessctl.py integration-evidence":
+                errors.append("WORKER_BRIEF.json software_feedback_gate lacks integration evidence helper")
+            if software_gate.get("pre_edit_integration_evidence_required") is not True:
+                errors.append("WORKER_BRIEF.json software_feedback_gate must require pre-edit integration evidence")
     if isinstance(feature_list, dict):
         check_feature_list(feature_list, errors)
     if isinstance(workstream_profile, dict):

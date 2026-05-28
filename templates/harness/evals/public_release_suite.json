@@ -223,7 +223,7 @@
       "type": "text_contains",
       "severity": "required",
       "path": "scripts/harnessctl.py",
-      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "current-research", "cross-feedback", "concept-check", "software-feedback"]
+      "terms": ["context-pack", "worker-brief", "model-route", "task-packet", "current-research", "cross-feedback", "concept-check", "software-feedback", "preregister-benchmark", "blind-redact", "council-decision", "recovery-evidence"]
     },
     {
       "id": "recovery_restart_path",

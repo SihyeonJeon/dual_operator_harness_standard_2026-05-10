@@ -26,6 +26,9 @@ Current-state research before overall planning is defined in
 `harness/shared/CURRENT_MARKET_RESEARCH_POLICY.md`.
 Cross-feedback before closure is defined in
 `harness/shared/CROSS_FEEDBACK_LOOP.md`.
+Benchmark-style claims require preregistration, clean freeze checks for public
+proof runs, identity stripping for non-verifier review, matched recovery
+evidence packets, and machine-readable council decisions.
 Concept-to-artifact copy rules are defined in
 `harness/shared/CONCEPT_TRANSLATION_POLICY.md`. Ordinary domain terms are
 allowed when they read naturally in the artifact.
@@ -47,7 +50,8 @@ evidence for interactive surfaces when available.
 For repeatable mechanics, prefer the executable helpers over manual prose:
 `python3 scripts/harnessctl.py context-pack`, `worker-brief`, `model-route`,
 `task-packet`, `current-research`, `cross-feedback`, `concept-check`, and
-`software-feedback`.
+`software-feedback`. For benchmark work, also prefer `preregister-benchmark`,
+`blind-redact`, `council-decision`, and `recovery-evidence`.
 
 The public kit keeps account-specific posting, outreach, connector logs, and
 private review workflows outside the scaffold. Private overlays own those

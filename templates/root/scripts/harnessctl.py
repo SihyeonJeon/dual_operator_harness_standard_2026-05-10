@@ -471,6 +471,518 @@ def budget_check(args: argparse.Namespace, root: Path) -> int:
     return 0 if status == "ok" else 1
 
 
+def integration_evidence_markdown(payload: dict[str, Any]) -> str:
+    files = "\n".join(f"- `{item}`" for item in payload.get("files_to_edit", [])) or "- `UNKNOWN`"
+    checks = "\n".join(f"- `{item}`" for item in payload.get("planned_checks", [])) or "- `UNKNOWN`"
+    return "\n".join(
+        [
+            "# Integration Evidence",
+            "",
+            f"Task: `{payload.get('task_id', 'UNKNOWN')}`",
+            f"Status: `{payload.get('status', 'UNKNOWN')}`",
+            f"Confidence: `{payload.get('confidence', 'UNKNOWN')}`",
+            "",
+            "## Integration Point",
+            "",
+            bounded_text(payload.get("integration_point", "UNKNOWN"), 1200),
+            "",
+            "## Files To Edit",
+            "",
+            files,
+            "",
+            "## Planned Checks",
+            "",
+            checks,
+            "",
+            "## Search Summary",
+            "",
+            bounded_text(payload.get("search_summary", "UNKNOWN"), 1400),
+            "",
+            "## Rationale",
+            "",
+            bounded_text(payload.get("rationale", "UNKNOWN"), 1400),
+            "",
+            "## Risk",
+            "",
+            bounded_text(payload.get("risk", "UNKNOWN"), 1400),
+            "",
+        ]
+    )
+
+
+def record_integration_evidence(args: argparse.Namespace, root: Path) -> int:
+    files_to_edit = split_values(args.file_to_edit)
+    planned_checks = split_values(args.planned_check)
+    integration_point = scrub_text(args.integration_point.strip())
+    if not integration_point or integration_point == "UNKNOWN":
+        print("ERROR: --integration-point is required and cannot be UNKNOWN", file=sys.stderr)
+        return 2
+    if not files_to_edit:
+        print("ERROR: at least one --file-to-edit is required", file=sys.stderr)
+        return 2
+    if not planned_checks:
+        print("ERROR: at least one --planned-check is required", file=sys.stderr)
+        return 2
+
+    output = artifact_path(root, args.output, args.task_id, "INTEGRATION_EVIDENCE.json")
+    created_at = datetime.now(timezone.utc).isoformat()
+    payload = {
+        "artifact": "integration_evidence",
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "status": "RECORDED",
+        "created_at": created_at,
+        "integration_point": integration_point,
+        "files_to_edit": [scrub_text(item) for item in files_to_edit],
+        "planned_checks": [scrub_text(item) for item in planned_checks],
+        "search_summary": scrub_text(args.search_summary or "UNKNOWN"),
+        "rationale": scrub_text(args.rationale or "UNKNOWN"),
+        "risk": scrub_text(args.risk or "UNKNOWN"),
+        "confidence": args.confidence,
+    }
+    json_artifact(output, payload)
+    markdown = output.with_suffix(".md")
+    markdown.write_text(integration_evidence_markdown(payload), encoding="utf-8")
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": args.trace_id,
+            "task_id": args.task_id,
+            "actor": "harnessctl",
+            "actor_type": "hook",
+            "event_type": "integration_evidence.recorded",
+            "timestamp": created_at,
+            "verdict": "PASS",
+            "summary": f"Integration evidence recorded for {len(files_to_edit)} file(s).",
+            "evidence_path": display_path(output, root),
+            "part_id": "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+    print(f"integration evidence written: {display_path(output, root)}")
+    print(f"integration evidence markdown written: {display_path(markdown, root)}")
+    return 0
+
+
+SYSTEM_IDENTITY_TERMS = [
+    "Claude Code",
+    "Claude",
+    "Codex CLI",
+    "Codex",
+    "Gemini CLI",
+    "Gemini",
+    "OpenAI",
+    "Anthropic",
+    "Google",
+    "gpt-5.5",
+    "gpt-5.4",
+    "gpt-5.3",
+    "opus",
+    "sonnet",
+    "haiku",
+]
+
+
+def git_command(root: Path, *args: str) -> tuple[int, str]:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=str(root),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode, (result.stdout or result.stderr or "").strip()
+
+
+def git_head(root: Path) -> str:
+    code, output = git_command(root, "rev-parse", "HEAD")
+    return output if code == 0 and output else "UNKNOWN"
+
+
+def git_status_short(root: Path) -> list[str]:
+    code, output = git_command(root, "status", "--short")
+    if code != 0:
+        return ["GIT_STATUS_UNAVAILABLE"]
+    return [line for line in output.splitlines() if line.strip()]
+
+
+def file_sha256(path: Path) -> str:
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except Exception:
+        return "UNREADABLE"
+
+
+def write_standard_event(
+    root: Path,
+    *,
+    trace_id: str,
+    task_id: str,
+    event_type: str,
+    verdict: str,
+    summary: str,
+    evidence_path: Path,
+    actor_type: str = "hook",
+) -> None:
+    write_event(
+        root,
+        {
+            "event_id": f"evt_{uuid.uuid4().hex}",
+            "trace_id": trace_id,
+            "task_id": task_id,
+            "actor": "harnessctl",
+            "actor_type": actor_type,
+            "event_type": event_type,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "verdict": verdict,
+            "summary": summary,
+            "evidence_path": display_path(evidence_path, root),
+            "part_id": "",
+            "worker_id": "",
+            "model": "",
+            "effort": "",
+        },
+    )
+
+
+def preregister_benchmark(args: argparse.Namespace, root: Path) -> int:
+    dirty = git_status_short(root)
+    public_proof = args.public_proof
+    if public_proof and dirty and not args.allow_dirty_public_proof:
+        print("ERROR: public proof preregistration requires a clean working tree", file=sys.stderr)
+        for line in dirty:
+            print(line, file=sys.stderr)
+        return 2
+
+    task_ids = split_values(args.task)
+    arms = split_values(args.arm)
+    metrics = split_values(args.metric)
+    claim_boundaries = split_values(args.claim_boundary)
+    stop_conditions = split_values(args.stop_condition)
+    if not task_ids:
+        print("ERROR: at least one --task is required", file=sys.stderr)
+        return 2
+    if not arms:
+        print("ERROR: at least one --arm is required", file=sys.stderr)
+        return 2
+
+    output = artifact_path(root, args.output, args.task_id, "BENCHMARK_PREREGISTRATION.json")
+    payload = {
+        "artifact": "benchmark_preregistration",
+        "benchmark_id": args.benchmark_id,
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "PUBLIC_PROOF_READY" if public_proof and not dirty else "LOCAL_PILOT_DRAFT",
+        "public_proof": public_proof,
+        "pilot_only": not public_proof,
+        "seed": args.seed,
+        "tasks": task_ids,
+        "arms": arms,
+        "metrics": metrics,
+        "claim_boundaries": claim_boundaries,
+        "stop_conditions": stop_conditions,
+        "statistical_plan": args.statistical_plan or "descriptive_only_for_pilot",
+        "first_pass_rules": {
+            "verifier_feedback_before_final_answer": False,
+            "same_timeout": True,
+            "same_evidence_access": True,
+            "same_task_order": True,
+        },
+        "recovery_rules": {
+            "matched_failure_evidence_required": True,
+            "matched_retry_budget_required": True,
+            "observed_failures_are_headline": True,
+            "induced_failures_are_supplementary": True,
+        },
+        "budget_caps": {
+            "timeout_minutes": args.timeout_minutes,
+            "output_token_cap": args.output_token_cap,
+            "cost_cap_usd": args.cost_cap_usd,
+            "retry_cap": args.retry_cap,
+        },
+        "provenance": {
+            "git_head": git_head(root),
+            "dirty": bool(dirty),
+            "dirty_files": dirty,
+            "clean_tree_required_for_public_proof": True,
+        },
+    }
+    json_artifact(output, payload)
+    hash_path = output.with_suffix(output.suffix + ".sha256")
+    hash_path.write_text(file_sha256(output) + "\n", encoding="utf-8")
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Benchmark Preregistration",
+        "",
+        f"Benchmark: `{args.benchmark_id}`",
+        f"Status: `{payload['status']}`",
+        f"Git head: `{payload['provenance']['git_head']}`",
+        f"Dirty tree: `{payload['provenance']['dirty']}`",
+        f"Hash: `{file_sha256(output)}`",
+        "",
+        "## Tasks",
+        "",
+        *[f"- `{item}`" for item in task_ids],
+        "",
+        "## Arms",
+        "",
+        *[f"- `{item}`" for item in arms],
+        "",
+        "## Metrics",
+        "",
+        *[f"- `{item}`" for item in metrics],
+        "",
+        "## Claim Boundaries",
+        "",
+        *[f"- {scrub_text(item)}" for item in claim_boundaries],
+    ]
+    if dirty:
+        lines.extend(["", "## Dirty Files", "", *[f"- `{scrub_text(item)}`" for item in dirty]])
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    verdict = "WARN" if dirty else "PASS"
+    write_standard_event(
+        root,
+        trace_id=args.trace_id,
+        task_id=args.task_id,
+        event_type="benchmark.preregistered",
+        verdict=verdict,
+        summary=f"Benchmark preregistration written for {len(task_ids)} task(s).",
+        evidence_path=output,
+    )
+    print(f"benchmark preregistration written: {display_path(output, root)}")
+    print(f"benchmark preregistration hash written: {display_path(hash_path, root)}")
+    if dirty:
+        print("warning: working tree is dirty; public proof benchmark remains blocked")
+    return 0
+
+
+def redact_for_blind_review(text: str, extra_terms: list[str]) -> tuple[str, dict[str, int]]:
+    redacted = scrub_text(text)
+    counts: dict[str, int] = {}
+    terms = [*SYSTEM_IDENTITY_TERMS, *extra_terms]
+    for idx, term in enumerate(terms, start=1):
+        if not term:
+            continue
+        pattern = re.compile(re.escape(term), flags=re.IGNORECASE)
+        redacted, count = pattern.subn(f"SYSTEM_{idx:02d}", redacted)
+        if count:
+            counts[term] = count
+    redacted = re.sub(r"(?im)^\s*(model|provider|agent|operator|system)\s*[:=].*$", "system: REDACTED", redacted)
+    return redacted, counts
+
+
+def blind_redact(args: argparse.Namespace, root: Path) -> int:
+    inputs = split_values(args.input)
+    if not inputs:
+        print("ERROR: at least one --input is required", file=sys.stderr)
+        return 2
+    output_dir = Path(args.output_dir) if args.output_dir else ensure_task_dir(root, args.task_id) / "blind_redacted"
+    if not output_dir.is_absolute():
+        output_dir = root / output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+    extra_terms = split_values(args.strip_term)
+    records = []
+    total_counts: Counter[str] = Counter()
+    for value in inputs:
+        source = Path(value)
+        if not source.is_absolute():
+            source = root / source
+        text = read_text(source, "")
+        redacted, counts = redact_for_blind_review(text, extra_terms)
+        redacted_name = f"{hashlib.sha256(display_path(source, root).encode()).hexdigest()[:12]}.txt"
+        redacted_path = output_dir / redacted_name
+        redacted_path.write_text(redacted, encoding="utf-8")
+        total_counts.update(counts)
+        records.append(
+            {
+                "source_path": display_path(source, root),
+                "redacted_path": display_path(redacted_path, root),
+                "source_sha256": file_sha256(source),
+                "redacted_sha256": file_sha256(redacted_path),
+                "redaction_counts": counts,
+            }
+        )
+
+    output = artifact_path(root, args.output, args.task_id, "BLIND_REDACTION.json")
+    payload = {
+        "artifact": "blind_redaction",
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "RECORDED",
+        "identity_terms_redacted": sorted(total_counts),
+        "records": records,
+        "claim_boundary": "Redaction reduces obvious identity leakage but does not guarantee perfect style anonymization.",
+    }
+    json_artifact(output, payload)
+    write_standard_event(
+        root,
+        trace_id=args.trace_id,
+        task_id=args.task_id,
+        event_type="benchmark.blind_redaction",
+        verdict="PASS",
+        summary=f"Blind redaction written for {len(records)} artifact(s).",
+        evidence_path=output,
+    )
+    print(f"blind redaction written: {display_path(output, root)}")
+    return 0
+
+
+def parse_key_value_items(values: list[str], field_name: str) -> dict[str, str]:
+    parsed: dict[str, str] = {}
+    for item in values:
+        if "=" not in item:
+            raise ValueError(f"{field_name} must use id=value format: {item}")
+        key, value = item.split("=", 1)
+        key = key.strip()
+        if not key:
+            raise ValueError(f"{field_name} has empty id: {item}")
+        parsed[key] = bounded_text(value.strip(), 2000)
+    return parsed
+
+
+def record_council_decision(args: argparse.Namespace, root: Path) -> int:
+    try:
+        positions = parse_key_value_items(args.position, "--position")
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+    if len(positions) < 2 and not args.allow_single_position:
+        print("ERROR: at least two --position values are required unless --allow-single-position is set", file=sys.stderr)
+        return 2
+    dissent = split_values(args.dissent)
+    agreements = split_values(args.agreement)
+    if not dissent and not args.no_material_dissent:
+        print("ERROR: record --dissent or --no-material-dissent", file=sys.stderr)
+        return 2
+    evidence_paths = split_values(args.evidence_path)
+    missing = []
+    for value in evidence_paths:
+        candidate = Path(value)
+        if not candidate.is_absolute():
+            candidate = root / candidate
+        if value != "UNKNOWN" and not candidate.exists():
+            missing.append(value)
+    output = artifact_path(root, args.output, args.task_id, "COUNCIL_DECISION_PACKET.json")
+    payload = {
+        "artifact": "council_decision_packet",
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "decision_id": args.decision_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "question": bounded_text(args.question, 2000),
+        "positions": positions,
+        "agreements": agreements,
+        "dissent": dissent,
+        "no_material_dissent": args.no_material_dissent,
+        "dissent_preserved": True,
+        "force_consensus": False,
+        "selected_option": bounded_text(args.selected_option, 2000),
+        "rejected_options": split_values(args.rejected_option),
+        "operator_rationale": bounded_text(args.rationale or "UNKNOWN", 2400),
+        "verdict": args.verdict,
+        "evidence_paths": evidence_paths,
+        "missing_evidence_paths": missing,
+    }
+    json_artifact(output, payload)
+    markdown = output.with_suffix(".md")
+    lines = [
+        "# Council Decision Packet",
+        "",
+        f"Decision: `{args.decision_id}`",
+        f"Verdict: `{args.verdict}`",
+        "",
+        "## Question",
+        "",
+        scrub_text(args.question),
+        "",
+        "## Positions",
+        "",
+        *[f"- `{key}`: {value}" for key, value in positions.items()],
+        "",
+        "## Dissent",
+        "",
+        *([f"- {scrub_text(item)}" for item in dissent] or ["- no material dissent recorded"]),
+        "",
+        "## Selected Option",
+        "",
+        scrub_text(args.selected_option),
+    ]
+    markdown.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    verdict = "WARN" if missing or args.verdict == "WARN" else args.verdict
+    write_standard_event(
+        root,
+        trace_id=args.trace_id,
+        task_id=args.task_id,
+        event_type="council_decision.recorded",
+        verdict=verdict,
+        summary=f"Council decision packet recorded for {args.decision_id}.",
+        evidence_path=output,
+        actor_type="operator",
+    )
+    print(f"council decision packet written: {display_path(output, root)}")
+    if missing and not args.allow_missing_evidence:
+        print("ERROR: council decision has missing evidence paths: " + ", ".join(missing), file=sys.stderr)
+        return 1
+    return 0
+
+
+def record_recovery_evidence(args: argparse.Namespace, root: Path) -> int:
+    evidence_paths = {
+        "prior_patch": args.prior_patch,
+        "verifier_output": args.verifier_output,
+        "run_log": args.run_log,
+    }
+    missing = []
+    for label, value in evidence_paths.items():
+        if not value:
+            continue
+        path = Path(value)
+        if not path.is_absolute():
+            path = root / path
+        if not path.exists():
+            missing.append(f"{label}:{value}")
+    output = artifact_path(root, args.output, args.task_id, "RECOVERY_EVIDENCE_PACKET.json")
+    payload = {
+        "artifact": "recovery_evidence_packet",
+        "task_id": args.task_id,
+        "trace_id": args.trace_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "RECORDED",
+        "prior_patch": scrub_text(args.prior_patch or "UNKNOWN"),
+        "verifier_output": scrub_text(args.verifier_output or "UNKNOWN"),
+        "run_log": scrub_text(args.run_log or "UNKNOWN"),
+        "exception_type": scrub_text(args.exception_type or "UNKNOWN"),
+        "runtime_seconds": args.runtime_seconds,
+        "input_tokens": args.input_tokens,
+        "cache_tokens": args.cache_tokens,
+        "output_tokens": args.output_tokens,
+        "cost_usd": args.cost_usd,
+        "same_packet_required_for_all_recovery_arms": True,
+        "operator_notes": bounded_text(args.operator_notes or "UNKNOWN", 2000),
+        "missing_evidence_paths": missing,
+    }
+    json_artifact(output, payload)
+    write_standard_event(
+        root,
+        trace_id=args.trace_id,
+        task_id=args.task_id,
+        event_type="benchmark.recovery_evidence_packet",
+        verdict="WARN" if missing else "PASS",
+        summary="Recovery evidence packet recorded for matched retry comparison.",
+        evidence_path=output,
+    )
+    print(f"recovery evidence packet written: {display_path(output, root)}")
+    if missing and not args.allow_missing_evidence:
+        print("ERROR: recovery evidence has missing paths: " + ", ".join(missing), file=sys.stderr)
+        return 1
+    return 0
+
+
 def build_report(args: argparse.Namespace, root: Path) -> int:
     out = Path(args.output) if args.output else root / "harness" / "reports" / "status.html"
     if not out.is_absolute():
@@ -2256,6 +2768,79 @@ def main(argv: list[str]) -> int:
     budget.add_argument("--time-elapsed-minutes", type=float, default=None)
     budget.add_argument("--cost-used-usd", type=float, default=None)
 
+    integration = sub.add_parser("integration-evidence", help="Record pre-edit integration point and bounded check evidence")
+    integration.add_argument("--task-id", required=True)
+    integration.add_argument("--trace-id", default="trace_integration_evidence")
+    integration.add_argument("--integration-point", required=True)
+    integration.add_argument("--file-to-edit", action="append", default=[])
+    integration.add_argument("--planned-check", action="append", default=[])
+    integration.add_argument("--search-summary", default="")
+    integration.add_argument("--rationale", default="")
+    integration.add_argument("--risk", default="")
+    integration.add_argument("--confidence", choices=["low", "medium", "high"], default="medium")
+    integration.add_argument("--output", default="")
+
+    prereg = sub.add_parser("preregister-benchmark", help="Write a benchmark preregistration and freeze/dirty-tree receipt")
+    prereg.add_argument("--task-id", required=True)
+    prereg.add_argument("--trace-id", default="trace_benchmark_preregistration")
+    prereg.add_argument("--benchmark-id", required=True)
+    prereg.add_argument("--seed", default="")
+    prereg.add_argument("--task", action="append", default=[])
+    prereg.add_argument("--arm", action="append", default=[])
+    prereg.add_argument("--metric", action="append", default=[])
+    prereg.add_argument("--claim-boundary", action="append", default=[])
+    prereg.add_argument("--stop-condition", action="append", default=[])
+    prereg.add_argument("--statistical-plan", default="")
+    prereg.add_argument("--timeout-minutes", type=float, default=None)
+    prereg.add_argument("--output-token-cap", type=float, default=None)
+    prereg.add_argument("--cost-cap-usd", type=float, default=None)
+    prereg.add_argument("--retry-cap", type=int, default=0)
+    prereg.add_argument("--public-proof", action="store_true")
+    prereg.add_argument("--allow-dirty-public-proof", action="store_true")
+    prereg.add_argument("--output", default="")
+
+    blind = sub.add_parser("blind-redact", help="Strip obvious system identity markers from benchmark artifacts")
+    blind.add_argument("--task-id", required=True)
+    blind.add_argument("--trace-id", default="trace_blind_redaction")
+    blind.add_argument("--input", action="append", default=[])
+    blind.add_argument("--strip-term", action="append", default=[])
+    blind.add_argument("--output-dir", default="")
+    blind.add_argument("--output", default="")
+
+    council = sub.add_parser("council-decision", help="Record a machine-readable council decision packet with dissent preserved")
+    council.add_argument("--task-id", required=True)
+    council.add_argument("--trace-id", default="trace_council_decision")
+    council.add_argument("--decision-id", required=True)
+    council.add_argument("--question", required=True)
+    council.add_argument("--position", action="append", default=[])
+    council.add_argument("--agreement", action="append", default=[])
+    council.add_argument("--dissent", action="append", default=[])
+    council.add_argument("--no-material-dissent", action="store_true")
+    council.add_argument("--selected-option", required=True)
+    council.add_argument("--rejected-option", action="append", default=[])
+    council.add_argument("--rationale", default="")
+    council.add_argument("--verdict", choices=["PASS", "WARN", "FAIL", "NOT-RUN"], default="PASS")
+    council.add_argument("--evidence-path", action="append", default=[])
+    council.add_argument("--allow-single-position", action="store_true")
+    council.add_argument("--allow-missing-evidence", action="store_true")
+    council.add_argument("--output", default="")
+
+    recovery = sub.add_parser("recovery-evidence", help="Record a matched recovery evidence packet for retry comparisons")
+    recovery.add_argument("--task-id", required=True)
+    recovery.add_argument("--trace-id", default="trace_recovery_evidence")
+    recovery.add_argument("--prior-patch", default="")
+    recovery.add_argument("--verifier-output", default="")
+    recovery.add_argument("--run-log", default="")
+    recovery.add_argument("--exception-type", default="")
+    recovery.add_argument("--runtime-seconds", type=float, default=None)
+    recovery.add_argument("--input-tokens", type=float, default=None)
+    recovery.add_argument("--cache-tokens", type=float, default=None)
+    recovery.add_argument("--output-tokens", type=float, default=None)
+    recovery.add_argument("--cost-usd", type=float, default=None)
+    recovery.add_argument("--operator-notes", default="")
+    recovery.add_argument("--allow-missing-evidence", action="store_true")
+    recovery.add_argument("--output", default="")
+
     viz = sub.add_parser("viz-spec-check", help="Check the pre-visualization spec gate")
     viz.add_argument("--task-id", default="")
     viz.add_argument("--path", default="")
@@ -2405,6 +2990,16 @@ def main(argv: list[str]) -> int:
         return build_report(args, root)
     if args.command == "budget-check":
         return budget_check(args, root)
+    if args.command == "integration-evidence":
+        return record_integration_evidence(args, root)
+    if args.command == "preregister-benchmark":
+        return preregister_benchmark(args, root)
+    if args.command == "blind-redact":
+        return blind_redact(args, root)
+    if args.command == "council-decision":
+        return record_council_decision(args, root)
+    if args.command == "recovery-evidence":
+        return record_recovery_evidence(args, root)
     if args.command == "viz-spec-check":
         return check_visualization_spec(args, root)
     if args.command == "viz-export":

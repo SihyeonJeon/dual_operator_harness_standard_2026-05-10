@@ -46,6 +46,14 @@ The generated control surface code handles repeatable, domain-neutral work:
   leakage in user-facing artifacts;
 - `software-feedback` executes lint/static, runtime smoke, optional test, and
   optional Playwright commands and writes evidence packets.
+- `preregister-benchmark` records benchmark task order, arms, metrics,
+  budget caps, claim boundaries, commit SHA, and dirty-tree status.
+- `blind-redact` strips obvious system identity markers from benchmark artifacts
+  before non-verifier review.
+- `council-decision` records operator positions, agreements, dissent, selected
+  option, rejected options, and evidence paths as a machine-readable packet.
+- `recovery-evidence` records the exact evidence packet that every recovery arm
+  must receive for matched retry comparisons.
 
 Agents may still make project-specific judgments, but these repeatable steps
 should be run by code when available.

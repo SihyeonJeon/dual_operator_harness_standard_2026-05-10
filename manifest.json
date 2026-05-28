@@ -31,7 +31,7 @@
   ],
   "integrity_commands": [
     "python3 scripts/validate_kit.py",
-    "python3 scripts/validate_harness.py ."
+    "python3 scripts/validate_harness.py <generated-project-root>"
   ],
   "normal_load_order": [
     "IMPLEMENTER.md",

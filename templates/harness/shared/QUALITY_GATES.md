@@ -93,6 +93,22 @@ task where a metric can be tuned to the visible fixture set.
   evaluator paths, private overlay records, and temp-only challenge commands
   belong in task evidence.
 
+## Benchmark Claim Gate
+
+Before any public benchmark-style claim:
+
+- Write a preregistration packet with `harnessctl.py preregister-benchmark`.
+- Public proof runs require a clean git working tree and recorded commit SHA.
+- First-pass arms must use the same task order, timeout, evidence access, and
+  verifier-feedback prohibition.
+- Recovery arms must receive the same `RECOVERY_EVIDENCE_PACKET.json` bytes.
+- Non-verifier judging must use `harnessctl.py blind-redact` or equivalent
+  identity stripping before review.
+- Council decisions must use `harnessctl.py council-decision` and preserve
+  dissent instead of rewriting disagreement as consensus.
+- Report score, runtime, token/cost use, exceptions, timeout rate, and claim
+  boundaries. Do not convert a local pilot into a public superiority claim.
+
 ## Visualization Gates
 
 Use before producing dashboards, timelines, graphs, status HTML views,

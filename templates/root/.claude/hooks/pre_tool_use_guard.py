@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed guard for obviously unsafe Claude Code tool calls."""
+"""Fail-closed guard for unsafe or unbounded Claude Code tool calls."""
 
 from __future__ import annotations
 
@@ -37,6 +37,62 @@ DANGEROUS_BASH_PATTERNS = [
     r":\s*\(\)\s*\{",
 ]
 
+CODE_SUFFIXES = {
+    ".c",
+    ".cc",
+    ".cpp",
+    ".cs",
+    ".css",
+    ".go",
+    ".html",
+    ".java",
+    ".js",
+    ".jsx",
+    ".kt",
+    ".mjs",
+    ".php",
+    ".py",
+    ".rb",
+    ".rs",
+    ".scss",
+    ".sh",
+    ".sql",
+    ".swift",
+    ".ts",
+    ".tsx",
+    ".vue",
+}
+
+HARNESS_REL_PREFIXES = (
+    ".claude/",
+    ".github/",
+    "docs/",
+    "harness/",
+    "schemas/",
+)
+
+LOCK_OR_GENERATED_FILES = (
+    "cargo.lock",
+    "go.sum",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "poetry.lock",
+    "yarn.lock",
+)
+
+OUTPUT_CAP_PATTERNS = (
+    r"\|\s*head\b",
+    r"\|\s*tail\b",
+    r"\|\s*sed\s+-n\b",
+    r"\|\s*wc\b",
+    r"\|\s*jq\b",
+    r">\s*\S+",
+    r"--max-count\b",
+    r"\s-m\s*\d+",
+    r"--count\b",
+    r"--files-with-matches\b",
+)
+
 
 def read_input() -> dict[str, Any]:
     try:
@@ -61,6 +117,27 @@ def deny(reason: str) -> int:
     return 0
 
 
+def command_has_output_cap(command: str) -> bool:
+    return any(re.search(pattern, command, flags=re.IGNORECASE) for pattern in OUTPUT_CAP_PATTERNS)
+
+
+def command_is_uncapped_broad_read(command: str) -> bool:
+    lowered = command.lower()
+    if command_has_output_cap(command):
+        return False
+    if re.search(r"\brg\s+--files\b", lowered):
+        return True
+    if re.search(r"\bfind\s+(\.|\$pwd|/|\S+)", lowered) and "-maxdepth" not in lowered:
+        return True
+    if re.search(r"\brg\b", lowered) and re.search(r"(-g|--glob)\s*['\"]?\*\*?/", lowered):
+        return True
+    if re.search(r"\b(grep|rg)\b", lowered) and any(marker in lowered for marker in ("node_modules", "vendor/", "dist/", "build/")):
+        return True
+    if re.search(r"\bcat\s+\S+", lowered) and any(name in lowered for name in LOCK_OR_GENERATED_FILES):
+        return True
+    return False
+
+
 def normalize_path(value: str, cwd: str) -> str:
     try:
         return str(Path(cwd, value).resolve()).lower()
@@ -74,6 +151,58 @@ def extract_path(tool_input: dict[str, Any]) -> str:
         if isinstance(value, str):
             return value
     return ""
+
+
+def project_root(cwd: str) -> Path:
+    current = Path(cwd).resolve()
+    for candidate in [current, *current.parents]:
+        if candidate.joinpath("harness", "tasks").exists():
+            return candidate
+    return current
+
+
+def relative_path(value: str, cwd: str, root: Path) -> str:
+    try:
+        input_path = Path(value)
+        path = input_path if input_path.is_absolute() else Path(cwd, value)
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except Exception:
+        return value.replace("\\", "/").lstrip("./")
+
+
+def is_code_path(rel_path: str) -> bool:
+    suffix = Path(rel_path).suffix.lower()
+    if suffix not in CODE_SUFFIXES:
+        return False
+    if rel_path.startswith(HARNESS_REL_PREFIXES):
+        return False
+    return True
+
+
+def path_matches_evidence(rel_path: str, value: str) -> bool:
+    normalized = value.replace("\\", "/").strip().lstrip("./")
+    if not normalized or normalized == "UNKNOWN":
+        return False
+    return rel_path == normalized or rel_path.startswith(normalized.rstrip("/") + "/")
+
+
+def integration_evidence_allows(root: Path, rel_path: str) -> bool:
+    task_root = root / "harness" / "tasks"
+    if not task_root.exists():
+        return False
+    for path in task_root.glob("**/INTEGRATION_EVIDENCE.json"):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if data.get("status") not in {"RECORDED", "APPROVED"}:
+            continue
+        files = data.get("files_to_edit") or []
+        if not isinstance(files, list):
+            continue
+        if any(path_matches_evidence(rel_path, str(item)) for item in files):
+            return True
+    return False
 
 
 def main() -> int:
@@ -91,6 +220,10 @@ def main() -> int:
                 return deny(
                     "Blocked by generated harness guard. Record explicit human approval and use a narrower safe command."
                 )
+        if command_is_uncapped_broad_read(command):
+            return deny(
+                "Blocked unbounded read/search command. Add an output cap such as `| head`, `| sed -n`, `--max-count`, or write bounded evidence through harnessctl."
+            )
 
     if tool_name in {"Read", "Write", "Edit", "MultiEdit"}:
         path = normalize_path(extract_path(tool_input), cwd)
@@ -98,10 +231,16 @@ def main() -> int:
             return deny(
                 "Blocked secret/credential path. Use the approval packet and credential lifecycle policy before access."
             )
+        root = project_root(cwd)
+        rel_path = relative_path(extract_path(tool_input), cwd, root)
+        if tool_name in {"Write", "Edit", "MultiEdit"} and is_code_path(rel_path):
+            if not integration_evidence_allows(root, rel_path):
+                return deny(
+                    "Blocked code edit without integration evidence. Run `python3 scripts/harnessctl.py integration-evidence --task-id TASK --integration-point FILE:LINE --file-to-edit PATH --planned-check COMMAND` before editing."
+                )
 
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

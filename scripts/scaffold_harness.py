@@ -716,7 +716,7 @@ def main() -> int:
                     "- `init.sh`: local bootstrap check",
                     "- `feature_list.json`: feature state source of truth",
                     "- `progress.md` and `session-handoff.md`: session continuity",
-                    "- `scripts/harnessctl.py`: thin local validation, event, report, visualization-spec, eval-run, viz-export, archive, context-pack, worker-brief, model-route, task-packet, concept-check, and software-feedback command surface",
+                    "- `scripts/harnessctl.py`: thin local validation, event, report, visualization-spec, eval-run, viz-export, archive, context-pack, worker-brief, model-route, task-packet, concept-check, software-feedback, preregister-benchmark, blind-redact, council-decision, and recovery-evidence command surface",
                     "- `harness/shared/WORKSTREAM_PROFILE.json`: inferred workstream and team topology",
                     "- `harness/shared/OPERATOR_SESSION_REGISTRY.json`: fixed operator session handles and verification status",
                     "- `harness/shared/DUAL_OPERATOR_PROTOCOL.md`: Codex/Claude parity and non-forced meetings",

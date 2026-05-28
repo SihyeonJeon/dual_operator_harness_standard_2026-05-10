@@ -135,6 +135,8 @@
   "software_feedback_gate": {
     "required_when_project_includes_code": true,
     "policy": "harness/shared/SOFTWARE_FEEDBACK_POLICY.md",
+    "pre_edit_integration_evidence_required": true,
+    "integration_evidence_helper": "python3 scripts/harnessctl.py integration-evidence",
     "lint_or_static_check_required": true,
     "runtime_smoke_required": true,
     "playwright_or_equivalent_required_for_interactive_ui": true,

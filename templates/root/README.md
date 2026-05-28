@@ -24,6 +24,10 @@ python3 scripts/harnessctl.py current-research --task-id H0-LOCAL-SMOKE --query 
 python3 scripts/harnessctl.py cross-feedback --task-id H0-LOCAL-SMOKE --producer A --reviewer B --verdict PASS --feedback "feedback"
 python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
+python3 scripts/harnessctl.py preregister-benchmark --task-id H0-LOCAL-SMOKE --benchmark-id pilot --task task-a --arm arm-a --metric pass_at_1
+python3 scripts/harnessctl.py council-decision --task-id H0-LOCAL-SMOKE --decision-id decision-a --question "question" --position codex="position" --position claude="position" --no-material-dissent --selected-option "option"
+python3 scripts/harnessctl.py blind-redact --task-id H0-LOCAL-SMOKE --input PATH
+python3 scripts/harnessctl.py recovery-evidence --task-id H0-LOCAL-SMOKE --run-log PATH --allow-missing-evidence
 ```
 
 ### operator 진입
@@ -48,6 +52,10 @@ you are operator
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
 - current-research records command-date market/comparable evidence before overall planning
 - cross-feedback records independent feedback before operator closure
+- council-decision records machine-readable operator positions and dissent
+- preregister-benchmark blocks public proof claims without frozen protocol
+- blind-redact strips obvious system identity before non-verifier judging
+- recovery-evidence creates matched retry packets for recovery comparisons
 - concept-check catches prompt wording leakage in user-facing artifacts
 - CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical
@@ -116,6 +124,10 @@ python3 scripts/harnessctl.py current-research --task-id H0-LOCAL-SMOKE --query 
 python3 scripts/harnessctl.py cross-feedback --task-id H0-LOCAL-SMOKE --producer A --reviewer B --verdict PASS --feedback "feedback"
 python3 scripts/harnessctl.py concept-check --task-id H0-LOCAL-SMOKE --artifact-path PATH --forbidden-phrase "prompt phrase"
 python3 scripts/harnessctl.py software-feedback --task-id H0-LOCAL-SMOKE --lint-command "..." --smoke-command "..."
+python3 scripts/harnessctl.py preregister-benchmark --task-id H0-LOCAL-SMOKE --benchmark-id pilot --task task-a --arm arm-a --metric pass_at_1
+python3 scripts/harnessctl.py council-decision --task-id H0-LOCAL-SMOKE --decision-id decision-a --question "question" --position codex="position" --position claude="position" --no-material-dissent --selected-option "option"
+python3 scripts/harnessctl.py blind-redact --task-id H0-LOCAL-SMOKE --input PATH
+python3 scripts/harnessctl.py recovery-evidence --task-id H0-LOCAL-SMOKE --run-log PATH --allow-missing-evidence
 ```
 
 ### Operator Entry
@@ -140,6 +152,10 @@ you are operator
 - context-pack worker-brief task-packet helpers reduce repeated prompt context
 - current-research records command-date market/comparable evidence before overall planning
 - cross-feedback records independent feedback before operator closure
+- council-decision records machine-readable operator positions and dissent
+- preregister-benchmark blocks public proof claims without frozen protocol
+- blind-redact strips obvious system identity before non-verifier judging
+- recovery-evidence creates matched retry packets for recovery comparisons
 - concept-check catches prompt wording leakage in user-facing artifacts
 - CONCEPT_TRANSLATION_POLICY.md separates user request from artifact copy
 - shared context canonical

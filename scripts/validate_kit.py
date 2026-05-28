@@ -156,7 +156,17 @@ def parse_json_files(root: Path) -> int:
 
 def scan_public_markers(root: Path) -> list[str]:
     findings: list[str] = []
-    ignored_parts = {".git", "__pycache__", "node_modules"}
+    ignored_parts = {
+        ".git",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".tmp",
+        ".venv",
+        "__pycache__",
+        "node_modules",
+        "venv",
+    }
     ignored_files = {"harness_evaluation_checklist.md", "check.md", "conv_log.md", "convlog.md", "conversation_log.md"}
     for path in sorted(root.rglob("*")):
         if not path.is_file() or path.name in ignored_files or any(part in ignored_parts for part in path.parts):
@@ -172,6 +182,21 @@ def scan_public_markers(root: Path) -> list[str]:
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def run_claude_hook(target: Path, payload: dict) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, ".claude/hooks/pre_tool_use_guard.py"],
+        cwd=str(target),
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def hook_denied(result: subprocess.CompletedProcess[str]) -> bool:
+    return "permissionDecision" in result.stdout and "deny" in result.stdout
 
 
 def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
@@ -195,6 +220,30 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     )
     run(["./init.sh"], target)
     run([sys.executable, "harness/mcp_server/server.py", "--root", ".", "list-tools"], target)
+    broad_search_guard = run_claude_hook(
+        target,
+        {
+            "tool_name": "Bash",
+            "tool_input": {"command": "rg --files"},
+            "cwd": str(target),
+        },
+    )
+    if not hook_denied(broad_search_guard):
+        print(broad_search_guard.stdout, end="")
+        print(broad_search_guard.stderr, end="", file=sys.stderr)
+        raise SystemExit("pre_tool_use_guard did not deny uncapped rg --files")
+    capped_search_guard = run_claude_hook(
+        target,
+        {
+            "tool_name": "Bash",
+            "tool_input": {"command": "rg --files | head -50"},
+            "cwd": str(target),
+        },
+    )
+    if hook_denied(capped_search_guard) or capped_search_guard.returncode != 0:
+        print(capped_search_guard.stdout, end="")
+        print(capped_search_guard.stderr, end="", file=sys.stderr)
+        raise SystemExit("pre_tool_use_guard denied capped rg --files")
     budget_result = subprocess.run(
         [
             sys.executable,
@@ -214,6 +263,63 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         print(budget_result.stdout, end="")
         print(budget_result.stderr, end="", file=sys.stderr)
         raise SystemExit("budget-check smoke did not return kill-required exit code")
+    edit_without_evidence_guard = run_claude_hook(
+        target,
+        {
+            "tool_name": "Edit",
+            "tool_input": {"file_path": "src/example.py"},
+            "cwd": str(target),
+        },
+    )
+    if not hook_denied(edit_without_evidence_guard):
+        print(edit_without_evidence_guard.stdout, end="")
+        print(edit_without_evidence_guard.stderr, end="", file=sys.stderr)
+        raise SystemExit("pre_tool_use_guard did not deny code edit without integration evidence")
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "integration-evidence",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--integration-point",
+            "src/example.py: demo_function",
+            "--file-to-edit",
+            "src/example.py",
+            "--planned-check",
+            "python3 -m py_compile src/example.py",
+            "--search-summary",
+            "Focused callsite smoke evidence.",
+            "--rationale",
+            "Exercise executable pre-edit evidence gate.",
+        ],
+        target,
+    )
+    target.joinpath("src").mkdir(exist_ok=True)
+    edit_with_evidence_guard = run_claude_hook(
+        target,
+        {
+            "tool_name": "Edit",
+            "tool_input": {"file_path": "src/example.py"},
+            "cwd": str(target),
+        },
+    )
+    if hook_denied(edit_with_evidence_guard) or edit_with_evidence_guard.returncode != 0:
+        print(edit_with_evidence_guard.stdout, end="")
+        print(edit_with_evidence_guard.stderr, end="", file=sys.stderr)
+        raise SystemExit("pre_tool_use_guard denied code edit with integration evidence")
+    edit_from_subdir_guard = run_claude_hook(
+        target,
+        {
+            "tool_name": "Edit",
+            "tool_input": {"file_path": "example.py"},
+            "cwd": str(target / "src"),
+        },
+    )
+    if hook_denied(edit_from_subdir_guard) or edit_from_subdir_guard.returncode != 0:
+        print(edit_from_subdir_guard.stdout, end="")
+        print(edit_from_subdir_guard.stderr, end="", file=sys.stderr)
+        raise SystemExit("pre_tool_use_guard did not resolve integration evidence from a subdirectory cwd")
 
     run(
         [
@@ -400,6 +506,85 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         ],
         target,
     )
+    benchmark_input = target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "BENCHMARK_OUTPUT_SAMPLE.txt"
+    benchmark_input.write_text("model: Claude\nCodex and Gemini reviewed this output.\n", encoding="utf-8")
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "preregister-benchmark",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--benchmark-id",
+            "smoke-pilot",
+            "--seed",
+            "20260528",
+            "--task",
+            "task-a",
+            "--arm",
+            "standalone",
+            "--arm",
+            "harness",
+            "--metric",
+            "pass_at_1",
+            "--metric",
+            "score_per_minute",
+            "--claim-boundary",
+            "smoke only",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "blind-redact",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--input",
+            "harness/tasks/H0-LOCAL-SMOKE/BENCHMARK_OUTPUT_SAMPLE.txt",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "council-decision",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--decision-id",
+            "smoke-decision",
+            "--question",
+            "Which route should the smoke use?",
+            "--position",
+            "codex=Use the bounded local route.",
+            "--position",
+            "claude=Use the bounded local route with dissent field checked.",
+            "--no-material-dissent",
+            "--selected-option",
+            "bounded local route",
+            "--evidence-path",
+            "harness/tasks/H0-LOCAL-SMOKE/BENCHMARK_OUTPUT_SAMPLE.txt",
+        ],
+        target,
+    )
+    run(
+        [
+            sys.executable,
+            "scripts/harnessctl.py",
+            "recovery-evidence",
+            "--task-id",
+            "H0-LOCAL-SMOKE",
+            "--run-log",
+            "harness/tasks/H0-LOCAL-SMOKE/BENCHMARK_OUTPUT_SAMPLE.txt",
+            "--exception-type",
+            "SmokeOnly",
+            "--runtime-seconds",
+            "1",
+        ],
+        target,
+    )
     events_text = (target / "harness" / "events" / "events.jsonl").read_text(encoding="utf-8")
     if "budget.kill_required" not in events_text or "budget.escalation_required" not in events_text:
         raise SystemExit("budget-check smoke did not write kill and escalation events")
@@ -408,10 +593,15 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         "model_route.selected",
         "worker_brief.created",
         "task_packet.created",
+        "integration_evidence.recorded",
         "current_research.completed",
         "cross_feedback.recorded",
         "concept_check.completed",
         "software_feedback.completed",
+        "benchmark.preregistered",
+        "benchmark.blind_redaction",
+        "council_decision.recorded",
+        "benchmark.recovery_evidence_packet",
     ]:
         if event_name not in events_text:
             raise SystemExit(f"{event_name} smoke event was not written")
@@ -420,12 +610,17 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
     public = load_json(target / "harness" / "evals" / "results" / "public_release.json")
     viz = load_json(target / "harness" / "reports" / "viz" / "summary.json")
     context_pack = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONTEXT_PACK.json")
+    integration_evidence = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "INTEGRATION_EVIDENCE.json")
     current_research = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CURRENT_RESEARCH.json")
     cross_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CROSS_FEEDBACK.json")
     concept_check = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK.json")
     concept_check_context = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_CONTEXT.json")
     concept_check_bad = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "CONCEPT_CHECK_BAD.json")
     software_feedback = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "SOFTWARE_FEEDBACK.json")
+    preregistration = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "BENCHMARK_PREREGISTRATION.json")
+    blind_redaction = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "BLIND_REDACTION.json")
+    council_decision = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "COUNCIL_DECISION_PACKET.json")
+    recovery_evidence = load_json(target / "harness" / "tasks" / "H0-LOCAL-SMOKE" / "RECOVERY_EVIDENCE_PACKET.json")
     file_count = sum(1 for path in target.rglob("*") if path.is_file())
     if latest.get("verdict") != "PASS":
         raise SystemExit("golden suite did not pass")
@@ -435,6 +630,8 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("viz smoke performed or reported an external network write")
     if context_pack.get("artifact") != "context_pack":
         raise SystemExit("context-pack smoke did not write the expected artifact")
+    if integration_evidence.get("artifact") != "integration_evidence" or integration_evidence.get("status") != "RECORDED":
+        raise SystemExit("integration-evidence smoke did not write the expected artifact")
     if current_research.get("verdict") != "PASS":
         raise SystemExit("current-research smoke did not pass")
     if cross_feedback.get("verdict") != "PASS":
@@ -447,6 +644,18 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
         raise SystemExit("concept-check negative smoke did not catch prompt wording leakage")
     if software_feedback.get("verdict") != "PASS":
         raise SystemExit("software-feedback smoke did not pass")
+    if preregistration.get("artifact") != "benchmark_preregistration" or "pass_at_1" not in preregistration.get("metrics", []):
+        raise SystemExit("benchmark preregistration smoke did not write expected metrics")
+    if blind_redaction.get("artifact") != "blind_redaction" or not blind_redaction.get("records"):
+        raise SystemExit("blind-redact smoke did not write expected records")
+    redacted_path = target / blind_redaction["records"][0]["redacted_path"]
+    redacted_text = redacted_path.read_text(encoding="utf-8")
+    if "Claude" in redacted_text or "Codex" in redacted_text or "Gemini" in redacted_text:
+        raise SystemExit("blind-redact smoke did not strip system identity")
+    if council_decision.get("artifact") != "council_decision_packet" or council_decision.get("dissent_preserved") is not True:
+        raise SystemExit("council-decision smoke did not preserve dissent field")
+    if recovery_evidence.get("artifact") != "recovery_evidence_packet" or recovery_evidence.get("same_packet_required_for_all_recovery_arms") is not True:
+        raise SystemExit("recovery-evidence smoke did not write matched packet rule")
 
     summary = {
         "target": str(target),
@@ -482,6 +691,10 @@ def validate_smoke(root: Path, args: argparse.Namespace) -> dict[str, object]:
             "concept_check_contextual_verdict": concept_check_context.get("verdict"),
             "concept_check_negative_verdict": concept_check_bad.get("verdict"),
             "software_feedback_verdict": software_feedback.get("verdict"),
+            "benchmark_preregistration": preregistration.get("status"),
+            "blind_redaction_records": len(blind_redaction.get("records", [])),
+            "council_decision": council_decision.get("decision_id"),
+            "recovery_evidence": recovery_evidence.get("status"),
             "task_packet": "harness/tasks/H0-LOCAL-SMOKE/TASK_PACKET.json",
             "worker_brief": "harness/tasks/H0-LOCAL-SMOKE/WORKER_BRIEF.json",
         },

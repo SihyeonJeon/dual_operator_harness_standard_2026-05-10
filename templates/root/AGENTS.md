@@ -81,6 +81,10 @@ become the fixed operator for the current agent surface:
 - Use `harness/shared/CROSS_FEEDBACK_LOOP.md` before operator closure for
   material artifacts. Prefer `python3 scripts/harnessctl.py cross-feedback` to
   record independent feedback without forcing consensus.
+- For benchmark-style claims, preregister task order, arms, metrics, budgets,
+  claim boundaries, and stop conditions before execution. Prefer
+  `python3 scripts/harnessctl.py preregister-benchmark`, `blind-redact`,
+  `council-decision`, and `recovery-evidence` for repeatable benchmark packets.
 - Use `harness/shared/CONCEPT_TRANSLATION_POLICY.md` for user-facing output.
   Treat the user's wording as concept, not artifact copy, unless literal text
   was explicitly requested. Ordinary domain terms remain allowed when they read

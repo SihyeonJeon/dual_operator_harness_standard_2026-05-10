@@ -66,6 +66,9 @@ treated as operational.
   clean `PASS` from visible golden/self eval alone unless held-out/challenge
   evidence, independent evaluator evidence, or explicit accepted `WARN` is
   recorded.
+- `scripts/harnessctl.py integration-evidence` exists and generated Claude Code
+  `PreToolUse` guards block unbounded broad searches and source edits that lack
+  matching `INTEGRATION_EVIDENCE.json`.
 - `VISUALIZATION_SPEC_POLICY.md` and `templates/VISUALIZATION_SPEC.md` exist.
   Visualization production is blocked until a task-local spec is approved or
   explicitly marked not required.

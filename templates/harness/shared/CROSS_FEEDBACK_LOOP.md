@@ -42,3 +42,7 @@ python3 scripts/harnessctl.py cross-feedback --task-id TASK --producer A --revie
 ```
 
 This helper records feedback evidence. It does not force consensus.
+
+For material operator meetings or benchmark decisions, use
+`harnessctl.py council-decision` so operator positions, agreements, dissent,
+selected option, rejected options, and evidence paths stay machine-readable.

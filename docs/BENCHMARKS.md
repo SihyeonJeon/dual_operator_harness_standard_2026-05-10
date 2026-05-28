@@ -21,13 +21,13 @@ python3 scripts/validate_kit.py
 
 | Benchmark | Command | Result | Boundary |
 | --- | --- | --- | --- |
-| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | 215/215 checks | scaffold coverage, not live model quality |
+| requirements traceability | `python3 benchmarks/requirements_traceability/score.py --check-summary` | generated check count, see command output | scaffold coverage, not live model quality |
 | spec gate | `python3 benchmarks/spec_gate/score.py --check-summary` | 12/12 checks | planning surfaces, not artifact quality |
 | static visualization | `python3 benchmarks/static_viz/score.py --check-summary` | 12/12 checks | local export, not hosted dashboard UX |
 | replay recovery | `python3 benchmarks/replay_recovery/score.py --check-summary` | generated harness 1.000 | restart surface, not runtime graph reload |
 | bilingual README parity | `python3 benchmarks/bilingual_readme_parity/score.py --check-summary` | 14/14 checks | structural parity, not native fluency |
 | budget governance | `python3 scripts/validate_kit.py` | generated validator checks budget files and budget-check surface | structure and local kill signal, not provider meter capture |
-| software feedback and communication | `python3 scripts/validate_kit.py` | generated validator checks model aliases, agent communication, context-pack, worker-brief, task-packet, concept-check, model-route, and software-feedback helpers | local executable surface, not live browser quality benchmark |
+| software feedback and communication | `python3 scripts/validate_kit.py` | generated validator checks model aliases, agent communication, context-pack, worker-brief, task-packet, concept-check, model-route, software-feedback, and benchmark-proof helpers | local executable surface, not live browser quality benchmark |
 | agentic governance | `python3 benchmarks/agentic_governance/score.py --check-summary` | generated harness 0.958 | repo-state assay, not product ranking |
 | operational resilience | `python3 benchmarks/operational_resilience/score.py --check-summary` | generated policy 1.000 | policy simulation, not live outage handling |
 | cloud runner policy | `python3 benchmarks/cloud_runner_policy/score.py --check-summary` | descriptor 1.000, docs 1.000 | disabled descriptors, not real cloud jobs |
@@ -40,7 +40,7 @@ requirements are reflected in public-safe files.
 
 | categories | checks | failed | score |
 | ---: | ---: | ---: | ---: |
-| 13 | 215 | 0 | 1.000 |
+| 13 | 224 | 0 | 1.000 |
 
 Covered areas include implementer bootstrap, fixed operators, worker teams,
 part ownership, context pressure controls, hook lifecycle, spec gates, local
@@ -144,6 +144,21 @@ The command writes `budget.ok`, `budget.warning`, `budget.kill_required`, and
 `budget.escalation_required` events as thresholds are crossed. The public kit
 does not claim provider token-meter capture by itself. Runner adapters must
 pass observed token, time, and cost counters into the command.
+
+## Benchmark Proof Gates
+
+Benchmark-style claims need executable packets before the run:
+
+```sh
+python3 scripts/harnessctl.py preregister-benchmark --task-id TASK --benchmark-id ID --task TASK_A --arm ARM_A --metric pass_at_1
+python3 scripts/harnessctl.py blind-redact --task-id TASK --input ARTIFACT
+python3 scripts/harnessctl.py council-decision --task-id TASK --decision-id DECISION --question "..." --position codex="..." --position claude="..." --dissent "..." --selected-option "..."
+python3 scripts/harnessctl.py recovery-evidence --task-id TASK --run-log LOG
+```
+
+The commands record task order, arms, metrics, dirty-tree status, obvious
+identity redaction, dissent-preserving council decisions, and matched recovery
+evidence. They do not make a pilot run a public superiority claim.
 
 Additional policy tracks:
 

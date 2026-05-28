@@ -12,6 +12,28 @@ freeform evaluator note:
 python3 scripts/harnessctl.py software-feedback --task-id TASK --lint-command "..." --smoke-command "..."
 ```
 
+## Pre-Edit Integration Evidence
+
+Before editing source code, record the live integration point and bounded check
+plan with the executable helper:
+
+```sh
+python3 scripts/harnessctl.py integration-evidence \
+  --task-id TASK \
+  --integration-point "src/module.py: function_name" \
+  --file-to-edit src/module.py \
+  --planned-check "pytest tests/test_module.py"
+```
+
+Claude Code `PreToolUse` blocks source edits without matching
+`INTEGRATION_EVIDENCE.json`. This does not prove the callsite is correct by
+itself; it makes the decision explicit, searchable, and reviewable before a
+worker starts a large patch.
+
+Broad repository scans must be bounded. Use focused paths, `--max-count`,
+`| head`, `| sed -n`, or write a summarized artifact instead of dumping whole
+file lists, lockfiles, generated output, or dependency manifests into context.
+
 ## Required Feedback Axes
 
 Development feedback is not limited to reading code output.
@@ -19,6 +41,7 @@ Development feedback is not limited to reading code output.
 For each software slice, evaluation should cover:
 
 - source or artifact inspection
+- pre-edit integration evidence for code changes
 - lint, type check, formatter check, or equivalent static command
 - unit, integration, or domain regression test when available
 - runtime smoke of the smallest reproducible path

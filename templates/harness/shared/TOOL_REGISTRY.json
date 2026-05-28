@@ -188,6 +188,78 @@
       "audit_event": "tool.update_feature_state"
     },
     {
+      "id": "record_integration_evidence",
+      "owner": "harness",
+      "description": "Record pre-edit integration point, files to edit, and planned checks.",
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "integration_point",
+          "files_to_edit",
+          "planned_checks"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "integration_point": {
+            "type": "string"
+          },
+          "files_to_edit": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "planned_checks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "search_summary": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "status",
+          "evidence_path"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "evidence_path": {
+            "type": "string"
+          }
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "task_owned_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "depends_on_task_and_files",
+      "auth_scopes": [
+        "write_fs:task_evidence"
+      ],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.record_integration_evidence"
+    },
+    {
       "id": "append_observability_event",
       "owner": "harness",
       "description": "Append one event to harness/events/events.jsonl.",
@@ -638,6 +710,135 @@
       "auth_scopes": ["shell:scoped", "write_fs:harness_tasks"],
       "output_trust_level": "tool_output",
       "audit_event": "tool.run_software_feedback"
+    },
+    {
+      "id": "preregister_benchmark",
+      "owner": "harness",
+      "description": "Record task order, arms, metrics, budget caps, claim boundaries, commit SHA, and dirty-tree status before benchmark execution.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "benchmark_id", "tasks", "arms"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "benchmark_id": {"type": "string"},
+          "tasks": {"type": "array", "items": {"type": "string"}},
+          "arms": {"type": "array", "items": {"type": "string"}},
+          "metrics": {"type": "array", "items": {"type": "string"}},
+          "public_proof": {"type": "boolean"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "preregistration_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "preregistration_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "operator_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.preregister_benchmark"
+    },
+    {
+      "id": "blind_redact",
+      "owner": "harness",
+      "description": "Strip obvious system identity markers from benchmark artifacts before non-verifier review.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "inputs"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "inputs": {"type": "array", "items": {"type": "string"}},
+          "strip_terms": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "redaction_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "redaction_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "operator_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["read_fs:scoped", "write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.blind_redact"
+    },
+    {
+      "id": "record_council_decision",
+      "owner": "harness",
+      "description": "Record operator positions, agreements, dissent, selected option, rejected options, and evidence paths as a machine-readable packet.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id", "decision_id", "question", "positions", "selected_option"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "decision_id": {"type": "string"},
+          "question": {"type": "string"},
+          "positions": {"type": "object"},
+          "dissent": {"type": "array", "items": {"type": "string"}},
+          "selected_option": {"type": "string"},
+          "evidence_paths": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "decision_packet_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "decision_packet_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "operator_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "operator_recorded_evidence",
+      "audit_event": "tool.record_council_decision"
+    },
+    {
+      "id": "record_recovery_evidence",
+      "owner": "harness",
+      "description": "Record the exact matched failure evidence packet every recovery arm must receive.",
+      "input_schema": {
+        "type": "object",
+        "required": ["task_id"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "prior_patch": {"type": "string"},
+          "verifier_output": {"type": "string"},
+          "run_log": {"type": "string"},
+          "exception_type": {"type": "string"}
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["status", "recovery_evidence_path"],
+        "properties": {
+          "status": {"type": "string"},
+          "recovery_evidence_path": {"type": "string"}
+        }
+      },
+      "side_effect_class": "write_fs",
+      "approval": "operator_scope_required",
+      "timeout_seconds": 60,
+      "retry_policy": "manual_after_failure",
+      "idempotency": "idempotent_overwrite_task_artifact",
+      "auth_scopes": ["write_fs:harness_tasks"],
+      "output_trust_level": "tool_output",
+      "audit_event": "tool.record_recovery_evidence"
     },
     {
       "id": "archive_task_workspace",
